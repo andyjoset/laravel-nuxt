@@ -15,7 +15,15 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => [
+        'api/*',
+        'login',
+        'logout',
+        'register',
+        'forgot-password',
+        'reset-password',
+        'sanctum/csrf-cookie',
+    ],
 
     'allowed_methods' => ['*'],
 
@@ -23,12 +31,26 @@ return [
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => [
+        'Origin',
+        'Content-Type',
+        'X-Auth-Token',
+        'Authorization',
+        'X-XSRF-TOKEN',
+        // 'X-Socket-Id',
+    ],
 
-    'exposed_headers' => [],
+    'exposed_headers' => [
+        'Cache-Control',
+        'Content-Language',
+        'Content-Type',
+        'Expires',
+        'Last-Modified',
+        'Pragma',
+    ],
 
-    'max_age' => 0,
+    'max_age' => 60 * 60 * 24,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];

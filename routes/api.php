@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('user', [UserController::class, 'current'])->name('user.current');
 });
+
+Route::middleware('guest:sanctum')->group(function () {
+});
+
+// Use fortify routes in api context for stateless apps,
+// comment or remove them if your app don't need stateless auth routes
+require __DIR__.'/auth.api.php';
