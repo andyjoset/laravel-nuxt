@@ -1,0 +1,14 @@
+@import '@mdi/font/css/materialdesignicons.css';
+
+.page-enter-active {
+	transition: all .8s ease;
+}
+
+.page-leave-active {
+	transition: all .13s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.page-enter, .page-leave-to {
+	transform: translateX(10px);
+	opacity: 0;
+}
