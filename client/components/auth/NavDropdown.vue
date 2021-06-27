@@ -25,7 +25,7 @@
                     <p class="text-caption mt-1" v-text="user.email" />
 
                     <v-divider class="my-1" />
-                    <v-btn depressed rounded text>
+                    <v-btn depressed rounded text :to="{ name: 'profile' }">
                         <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
                         <v-icon small>mdi-account</v-icon> Profile
                     </v-btn>

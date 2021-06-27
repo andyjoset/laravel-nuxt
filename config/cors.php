@@ -20,9 +20,11 @@ return [
         'login',
         'logout',
         'register',
-        'forgot-password',
+        'user/password',
         'reset-password',
+        'forgot-password',
         'sanctum/csrf-cookie',
+        'user/profile-information',
     ],
 
     'allowed_methods' => ['*'],

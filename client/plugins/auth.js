@@ -48,6 +48,16 @@ export default function ({ $axios, $config, store, redirect }, inject) {
         store.commit('TOGGLE_OVERLAY')
     }
 
+    auth.updatePassword = function (form) {
+        return form.put(`${this.baseUrl}/${this.api.updatePassword}`)
+    }
+
+    auth.updateProfileInformation = async function (form) {
+        await form.put(`${this.baseUrl}/${this.api.updateProfileInformation}`)
+
+        store.commit('auth/UPDATE_USER', form.data())
+    }
+
     auth.forgotPassword = async function (form, type) {
         await this.csrf(form)
 
@@ -97,6 +107,8 @@ export default function ({ $axios, $config, store, redirect }, inject) {
         logout: 'logout' + (isStateful ? '' : '/token'),
         forgotPassword: 'forgot-password',
         resetPassword: 'reset-password',
+        updatePassword: 'user/password',
+        updateProfileInformation: 'user/profile-information',
         csrf: 'sanctum/csrf-cookie',
     }
 

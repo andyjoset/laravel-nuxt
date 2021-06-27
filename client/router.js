@@ -53,6 +53,20 @@ export function createRouter () {
                 path: '/dashboard',
                 component: page('dashboard'),
             },
+
+            {
+                path: '/profile',
+                name: 'profile',
+                redirect: { name: 'profile.show' },
+                component: page('profile/index'),
+                children: [
+                    {
+                        path: 'me',
+                        name: 'profile.show',
+                        component: page('profile/show'),
+                    },
+                ]
+            },
         ]
     })
 }
