@@ -29,6 +29,9 @@ module.exports = {
             multiline: 'never',
         }],
         'vue/max-attributes-per-line': 'off',
+        'vue/singleline-html-element-content-newline': ['error', {
+            ignores: ['v-icon'],
+        }],
     },
     overrides: [
         {

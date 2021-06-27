@@ -26,13 +26,11 @@
 
                     <v-divider class="my-1" />
                     <v-btn depressed rounded text :to="{ name: 'profile' }">
-                        <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
                         <v-icon small>mdi-account</v-icon> Profile
                     </v-btn>
 
                     <v-divider class="mt-2 mb-1" />
                     <v-btn depressed rounded text class="mb-0" @click="$auth.logout()">
-                        <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
                         <v-icon small>mdi-logout</v-icon> Logout
                     </v-btn>
                 </div>

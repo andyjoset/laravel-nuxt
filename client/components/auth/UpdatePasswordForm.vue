@@ -60,14 +60,12 @@
                     color="error"
                     :disabled="form.busy"
                     @click="close">
-                    <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
                     <v-icon class="mr-1">mdi-close-circle</v-icon> Cancel
                 </v-btn>
                 <v-btn
                     type="submit"
                     color="primary"
                     :loading="form.busy">
-                    <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
                     <v-icon class="mr-1">mdi-check-circle</v-icon> Save
                 </v-btn>
             </v-card-actions>

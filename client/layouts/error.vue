@@ -12,7 +12,6 @@
                             {{ error.message }}
                         </div>
                         <v-btn nuxt text :to="{ name: 'home' }">
-                            <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
                             <v-icon class="mr-1">mdi-home</v-icon> Home page
                         </v-btn>
                     </div>
