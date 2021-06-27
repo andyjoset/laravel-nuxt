@@ -9,12 +9,7 @@
         <app-footer />
         <snackbar />
 
-        <v-overlay
-            :z-index="10"
-            :value="$store.getters['overlay'].show"
-            :opacity="$store.getters['overlay'].opacity">
-            <v-progress-circular indeterminate size="64" color="primary" />
-        </v-overlay>
+        <overlay-loader />
     </v-app>
 </template>
 
@@ -22,12 +17,14 @@
     import AppFooter from '~/components/AppFooter'
     import AppNavbar from '~/components/AppNavbar'
     import Snackbar from '~/components/Snackbar'
+    import OverlayLoader from '~/components/OverlayLoader'
 
     export default {
         components: {
             AppNavbar,
             AppFooter,
             Snackbar,
+            OverlayLoader,
         },
 
         data: () => ({
