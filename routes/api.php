@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\AvatarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ use App\Http\Controllers\Auth\UserController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [UserController::class, 'current'])->name('user.current');
+    Route::put('user/avatar', [AvatarController::class, 'update'])->name('user.avatar.update');
+    Route::delete('user/avatar', [AvatarController::class, 'destroy'])->name('user.avatar.destroy');
 });
 
 Route::middleware('guest:sanctum')->group(function () {

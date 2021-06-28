@@ -13,10 +13,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const DEFAULT_AVATAR_PATH = 'default-avatar.png';
+
     public static function booting()
     {
         static::creating(function ($model) {
-            $model->avatar = 'default-avatar.png';
+            $model->avatar = $model->avatar ?? static::DEFAULT_AVATAR_PATH;
         });
     }
 

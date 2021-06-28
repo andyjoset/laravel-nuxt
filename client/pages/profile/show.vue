@@ -10,7 +10,26 @@
                             <v-avatar size="100%">
                                 <img :src="user.photo_url" :alt="user.name">
                             </v-avatar>
+                            <v-tooltip v-if="!edit" top>
+                                <template #activator="{ on }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        absolute
+                                        size="6"
+                                        color="error"
+                                        max-width="20"
+                                        max-height="20"
+                                        class="mt-10 ml-11"
+                                        v-on="on"
+                                        @click="updateAvatarDialog = true">
+                                        <v-icon size="100%">mdi-pencil</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Change avatar</span>
+                            </v-tooltip>
                         </v-list-item-avatar>
+
                         <v-list-item-content v-if="edit">
                             <update-profile-information-form v-if="edit" @close="edit = false" />
                         </v-list-item-content>
@@ -42,7 +61,7 @@
                         Change current password
                         <template #actions>
                             <v-btn
-                                text
+                                icon
                                 class="text-left"
                                 color="primary"
                                 :disabled="edit"
@@ -58,21 +77,28 @@
         <v-dialog v-model="updatePasswordDialog" persistent max-width="450">
             <update-password-form @close="updatePasswordDialog = false" />
         </v-dialog>
+
+        <v-dialog v-model="updateAvatarDialog" persistent max-width="450">
+            <update-avatar-form @close="updateAvatarDialog = false" />
+        </v-dialog>
     </v-card>
 </template>
 
 <script>
+    import UpdateAvatarForm from '~/components/auth/UpdateAvatarForm'
     import UpdatePasswordForm from '~/components/auth/UpdatePasswordForm'
     import UpdateProfileInformationForm from '~/components/auth/UpdateProfileInformationForm'
 
     export default {
         components: {
+            UpdateAvatarForm,
             UpdatePasswordForm,
             UpdateProfileInformationForm,
         },
 
         data: vm => ({
             edit: false,
+            updateAvatarDialog: false,
             updatePasswordDialog: false,
         }),
 
