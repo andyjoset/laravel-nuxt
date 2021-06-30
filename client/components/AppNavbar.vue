@@ -7,7 +7,8 @@
             height="100%"
             clipped
             fixed
-            app>
+            app
+            @transitionend="updateLocalStorate">
             <v-list>
                 <v-list-item
                     v-for="(item, i) in items"
@@ -31,6 +32,7 @@
             <template v-if="auth">
                 <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
                 <v-btn
+                    v-if="drawer"
                     icon
                     @click.stop="miniVariant = !miniVariant">
                     <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
@@ -87,5 +89,30 @@
             auth: 'auth/check',
             user: 'auth/user',
         }),
+
+        created () {
+            if (process.browser) {
+                const navState = this.getNavStateFromLocalStorate()
+
+                this.drawer = Boolean(navState.drawer)
+                this.miniVariant = Boolean(navState.miniVariant)
+            }
+        },
+
+        methods: {
+            updateLocalStorate () {
+                const navState = this.getNavStateFromLocalStorate()
+
+                Object.assign(navState, {
+                    drawer: this.drawer,
+                    miniVariant: this.miniVariant,
+                })
+
+                localStorage.app_nav = JSON.stringify(navState)
+            },
+            getNavStateFromLocalStorate () {
+                return JSON.parse(localStorage.app_nav || '{}')
+            }
+        },
     }
 </script>
