@@ -18,6 +18,7 @@ class User extends Authenticatable
     public static function booting()
     {
         static::creating(function ($model) {
+            $model->active = $model->active ?? true;
             $model->avatar = $model->avatar ?? static::DEFAULT_AVATAR_PATH;
         });
     }
@@ -31,6 +32,7 @@ class User extends Authenticatable
         'name',
         'email',
         'avatar',
+        'active',
         'password',
     ];
 
@@ -50,6 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'active' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
 
