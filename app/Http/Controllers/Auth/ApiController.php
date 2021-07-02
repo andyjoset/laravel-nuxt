@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Exceptions\UserAccountBannedException;
 use Illuminate\Validation\ValidationException;
 
 class ApiController extends Controller
@@ -25,6 +26,10 @@ class ApiController extends Controller
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
+        }
+
+        if (!$user->active) {
+            throw new UserAccountBannedException;
         }
 
         $tokenName = $request->device_name ?? 'API Token';

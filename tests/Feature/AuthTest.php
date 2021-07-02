@@ -50,6 +50,23 @@ class AuthTest extends TestCase
     }
 
     /** @test */
+    public function cannot_login_if_account_is_banned()
+    {
+        $user = User::factory()->banned()->create();
+
+        $this->postJson('/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ])
+        ->assertForbidden()
+        ->assertJson([
+            'status' => __('Your account is currently banned!'),
+        ]);
+
+        $this->assertGuest('sanctum');
+    }
+
+    /** @test */
     public function can_logout()
     {
         $this->actingAs($this->user);
@@ -70,6 +87,23 @@ class AuthTest extends TestCase
                 'email'     => $this->user->email,
                 'photo_url' => env('APP_URL') . '/storage/default-avatar.png',
             ]);
+    }
+
+    public function user_session_is_invalidated_after_its_account_has_been_banned()
+    {
+        Sanctum::actingAs($this->user);
+
+        $this->getJson('/api/user')->assertStatus(200);
+
+        $this->user->update(['active' => false]);
+
+        $this->getJson('/api/user')
+        ->assertForbidden()
+        ->assertJson([
+            'status' => __('Your account is currently banned!'),
+        ]);
+
+        $this->assertGuest('sanctum');
     }
 
     protected function createUser()

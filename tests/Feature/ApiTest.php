@@ -48,6 +48,21 @@ class ApiTest extends TestCase
     }
 
     /** @test */
+    public function cannot_login_from_api_if_account_is_banned()
+    {
+        $user = User::factory()->create(['active' => false]);
+
+        $response = $this->postJson('/api/login/token', [
+            'email' => $user->email,
+            'password' => 'password'
+        ])
+        ->assertForbidden()
+        ->assertJson([
+            'status' => __('Your account is currently banned!'),
+        ]);
+    }
+
+    /** @test */
     public function can_logout_from_api()
     {
         $token = $this->postJson('/api/login/token', [

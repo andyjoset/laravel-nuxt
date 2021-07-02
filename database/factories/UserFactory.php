@@ -26,7 +26,7 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'active' => $this->faker->randomElement([true, false]),
+            'active' => true,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];
@@ -42,6 +42,48 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'email_verified_at' => null,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the model's status is not banned.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function active()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'active' => true,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the model's status is banned.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function banned()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'active' => false,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the model's status is banned.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function randomStatus()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'active' => $this->faker->randomElement([true, false]),
             ];
         });
     }
