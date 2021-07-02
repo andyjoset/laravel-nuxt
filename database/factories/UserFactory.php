@@ -75,7 +75,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's status is banned.
+     * Set the model's status randomly.
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
