@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\UserAccountGenerated;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
@@ -14,10 +15,19 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(RolesAndPermissionsSeeder::class);
+    }
+
     /** @test */
-    public function users_list_can_be_retrieved()
+    public function an_admin_can_fetch_users_list()
     {
         $this->actingAs($user = User::factory()->create());
+
+        $user->assignRole('Super Admin');
 
         $response = $this->getJson('/api/admin/users')
         ->assertStatus(200)
@@ -46,9 +56,20 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function user_can_be_stored()
+    public function a_user_with_no_permissions_cannot_get_the_users_list()
     {
         $this->actingAs($user = User::factory()->create());
+
+        $this->getJson('/api/admin/users')
+        ->assertForbidden();
+    }
+
+    /** @test */
+    public function an_admin_can_create_a_user_account()
+    {
+        $this->actingAs($user = User::factory()->create());
+
+        $user->assignRole('Super Admin');
 
         Notification::fake();
 
@@ -72,7 +93,9 @@ class UserControllerTest extends TestCase
     {
         $this->actingAs($user = User::factory()->create());
 
-        $this->postJson('/api/admin/users', [
+        Notification::fake();
+
+        $this->postJson('/api/admin/users', $form = [
             'name' => 'Test',
             'email' => $user->email,
         ])
@@ -81,14 +104,38 @@ class UserControllerTest extends TestCase
             'message',
             'errors' => ['email']
         ]);
+
+        Notification::assertNothingSent();
+
+        $this->assertDatabaseMissing('users', $form);
     }
 
     /** @test */
-    public function user_can_be_updated()
+    public function a_user_with_no_permissions_cannot_create_a_user_account()
+    {
+        $this->actingAs($user = User::factory()->create());
+
+        Notification::fake();
+
+        $response = $this->postJson('/api/admin/users', $form = [
+            'name' => 'Test',
+            'email' => 'test@example.com',
+        ])
+        ->assertForbidden();
+
+        Notification::assertNothingSent();
+
+        $this->assertDatabaseMissing('users', $form);
+    }
+
+    /** @test */
+    public function an_admin_can_update_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
         $this->actingAs($user = $users[0]);
+
+        $user->assignRole('Super Admin');
 
         $response = $this->putJson("/api/admin/users/{$users[1]->id}", [
             'name' => 'New name',
@@ -123,11 +170,29 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function user_can_be_deleted()
+    public function a_user_with_no_permissions_cannot_update_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
         $this->actingAs($user = $users[0]);
+
+        $this->putJson("/api/admin/users/{$users[1]->id}", $form = [
+            'name' => 'New name',
+            'email' => 'new-email@example.com',
+        ])
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', $users[1]->toArray());
+    }
+
+    /** @test */
+    public function an_admin_can_deleted_a_user_account()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $user->assignRole('Super Admin');
 
         $this->deleteJson("/api/admin/users/{$users[1]->id}")
         ->assertStatus(200)
@@ -139,11 +204,26 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function user_account_can_be_banned()
+    public function a_user_with_no_permissions_cannot_delete_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
         $this->actingAs($user = $users[0]);
+
+        $this->deleteJson("/api/admin/users/{$users[1]->id}")
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', ['id' => $users[1]->id]);
+    }
+
+    /** @test */
+    public function an_admin_can_ban_a_user_account()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $user->assignRole('Super Admin');
 
         $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
         ->assertStatus(200)
@@ -158,7 +238,23 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function user_account_can_be_unbanned()
+    public function a_user_with_no_permissions_cannot_ban_a_user_account()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $users[1]->id,
+            'active' => true,
+        ]);
+    }
+
+    /** @test */
+    public function an_admin_can_unban_a_user_account()
     {
         $users = User::factory()->times(2)->state(new Sequence(
             ['active' => true],
@@ -166,6 +262,8 @@ class UserControllerTest extends TestCase
         ))->create();
 
         $this->actingAs($user = $users[0]);
+
+        $user->assignRole('Super Admin');
 
         $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
         ->assertStatus(200)
@@ -176,6 +274,25 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $users[1]->id,
             'active' => true,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_with_no_permissions_cannot_unban_a_user_account()
+    {
+        $users = User::factory()->times(2)->state(new Sequence(
+            ['active' => true],
+            ['active' => false],
+        ))->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $users[1]->id,
+            'active' => false,
         ]);
     }
 }

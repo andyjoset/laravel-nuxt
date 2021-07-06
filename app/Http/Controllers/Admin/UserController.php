@@ -19,6 +19,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('index', User::class);
+
         return UserResource::collection(
             User::orderByDesc('created_at')->paginate(10)
         );
@@ -32,6 +34,8 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
+        $this->authorize('store', User::class);
+
         $user = User::create($data = $request->validated());
 
         $user->notify(new UserAccountGenerated($data['plain_password']));
@@ -48,6 +52,8 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $user->update($request->validated());
 
         return new UserResource($user);
@@ -61,6 +67,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         $user->delete();
 
         return response()->json(['status' => 'OK']);
@@ -74,6 +82,8 @@ class UserController extends Controller
      */
     public function toggle(User $user)
     {
+        $this->authorize('toggle', $user);
+
         $user->update([
             'active' => !$user->active
         ]);
