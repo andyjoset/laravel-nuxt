@@ -26,6 +26,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::after(function ($user, $ability, $result, $arguments) {
+            return $user->hasRole('Super Admin');
+        });
+
         ResetPassword::createUrlUsing(function ($user, string $token) {
             return env('SPA_URL') . "/a/reset-password/{$token}?email={$user->email}";
         });
