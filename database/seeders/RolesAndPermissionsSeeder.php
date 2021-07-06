@@ -25,5 +25,6 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'users.update']);
         Permission::create(['name' => 'users.delete']);
         Permission::create(['name' => 'users.toggle']);
+        Permission::create(['name' => 'users.assign-role']);
     }
 }
