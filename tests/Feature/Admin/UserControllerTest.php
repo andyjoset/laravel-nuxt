@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use Tests\TestCase;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use App\Notifications\UserAccountGenerated;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
@@ -38,6 +39,12 @@ class UserControllerTest extends TestCase
                     'name',
                     'email',
                     'active',
+                    'roles' => [
+                        '*' => [
+                            'id',
+                            'name',
+                        ]
+                    ],
                 ]
             ],
             'meta' => [
@@ -78,14 +85,77 @@ class UserControllerTest extends TestCase
             'email' => 'test@example.com',
         ])
         ->assertCreated()
-        ->assertJsonStructure(['id', 'name', 'email', 'active']);
+        ->assertJsonStructure([
+            'id',
+            'name',
+            'email',
+            'active',
+            'roles' => [
+                '*' => [
+                    'id',
+                    'name',
+                ]
+            ],
+        ]);
 
         Notification::assertSentTo(
             User::firstWhere('id', $response->json()['id']),
             UserAccountGenerated::class
         );
 
-        $this->assertDatabaseHas('users', $response->json());
+        $data = $response->json();
+        $this->assertDatabaseHas('users', [
+            'id' => $data['id'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'active' => $data['active'],
+        ]);
+    }
+
+    /** @test */
+    public function an_admin_can_create_a_user_account_and_assign_a_role()
+    {
+        $this->actingAs($user = User::factory()->create());
+
+        $role = Role::create(['name' => 'Test']);
+
+        $user->assignRole('Super Admin');
+
+        Notification::fake();
+
+        $response = $this->postJson('/api/admin/users', [
+            'name' => 'Test',
+            'email' => 'test@example.com',
+            'role_id' => $role->id,
+        ])
+        ->assertCreated()
+        ->assertJsonStructure([
+            'id',
+            'name',
+            'email',
+            'active',
+            'roles' => [
+                '*' => [
+                    'id',
+                    'name',
+                ]
+            ],
+        ]);
+
+        Notification::assertSentTo(
+            $createdUser = User::firstWhere('id', $response->json()['id']),
+            UserAccountGenerated::class
+        );
+
+        $data = $response->json();
+        $this->assertDatabaseHas('users', [
+            'id' => $data['id'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'active' => $data['active'],
+        ]);
+
+        $this->assertTrue($createdUser->hasRole($role->name));
     }
 
     /** @test */
@@ -148,7 +218,49 @@ class UserControllerTest extends TestCase
             'email' => 'new-email@example.com',
         ]);
 
-        $this->assertDatabaseHas('users', $response->json());
+        $data = $response->json();
+        $this->assertDatabaseHas('users', [
+            'id' => $data['id'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'active' => $data['active'],
+        ]);
+    }
+
+    /** @test */
+    public function an_admin_can_remove_a_role_from_a_user_account()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $user->assignRole('Super Admin');
+
+        $role = Role::create(['name' => 'Test']);
+        $users[1]->assignRole($role);
+
+        $response = $this->putJson("/api/admin/users/{$users[1]->id}", [
+            'name' => 'New name',
+            'email' => $users[1]->email,
+            'role_id' => null,
+        ])
+        ->assertStatus(200)
+        ->assertJson([
+            'id'    => $users[1]->id,
+            'name'  => 'New name',
+            'email' => $users[1]->email,
+            'roles' => []
+        ]);
+
+        $data = $response->json();
+        $this->assertDatabaseHas('users', [
+            'id' => $data['id'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'active' => $data['active'],
+        ]);
+
+        $this->assertTrue($users[1]->fresh()->roles()->count() === 0);
     }
 
     /** @test */

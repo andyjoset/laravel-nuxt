@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -40,9 +42,15 @@ class UserStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name'  => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
         ];
+
+        if ($this->user()->can('users.assign-role')) {
+            $rules['role_id'] = ['nullable', Rule::exists(Role::class, 'id')];
+        }
+
+        return $rules;
     }
 }

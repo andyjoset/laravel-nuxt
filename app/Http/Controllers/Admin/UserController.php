@@ -22,7 +22,7 @@ class UserController extends Controller
         $this->authorize('index', User::class);
 
         return UserResource::collection(
-            User::orderByDesc('created_at')->paginate(10)
+            User::with('roles:id,name')->orderByDesc('created_at')->paginate(10)
         );
     }
 
@@ -38,9 +38,13 @@ class UserController extends Controller
 
         $user = User::create($data = $request->validated());
 
+        if (!empty($data['role_id'])) {
+            $user->assignRole($data['role_id']);
+        }
+
         $user->notify(new UserAccountGenerated($data['plain_password']));
 
-        return new UserResource($user);
+        return new UserResource($user->load('roles:id,name'));
     }
 
     /**
@@ -54,9 +58,13 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        $user->update($request->validated());
+        $user->update($data = $request->validated());
 
-        return new UserResource($user);
+        if (array_key_exists('role_id', $data)) {
+            $user->syncRoles($data['role_id']);
+        }
+
+        return new UserResource($user->load('roles:id,name'));
     }
 
     /**
