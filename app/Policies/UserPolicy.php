@@ -21,16 +21,28 @@ class UserPolicy
 
     public function update(User $user, User $model)
     {
+        if ($model->hasRole('Super Admin')) {
+            return false;
+        }
+
         return $user->hasPermissionTo('users.update') ? true : null;
     }
 
     public function delete(User $user, User $model)
     {
+        if ($model->hasRole('Super Admin')) {
+            return false;
+        }
+
         return $user->hasPermissionTo('users.delete') ? true : null;
     }
 
     public function toggle(User $user, User $model)
     {
+        if ($model->hasRole('Super Admin')) {
+            return false;
+        }
+
         return $user->hasPermissionTo('users.toggle') ? true : null;
     }
 }

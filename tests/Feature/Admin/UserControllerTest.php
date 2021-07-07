@@ -407,4 +407,68 @@ class UserControllerTest extends TestCase
             'active' => false,
         ]);
     }
+
+    /** @test */
+    public function super_admin_cannot_be_updated()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $user->givePermissionTo('users.update');
+        $users[1]->assignRole('Super Admin');
+
+        $role = Role::create(['name' => 'Test']);
+
+        $this->putJson("/api/admin/users/{$users[1]->id}", [
+            'name' => 'New name',
+            'email' => 'new-email@example.com',
+            'role_id' => $role->id,
+        ])
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $users[1]->id,
+            'name' => $users[1]->name,
+            'email' => $users[1]->email,
+            'active' => $users[1]->active,
+        ]);
+
+        $this->assertTrue($users[1]->hasRole('Super Admin'));
+    }
+
+    /** @test */
+    public function super_admin_cannot_be_deleted()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $user->givePermissionTo('users.delete');
+        $users[1]->assignRole('Super Admin');
+
+        $this->deleteJson("/api/admin/users/{$users[1]->id}")
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', ['id' => $users[1]->id]);
+    }
+
+    /** @test */
+    public function super_admin_cannot_be_banned()
+    {
+        $users = User::factory()->times(2)->create();
+
+        $this->actingAs($user = $users[0]);
+
+        $user->givePermissionTo('users.toggle');
+        $users[1]->assignRole('Super Admin');
+
+        $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
+        ->assertForbidden();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $users[1]->id,
+            'active' => true,
+        ]);
+    }
 }
