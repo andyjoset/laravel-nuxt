@@ -16,13 +16,6 @@ class AuthTest extends TestCase
      */
     protected $user;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->user = $this->createUser();
-    }
-
     /** @test */
     public function can_register()
     {
@@ -39,8 +32,10 @@ class AuthTest extends TestCase
     /** @test */
     public function can_login()
     {
+        $user = User::factory()->create();
+
         $this->postJson('/login', [
-            'email' => 'test@test.test',
+            'email' => $user->email,
             'password' => 'password'
         ])
         ->assertStatus(200)
@@ -69,33 +64,33 @@ class AuthTest extends TestCase
     /** @test */
     public function can_logout()
     {
-        $this->actingAs($this->user);
+        $this->actingAs($user = User::factory()->create());
 
-        $this->postJson('/logout');
-        $this->getJson('/api/user')->assertStatus(401);
+        $this->postJson('/logout')->assertStatus(204);
+        $this->assertGuest('sanctum');
     }
 
     /** @test */
     public function can_retrive_current_user()
     {
-        Sanctum::actingAs($this->user);
+        Sanctum::actingAs($user = User::factory()->create());
 
         $this->getJson('/api/user')
             ->assertJson([
-                'id'        => $this->user->id,
-                'name'      => $this->user->name,
-                'email'     => $this->user->email,
+                'id'        => $user->id,
+                'name'      => $user->name,
+                'email'     => $user->email,
                 'photo_url' => env('APP_URL') . '/storage/default-avatar.png',
             ]);
     }
 
     public function user_session_is_invalidated_after_its_account_has_been_banned()
     {
-        Sanctum::actingAs($this->user);
+        Sanctum::actingAs($user = User::factory()->create());
 
         $this->getJson('/api/user')->assertStatus(200);
 
-        $this->user->update(['active' => false]);
+        $user->update(['active' => false]);
 
         $this->getJson('/api/user')
         ->assertForbidden()
@@ -104,10 +99,5 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertGuest('sanctum');
-    }
-
-    protected function createUser()
-    {
-        return User::factory()->create(['email' => 'test@test.test']);
     }
 }

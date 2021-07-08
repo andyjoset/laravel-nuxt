@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -16,7 +17,7 @@ class AvatarTest extends TestCase
     /** @test */
     public function user_avatar_can_be_updated()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $avatar = UploadedFile::fake()->image('avatar.jpg');
 
@@ -38,7 +39,7 @@ class AvatarTest extends TestCase
     /** @test */
     public function user_avatar_cannot_be_updated_if_file_is_not_an_image()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $this->putJson('/api/user/avatar', [
             'avatar' => UploadedFile::fake()->image('wrong-avatar.pdf')
@@ -53,7 +54,7 @@ class AvatarTest extends TestCase
     /** @test */
     public function user_avatar_can_be_restored_to_defaults()
     {
-        $this->actingAs($user = User::factory()->create([
+        Sanctum::actingAs($user = User::factory()->create([
             'avatar' => $avatar = UploadedFile::fake()->image('avatar.jpg')->store('avatars')
         ]));
 

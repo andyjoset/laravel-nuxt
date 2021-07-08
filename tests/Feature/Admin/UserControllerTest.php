@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use Tests\TestCase;
 use App\Models\User;
+use Laravel\Sanctum\Sanctum;
 use Spatie\Permission\Models\Role;
 use App\Notifications\UserAccountGenerated;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,7 +27,7 @@ class UserControllerTest extends TestCase
     /** @test */
     public function an_admin_can_fetch_users_list()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $user->assignRole('Super Admin');
 
@@ -65,7 +66,7 @@ class UserControllerTest extends TestCase
     /** @test */
     public function a_user_with_no_permissions_cannot_get_the_users_list()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $this->getJson('/api/admin/users')
         ->assertForbidden();
@@ -74,7 +75,7 @@ class UserControllerTest extends TestCase
     /** @test */
     public function an_admin_can_create_a_user_account()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $user->assignRole('Super Admin');
 
@@ -115,9 +116,9 @@ class UserControllerTest extends TestCase
     /** @test */
     public function an_admin_can_create_a_user_account_and_assign_a_role()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
-        $role = Role::create(['name' => 'Test']);
+        $role = Role::create(['name' => 'Test', 'guard_name' => 'web']);
 
         $user->assignRole('Super Admin');
 
@@ -161,7 +162,7 @@ class UserControllerTest extends TestCase
     /** @test */
     public function user_cannot_be_stored_with_duplicated_email()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         Notification::fake();
 
@@ -183,7 +184,7 @@ class UserControllerTest extends TestCase
     /** @test */
     public function a_user_with_no_permissions_cannot_create_a_user_account()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         Notification::fake();
 
@@ -203,7 +204,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->assignRole('Super Admin');
 
@@ -232,11 +233,11 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->assignRole('Super Admin');
 
-        $role = Role::create(['name' => 'Test']);
+        $role = Role::create(['name' => 'Test', 'guard_name' => 'web']);
         $users[1]->assignRole($role);
 
         $response = $this->putJson("/api/admin/users/{$users[1]->id}", [
@@ -268,7 +269,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $this->putJson("/api/admin/users/{$users[1]->id}", [
             'name' => 'New name',
@@ -286,7 +287,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $this->putJson("/api/admin/users/{$users[1]->id}", $form = [
             'name' => 'New name',
@@ -302,7 +303,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->assignRole('Super Admin');
 
@@ -320,7 +321,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $this->deleteJson("/api/admin/users/{$users[1]->id}")
         ->assertForbidden();
@@ -333,7 +334,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->assignRole('Super Admin');
 
@@ -354,7 +355,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
         ->assertForbidden();
@@ -373,7 +374,7 @@ class UserControllerTest extends TestCase
             ['active' => false],
         ))->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->assignRole('Super Admin');
 
@@ -397,7 +398,7 @@ class UserControllerTest extends TestCase
             ['active' => false],
         ))->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $this->patchJson("/api/admin/users/{$users[1]->id}/toggle")
         ->assertForbidden();
@@ -413,12 +414,12 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->givePermissionTo('users.update');
         $users[1]->assignRole('Super Admin');
 
-        $role = Role::create(['name' => 'Test']);
+        $role = Role::create(['name' => 'Test', 'guard_name' => 'web']);
 
         $this->putJson("/api/admin/users/{$users[1]->id}", [
             'name' => 'New name',
@@ -442,7 +443,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->givePermissionTo('users.delete');
         $users[1]->assignRole('Super Admin');
@@ -458,7 +459,7 @@ class UserControllerTest extends TestCase
     {
         $users = User::factory()->times(2)->create();
 
-        $this->actingAs($user = $users[0]);
+        Sanctum::actingAs($user = $users[0]);
 
         $user->givePermissionTo('users.toggle');
         $users[1]->assignRole('Super Admin');

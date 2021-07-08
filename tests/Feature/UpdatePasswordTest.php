@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,7 +15,7 @@ class UpdatePasswordTest extends TestCase
     /** @test */
     public function password_can_be_updated()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $response = $this->putJson('/user/password', [
             'current_password' => 'password',
@@ -28,7 +29,7 @@ class UpdatePasswordTest extends TestCase
     /** @test */
     public function current_password_must_be_correct()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $this->putJson('/user/password', [
             'current_password' => 'wrong-password',
@@ -47,7 +48,7 @@ class UpdatePasswordTest extends TestCase
     /** @test */
     public function new_passwords_must_match()
     {
-        $this->actingAs($user = User::factory()->create());
+        Sanctum::actingAs($user = User::factory()->create());
 
         $this->putJson('/user/password', [
             'current_password' => 'password',
