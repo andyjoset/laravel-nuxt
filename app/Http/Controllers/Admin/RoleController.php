@@ -19,7 +19,7 @@ class RoleController extends Controller
         $this->authorize('index', Role::class);
 
         return RoleResource::collection(
-            Role::with('permissions:id,name')->orderBy('name')->paginate(10)
+            Role::with('permissions:id,module,description')->orderBy('name')->paginate(10)
         );
     }
 
@@ -45,7 +45,7 @@ class RoleController extends Controller
 
         $role->givePermissionTo($request->only('permissions'));
 
-        return new RoleResource($role->load('permissions:id,name'));
+        return new RoleResource($role->load('permissions:id,description'));
     }
 
     /**
@@ -68,7 +68,7 @@ class RoleController extends Controller
 
         $role->syncPermissions($request->only('permissions'));
 
-        return new RoleResource($role->load('permissions:id,name'));
+        return new RoleResource($role->load('permissions:id,description'));
     }
 
     /**

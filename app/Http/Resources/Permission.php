@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class Permission extends JsonResource
 {
+    use Helpers;
+
     /**
      * Transform the resource into an array.
      *
@@ -16,7 +18,9 @@ class Permission extends JsonResource
     {
         return [
             'id' => (int) $this->id,
-            'name' => $this->name,
+            'name' => $this->whenNotNull($this->name),
+            'module' => $this->whenNotNull($this->module),
+            'description' => $this->whenNotNull($this->description),
             'roles' => Role::collection($this->whenLoaded('roles')),
         ];
     }

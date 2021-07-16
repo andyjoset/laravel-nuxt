@@ -39,7 +39,8 @@ class RoleControllerTest extends TestCase
                     'permissions' => [
                         '*' => [
                             'id',
-                            'name',
+                            'module',
+                            'description',
                         ]
                     ],
                 ]
@@ -88,7 +89,7 @@ class RoleControllerTest extends TestCase
             'permissions' => [
                 '*' => [
                     'id',
-                    'name',
+                    'description',
                 ]
             ],
         ]);
@@ -160,7 +161,7 @@ class RoleControllerTest extends TestCase
             'permissions' => [
                 '*' => [
                     'id',
-                    'name',
+                    'description',
                 ]
             ],
         ]);
