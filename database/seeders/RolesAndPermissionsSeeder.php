@@ -21,17 +21,65 @@ class RolesAndPermissionsSeeder extends Seeder
         Role::create(['name' => 'Super Admin']);
 
         // Users
-        Permission::create(['name' => 'users.index']);
-        Permission::create(['name' => 'users.store']);
-        Permission::create(['name' => 'users.update']);
-        Permission::create(['name' => 'users.delete']);
-        Permission::create(['name' => 'users.toggle']);
-        Permission::create(['name' => 'users.assign-role']);
+        Permission::create([
+            'name' => 'users.index',
+            'module' => 'Users',
+            'description' => 'List users.',
+        ]);
+
+        Permission::create([
+            'name' => 'users.store',
+            'module' => 'Users',
+            'description' => 'Create users.',
+        ]);
+
+        Permission::create([
+            'name' => 'users.update',
+            'module' => 'Users',
+            'description' => 'Update users info.',
+        ]);
+
+        Permission::create([
+            'name' => 'users.delete',
+            'module' => 'Users',
+            'description' => 'Delete users.',
+        ]);
+
+        Permission::create([
+            'name' => 'users.toggle',
+            'module' => 'Users',
+            'description' => 'Ban & unban users.',
+        ]);
+
+        Permission::create([
+            'name' => 'users.assign-role',
+            'module' => 'Users',
+            'description' => 'Assign roles to users.',
+        ]);
 
         // Roles
-        Permission::create(['name' => 'roles.index']);
-        Permission::create(['name' => 'roles.store']);
-        Permission::create(['name' => 'roles.update']);
-        Permission::create(['name' => 'roles.delete']);
+        Permission::create([
+            'name' => 'roles.index',
+            'module' => 'Roles & Permissions',
+            'description' => 'List roles',
+        ]);
+
+        Permission::create([
+            'name' => 'roles.store',
+            'module' => 'Roles & Permissions',
+            'description' => 'Create roles',
+        ]);
+
+        Permission::create([
+            'name' => 'roles.update',
+            'module' => 'Roles & Permissions',
+            'description' => 'Update roles',
+        ]);
+
+        Permission::create([
+            'name' => 'roles.delete',
+            'module' => 'Roles & Permissions',
+            'description' => 'Delete roles',
+        ]);
     }
 }
