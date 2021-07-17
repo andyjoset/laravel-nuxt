@@ -15,6 +15,7 @@
     "core-js": "^3.9.1",
     "js-cookie": "^2.2.1",
     "nuxt": "^2.15.7",
+    "sweetalert2": "^11.0.18",
     "vform": "^2.1.0"
   },
   "devDependencies": {
