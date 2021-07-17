@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\AvatarController;
@@ -28,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('users/{user}/toggle', [AdminUserController::class, 'toggle']);
         Route::apiResource('roles', RoleController::class)->except('show');
     });
+
+    Route::get('roles', [CommonController::class, 'roles'])->name('roles.index');
+    Route::get('permissions', [CommonController::class, 'permissions'])->name('permissions.index');
 });
 
 Route::middleware('guest:sanctum')->group(function () {
