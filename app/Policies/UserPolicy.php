@@ -45,4 +45,9 @@ class UserPolicy
 
         return $user->hasPermissionTo('users.toggle') ? true : null;
     }
+
+    public function assignRoles(User $user)
+    {
+        return $user->hasPermissionTo('users.assign-role') ? true : null;
+    }
 }

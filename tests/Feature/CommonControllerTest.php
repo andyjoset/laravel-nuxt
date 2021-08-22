@@ -31,10 +31,22 @@ class CommonControllerTest extends TestCase
         $this->getJson('/api/roles')
         ->assertStatus(200)
         ->assertJsonStructure([
-            '*' => [
-                'id',
-                'name',
-            ]
+           'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                ]
+            ],
+            'meta' => [
+                'current_page',
+                'from',
+                'last_page',
+                'path',
+                'per_page',
+                'to',
+                'total',
+            ],
+            'links',
         ]);
     }
 

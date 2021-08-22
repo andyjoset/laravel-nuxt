@@ -18,10 +18,10 @@ class CommonController extends Controller
      */
     public function roles(Request $request)
     {
-        $this->authorize('index', User::class);
+        $this->authorize('assignRoles', User::class);
 
         return RoleResource::collection(
-            Role::select(['id', 'name'])->orderBy('name')->get()
+            Role::select(['id', 'name'])->orderBy('name')->paginate()
         );
     }
 
