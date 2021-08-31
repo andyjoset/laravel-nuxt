@@ -54,6 +54,26 @@ export function createRouter () {
                 component: page('dashboard'),
             },
 
+            // Admin routes
+            {
+                path: '/admin',
+                name: 'admin.index',
+                component: page('admin/index'),
+                children: [
+                    {
+                        path: 'users',
+                        name: 'admin.users',
+                        component: page('admin/users'),
+                    },
+                    {
+                        path: 'roles',
+                        name: 'admin.roles',
+                        component: page('admin/roles'),
+                    },
+                ]
+            },
+
+            // Profile routes
             {
                 path: '/profile',
                 name: 'profile',

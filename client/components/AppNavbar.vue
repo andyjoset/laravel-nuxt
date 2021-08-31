@@ -9,22 +9,51 @@
             fixed
             app
             @transitionend="updateLocalStorate">
-            <v-list>
-                <v-list-item
-                    v-for="(item, i) in items"
-                    :key="i"
-                    :to="item.to"
-                    router
-                    exact>
-                    <v-list-item-action>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title v-text="item.title" />
-                    </v-list-item-content>
-                </v-list-item>
+            <v-list dense nav>
+                <template v-for="item in items">
+                    <v-list-item
+                        v-if="!item.children"
+                        :key="item.title"
+                        :to="item.route"
+                        nuxt>
+                        <v-list-item-icon>
+                            <v-icon v-text="item.icon" />
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                            <v-list-item-title v-text="item.title" />
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-group
+                        v-else
+                        :key="item.title"
+                        :prepend-icon="item.icon"
+                        :value="true"
+                        no-action>
+                        <template #activator>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="item.title" />
+                            </v-list-item-content>
+                        </template>
+
+                        <template v-for="child in item.children">
+                            <v-list-item
+                                :key="child.title"
+                                :to="child.route"
+                                nuxt>
+                                <v-list-item-title v-text="child.title" />
+
+                                <v-list-item-icon>
+                                    <v-icon v-text="child.icon" />
+                                </v-list-item-icon>
+                            </v-list-item>
+                        </template>
+                    </v-list-group>
+                </template>
             </v-list>
         </v-navigation-drawer>
+
         <v-app-bar
             clipped-left
             fixed
@@ -45,17 +74,15 @@
             <v-spacer />
 
             <template v-if="!auth">
-                <v-btn text nuxt :plain="routeIs('login')" :to="{ name: 'login' }" class="mx-0">
-                    <v-icon small class="mr-2">
-                        mdi-fingerprint
-                    </v-icon>
-                    Login
-                </v-btn>
-                <v-btn text nuxt :plain="routeIs('register')" :to="{ name: 'register' }" class="mx-0">
-                    <v-icon small class="mr-2">
-                        mdi-account-multiple-plus
-                    </v-icon>
-                    Register
+                <v-btn
+                    v-for="link in links"
+                    :key="link.text"
+                    :to="link.route"
+                    :plain="routeIs(link.route)"
+                    class="mx-0"
+                    text
+                    nuxt>
+                    <v-icon small class="mr-2">{{ link.icon }}</v-icon> {{ link.text }}
                 </v-btn>
             </template>
 
@@ -80,8 +107,30 @@
                 {
                     icon: 'mdi-view-dashboard',
                     title: 'Dashboard',
-                    to: { name: 'dashboard' },
-                }
+                    route: { name: 'dashboard' },
+                },
+                {
+                    icon: 'mdi-account-group',
+                    title: 'Users',
+                    route: { name: 'admin.users' }
+                },
+                {
+                    icon: 'mdi-security',
+                    title: 'Roles & Permissions',
+                    route: { name: 'admin.roles' }
+                },
+            ],
+            links: [
+                {
+                    text: 'Login',
+                    icon: 'mdi-fingerprint',
+                    route: { name: 'login' },
+                },
+                {
+                    text: 'Register',
+                    icon: 'mdi-account-multiple-plus',
+                    route: { name: 'register' },
+                },
             ],
         }),
 

@@ -61,6 +61,16 @@ if (!Vue.__global_mixin__) {
                 return join ? results.join(separator) : results
             },
 
+            groupByKey (objs, key) {
+                return objs.reduce((objectsByKeyValue, obj) => {
+                    const value = [key].map(key => obj[key]).join('-')
+
+                    objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj)
+
+                    return objectsByKeyValue
+                }, {})
+            },
+
             async $swalConfirm ({
                 url,
                 form,
@@ -154,8 +164,8 @@ if (!Vue.__global_mixin__) {
                     .replace(/--+/g, separator)
             },
 
-            routeIs (name) {
-                return this.$route.name === name
+            routeIs (route) {
+                return this.$route.name === (typeof route === 'object' ? route.name : route)
             },
 
             screenIs (breakpoint) {
