@@ -46,8 +46,22 @@
 
         created () {
             if (process.browser) {
-                this.$vuetify.theme.dark = this.getValueFromStorage()
+                this.$vuetify.theme.dark = this.isUndef()
+                    ? this.getValueFromSystem()
+                    : this.getValueFromStorage()
+
                 this.visible = true
+            }
+        },
+
+        mounted () {
+            if (process.browser) {
+                window.matchMedia('(prefers-color-scheme: dark)')
+                    .addEventListener('change', (e) => {
+                        if (this.isUndef()) {
+                            this.$vuetify.theme.dark = e.matches
+                        }
+                    })
             }
         },
 
@@ -55,10 +69,18 @@
             getValueFromStorage () {
                 return JSON.parse(localStorage['dark-mode'] || false)
             },
+            getValueFromSystem () {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches
+            },
             toggle () {
                 if (process.browser) {
-                    this.$vuetify.theme.dark = localStorage['dark-mode'] = !this.getValueFromStorage()
+                    const result = this.isUndef() ? !this.getValueFromSystem() : !this.getValueFromStorage()
+
+                    this.$vuetify.theme.dark = localStorage['dark-mode'] = result
                 }
+            },
+            isUndef () {
+                return localStorage['dark-mode'] === undefined
             },
         },
     }
