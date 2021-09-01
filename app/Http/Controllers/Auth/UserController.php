@@ -10,6 +10,6 @@ class UserController extends Controller
 {
     public function current(Request $request)
     {
-        return new Auth($request->user());
+        return new Auth($request->user()->loadMissing('roles.permissions'));
     }
 }

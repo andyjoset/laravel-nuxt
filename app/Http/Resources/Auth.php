@@ -19,6 +19,11 @@ class Auth extends JsonResource
             'name'       => $this->name,
             'email'      => $this->email,
             'photo_url'  => $this->photo_url,
+
+            $this->mergeWhen($this->relationLoaded('roles'), fn () => [
+                'roles'       => $this->getRoleNames(),
+                'permissions' => $this->getAllPermissions()->pluck('name'),
+            ]),
         ];
     }
 }
