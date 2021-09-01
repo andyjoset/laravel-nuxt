@@ -8,6 +8,6 @@
 
 <script>
     export default {
-        middleware: ['auth'],
+        middleware: ['auth', 'permission'],
     }
 </script>

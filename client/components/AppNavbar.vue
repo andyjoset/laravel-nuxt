@@ -12,7 +12,7 @@
             <v-list dense nav>
                 <template v-for="item in items">
                     <v-list-item
-                        v-if="!item.children"
+                        v-if="!item.children && (item.permission ? $canAny(item.permission) : true)"
                         :key="item.title"
                         :to="item.route"
                         nuxt>
@@ -26,7 +26,7 @@
                     </v-list-item>
 
                     <v-list-group
-                        v-else
+                        v-else-if="showGroupedItems(item)"
                         :key="item.title"
                         :prepend-icon="item.icon"
                         :value="true"
@@ -39,6 +39,7 @@
 
                         <template v-for="child in item.children">
                             <v-list-item
+                                v-if="child.permission ? $canAny(child.permission) : true"
                                 :key="child.title"
                                 :to="child.route"
                                 nuxt>
@@ -112,12 +113,14 @@
                 {
                     icon: 'mdi-account-group',
                     title: 'Users',
-                    route: { name: 'admin.users' }
+                    route: { name: 'admin.users' },
+                    permission: ['users.index'],
                 },
                 {
                     icon: 'mdi-security',
                     title: 'Roles & Permissions',
-                    route: { name: 'admin.roles' }
+                    route: { name: 'admin.roles' },
+                    permission: ['roles.index'],
                 },
             ],
             links: [
@@ -161,7 +164,12 @@
             },
             getNavStateFromLocalStorate () {
                 return JSON.parse(localStorage.app_nav || '{}')
-            }
+            },
+            showGroupedItems (item) {
+                const permissions = this.pluck(item.children, 'permission').flat()
+
+                return item.children && (permissions.length ? this.$canAny(permissions) : true)
+            },
         },
     }
 </script>

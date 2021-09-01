@@ -64,11 +64,13 @@ export function createRouter () {
                         path: 'users',
                         name: 'admin.users',
                         component: page('admin/users'),
+                        meta: { permission: 'users.index' },
                     },
                     {
                         path: 'roles',
                         name: 'admin.roles',
                         component: page('admin/roles'),
+                        meta: { permission: 'roles.index' },
                     },
                 ]
             },
