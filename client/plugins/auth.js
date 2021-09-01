@@ -100,6 +100,72 @@ export default function ({ $axios, $config, store, redirect }, inject) {
         }
     }
 
+    /**
+     * Check if the user has the given role.
+     *
+     * @param  string  role
+     * @return bool
+     */
+    auth.hasRole = function (role) {
+        try {
+            return store.getters['auth/user'].roles.includes(role)
+        } catch (e) {
+            return false
+        }
+    }
+
+    /**
+     * Check if the user has any of the given roles.
+     *
+     * @param  array  roles
+     * @return bool
+     */
+    auth.hasAnyRole = function (roles) {
+        for (const role of roles) {
+            if (this.hasRole(role)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /**
+     * Check if the user has the given permission.
+     *
+     * @param  string  permission
+     * @param  bool  checkIfIsAdmin
+     * @return bool
+     */
+    auth.hasPermissionTo = function (permission, checkIfIsAdmin = true) {
+        if (checkIfIsAdmin && this.hasRole('Super Admin')) {
+            return true
+        }
+
+        try {
+            return store.getters['auth/user'].permissions.includes(permission)
+        } catch (e) {
+            return false
+        }
+    }
+
+    /**
+     * Check if the user has any of the given permissions.
+     *
+     * @param  array  permissions
+     * @param  bool  checkIfIsAdmin
+     * @return bool
+     */
+    auth.hasAnyPermission = function (permissions, checkIfIsAdmin = true) {
+        for (const permission of permissions) {
+            if (this.hasPermissionTo(permission, checkIfIsAdmin)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     auth.baseUrl = isStateful ? appUrl : apiUrl
     auth.api = {
         register: 'register',

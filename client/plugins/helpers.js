@@ -71,6 +71,40 @@ if (!Vue.__global_mixin__) {
                 }, {})
             },
 
+            /**
+             * @param  string  role
+             * @return bool
+             */
+            $hasRole (role) {
+                return this.$auth.hasRole(role)
+            },
+
+            /**
+             * @param  array  roles
+             * @return bool
+             */
+            $hasAnyRole (roles) {
+                return this.$auth.hasAnyRole(roles)
+            },
+
+            /**
+             * @param  string  permission
+             * @param  bool  checkIfIsAdmin
+             * @return bool
+             */
+            $can (permission, checkIfIsAdmin = true) {
+                return this.$auth.hasPermissionTo(permission, checkIfIsAdmin)
+            },
+
+            /**
+             * @param  array  permissions
+             * @param  bool  checkIfIsAdmin
+             * @return bool
+             */
+            $canAny (permissions, checkIfIsAdmin = true) {
+                return this.$auth.hasAnyPermission(permissions, checkIfIsAdmin)
+            },
+
             async $swalConfirm ({
                 url,
                 form,
