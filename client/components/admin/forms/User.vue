@@ -141,7 +141,10 @@
                 this.form.reset()
 
                 if (this.user) {
-                    this.form.fill(this.user)
+                    this.form.fill({
+                        ...this.user,
+                        role_id: this.user.roles[0]?.id || null,
+                    })
                 }
             },
         }
