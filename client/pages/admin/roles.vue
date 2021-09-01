@@ -24,7 +24,7 @@
                 </v-card-title>
 
                 <v-toolbar flat>
-                    <v-tooltip top>
+                    <v-tooltip v-if="$can('roles.store')" top>
                         <template #activator="{ on }">
                             <v-btn small color="primary" @click="dialog = true" v-on="on">
                                 <v-icon small>mdi-plus-box-multiple</v-icon>
@@ -70,7 +70,7 @@
                     <span>Show</span>
                 </v-tooltip>
 
-                <v-tooltip v-if="role.name !== 'Super Admin'" top>
+                <v-tooltip v-if="role.name !== 'Super Admin' && $can('roles.update')" top>
                     <template #activator="{ on }">
                         <v-icon
                             small
@@ -82,7 +82,7 @@
                     <span>Edit</span>
                 </v-tooltip>
 
-                <v-tooltip v-if="role.name !== 'Super Admin'" top>
+                <v-tooltip v-if="role.name !== 'Super Admin' && $can('roles.delete')" top>
                     <template #activator="{ on }">
                         <v-icon
                             small

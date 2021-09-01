@@ -24,7 +24,7 @@
                 </v-card-title>
 
                 <v-toolbar flat>
-                    <v-tooltip top>
+                    <v-tooltip v-if="$can('users.store')" top>
                         <template #activator="{ on }">
                             <v-btn
                                 small
@@ -76,7 +76,7 @@
                     <span>Show</span>
                 </v-tooltip>
 
-                <v-tooltip top>
+                <v-tooltip v-if="$can('users.update')" top>
                     <template #activator="{ on }">
                         <v-icon
                             small
@@ -89,7 +89,7 @@
                     <span>Edit</span>
                 </v-tooltip>
 
-                <v-tooltip top>
+                <v-tooltip v-if="$can('users.delete')" top>
                     <template #activator="{ on }">
                         <v-icon
                             small
@@ -102,7 +102,7 @@
                     <span>Delete</span>
                 </v-tooltip>
 
-                <v-tooltip top>
+                <v-tooltip v-if="$can('users.toggle')" top>
                     <template #activator="{ on }">
                         <v-icon
                             small

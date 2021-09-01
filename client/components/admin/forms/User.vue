@@ -41,6 +41,7 @@
                     :error-messages="form.errors.get('email')" />
 
                 <app-select
+                    v-if="$can('users.assign-role')"
                     v-model="form.role_id"
                     dense
                     label="Role"
