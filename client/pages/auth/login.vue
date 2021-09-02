@@ -45,6 +45,8 @@
                         v-if="$config.isStateful"
                         v-model="form.remember"
                         class="pa-0 ma-0"
+                        :true-value="true"
+                        :false-value="null"
                         label="Remember Me" />
                 </v-card-text>
             </v-card-title>
@@ -105,7 +107,7 @@
             form: vm.$vform.make({
                 email: '',
                 password: '',
-                remember: false,
+                remember: null,
             }),
             dialogReset: null,
         }),
