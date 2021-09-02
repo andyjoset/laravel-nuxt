@@ -16,7 +16,7 @@ export default function ({ $axios, $config, store, redirect }) {
         const status = error.response.status
 
         if (status === 401) {
-            localStorage.loggedOut = true
+            store.commit('auth/CLEAR')
 
             return redirect({ name: 'login' })
         }

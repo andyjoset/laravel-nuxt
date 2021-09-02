@@ -23,6 +23,10 @@ export const mutations = {
     CLEAR (state) {
         state.user = null
         state.token = null
+
+        if (process.browser) {
+            localStorage.loggedOut = true
+        }
     },
 
     UPDATE_USER (state, user) {
