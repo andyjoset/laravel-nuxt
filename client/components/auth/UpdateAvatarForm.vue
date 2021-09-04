@@ -113,7 +113,7 @@
                     return this.user.photo_url
                 }
 
-                return this.form.avatar
+                return URL.createObjectURL(this.form.avatar)
             },
             showUploadBtn () {
                 return !this.form.busy || !this.form._method || this.form._method === 'PUT'
