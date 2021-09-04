@@ -15,7 +15,7 @@ class UpdatePasswordTest extends TestCase
     /** @test */
     public function password_can_be_updated()
     {
-        Sanctum::actingAs($user = User::factory()->create());
+        $this->actingAs($user = User::factory()->create());
 
         $response = $this->putJson('/user/password', [
             'current_password' => 'password',
@@ -29,7 +29,7 @@ class UpdatePasswordTest extends TestCase
     /** @test */
     public function current_password_must_be_correct()
     {
-        Sanctum::actingAs($user = User::factory()->create());
+        $this->actingAs($user = User::factory()->create());
 
         $this->putJson('/user/password', [
             'current_password' => 'wrong-password',
@@ -48,7 +48,7 @@ class UpdatePasswordTest extends TestCase
     /** @test */
     public function new_passwords_must_match()
     {
-        Sanctum::actingAs($user = User::factory()->create());
+        $this->actingAs($user = User::factory()->create());
 
         $this->putJson('/user/password', [
             'current_password' => 'password',

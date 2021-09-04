@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Laravel\Fortify\Features;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiTest extends TestCase
@@ -89,15 +90,21 @@ class ApiTest extends TestCase
             'password' => 'password'
         ]);
 
+        $attrs = [
+            'id'        => $this->user->id,
+            'name'      => $this->user->name,
+            'email'     => $this->user->email,
+            'photo_url' => env('APP_URL') . '/storage/default-avatar.png',
+        ];
+
+        if (Features::enabled(Features::emailVerification())) {
+            $attrs['email_verified_at'] = optional($this->user->email_verified_at)->toJson();
+        }
+
         $this->withHeaders(['Authorization' => "Bearer {$response->json()['token']}"])
             ->getJson('/api/user')
             ->assertStatus(200)
-            ->assertJson([
-                'id'        => $this->user->id,
-                'name'      => $this->user->name,
-                'email'     => $this->user->email,
-                'photo_url' => env('APP_URL') . '/storage/default-avatar.png',
-            ]);
+            ->assertJson($attrs);
     }
 
     protected function createUser()

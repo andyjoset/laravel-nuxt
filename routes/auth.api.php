@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ApiController;
 use Laravel\Fortify\Http\Controllers\PasswordController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 use Laravel\Fortify\Http\Controllers\ProfileInformationController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,17 @@ Route::middleware('guest:sanctum')->group(function () {
     Route::post('login/token', [ApiController::class, 'login'])->name('api.login');
     Route::post('register', [RegisteredUserController::class, 'store'])->name('api.register');
 });
+
+// Email Verification...
+if (Features::enabled(Features::emailVerification())) {
+    Route::get('email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+        ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
+        ->name('api.verification.verify');
+
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware(['auth:sanctum', 'throttle:6,1'])
+        ->name('api.verification.send');
+}
 
 // Profile Information...
 if (Features::enabled(Features::updateProfileInformation())) {

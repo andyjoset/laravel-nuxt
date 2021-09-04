@@ -25,6 +25,7 @@ return [
         'forgot-password',
         'sanctum/csrf-cookie',
         'user/profile-information',
+        'email/verification-notification',
     ],
 
     'allowed_methods' => ['*'],

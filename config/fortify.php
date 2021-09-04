@@ -142,4 +142,8 @@ return [
         // ]),
     ],
 
+    'redirects' => [
+        'email-verification' => env('SPA_URL', config('app.url')) . '/dashboard',
+    ],
+
 ];

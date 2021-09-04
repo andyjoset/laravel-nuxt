@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Laravel\Fortify\Features;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
@@ -19,6 +20,12 @@ class AuthTest extends TestCase
     /** @test */
     public function can_register()
     {
+        $attrs = ['id', 'name', 'email', 'photo_url'];
+
+        if (Features::enabled(Features::emailVerification())) {
+            $attrs[] = 'email_verified_at';
+        }
+
         $this->postJson('/register', [
             'name'     => 'Laravel Nuxt',
             'email'    => 'admin@test.test',
@@ -26,12 +33,18 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password',
         ])
         ->assertCreated()
-        ->assertJsonStructure(['id', 'name', 'email', 'photo_url']);
+        ->assertJsonStructure($attrs);
     }
 
     /** @test */
     public function can_login()
     {
+        $attrs = ['id', 'name', 'email', 'photo_url'];
+
+        if (Features::enabled(Features::emailVerification())) {
+            $attrs[] = 'email_verified_at';
+        }
+
         $user = User::factory()->create();
 
         $this->postJson('/login', [
@@ -39,7 +52,7 @@ class AuthTest extends TestCase
             'password' => 'password'
         ])
         ->assertStatus(200)
-        ->assertJsonStructure(['id', 'name', 'email', 'photo_url']);
+        ->assertJsonStructure($attrs);
 
         $this->assertAuthenticated('sanctum');
     }
@@ -75,13 +88,19 @@ class AuthTest extends TestCase
     {
         Sanctum::actingAs($user = User::factory()->create());
 
+        $attrs = [
+            'id'        => $user->id,
+            'name'      => $user->name,
+            'email'     => $user->email,
+            'photo_url' => env('APP_URL') . '/storage/default-avatar.png',
+        ];
+
+        if (Features::enabled(Features::emailVerification())) {
+            $attrs['email_verified_at'] = optional($user->email_verified_at)->toJson();
+        }
+
         $this->getJson('/api/user')
-            ->assertJson([
-                'id'        => $user->id,
-                'name'      => $user->name,
-                'email'     => $user->email,
-                'photo_url' => env('APP_URL') . '/storage/default-avatar.png',
-            ]);
+            ->assertJson($attrs);
     }
 
     public function user_session_is_invalidated_after_its_account_has_been_banned()

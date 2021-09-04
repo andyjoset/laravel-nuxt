@@ -16,7 +16,7 @@ class ProfileInformationTest extends TestCase
     /** @test */
     public function profile_information_can_be_updated()
     {
-        Sanctum::actingAs($user = User::factory()->create());
+        $this->actingAs($user = User::factory()->create());
 
         $response = $this->putJson('/user/profile-information', [
             'name'   => 'Test Name',
@@ -34,7 +34,7 @@ class ProfileInformationTest extends TestCase
     {
         User::factory()->create(['email' => 'test@example.com']);
 
-        Sanctum::actingAs($user = User::factory()->create());
+        $this->actingAs($user = User::factory()->create());
 
         $this->putJson('/user/profile-information', [
             'name'   => 'Test Name',
