@@ -51,6 +51,7 @@
                         </v-list-item-content>
                     </v-list-item>
                 </v-col>
+
                 <v-col md="6" sm="12" class="mb-4">
                     <v-banner :single-line="!isLg()">
                         <v-avatar slot="icon" color="primary accent-4" size="40">
@@ -71,6 +72,10 @@
                         </template>
                     </v-banner>
                 </v-col>
+
+                <v-col v-if="user.email_verified_at !== undefined" cols="12" class="mb-4">
+                    <email-verification-notification-request />
+                </v-col>
             </v-row>
         </v-card-text>
 
@@ -88,12 +93,14 @@
     import UpdateAvatarForm from '~/components/auth/UpdateAvatarForm'
     import UpdatePasswordForm from '~/components/auth/UpdatePasswordForm'
     import UpdateProfileInformationForm from '~/components/auth/UpdateProfileInformationForm'
+    import EmailVerificationNotificationRequest from '~/components/auth/EmailVerificationNotificationRequest'
 
     export default {
         components: {
             UpdateAvatarForm,
             UpdatePasswordForm,
             UpdateProfileInformationForm,
+            EmailVerificationNotificationRequest,
         },
 
         data: vm => ({
@@ -109,6 +116,14 @@
         computed: {
             user () {
                 return this.$store.getters['auth/user']
+            }
+        },
+
+        created () {
+            if (process.browser && parseInt(this.$route.query.verified) === 1) {
+                this.$router.replace({ name: this.$route.name })
+
+                this.$nextTick(() => this.$notify({ message: 'Your email has been verified!', timeout: 0 }))
             }
         },
     }

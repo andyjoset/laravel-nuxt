@@ -30,6 +30,11 @@ export function createRouter () {
                         name: 'password.reset',
                         component: page('auth/reset-password')
                     },
+                    {
+                        path: 'email/verify',
+                        name: 'email.verify',
+                        component: page('auth/verify-email')
+                    },
                 ]
             },
 

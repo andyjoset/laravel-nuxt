@@ -103,6 +103,8 @@
             PasswordResetRequest,
         },
 
+        middleware: ['guest'],
+
         data: vm => ({
             form: vm.$vform.make({
                 email: '',

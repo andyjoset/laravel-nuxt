@@ -52,6 +52,10 @@ export default function ({ $axios, $config, store, redirect }, inject) {
         return form.put(`${this.baseUrl}/${this.api.updatePassword}`)
     }
 
+    auth.requestEmailVerificationNotification = function () {
+        return $axios.post(`${this.baseUrl}/${this.api.emailVerificationNotification}`)
+    }
+
     auth.updateProfileInformation = async function (form) {
         await form.put(`${this.baseUrl}/${this.api.updateProfileInformation}`)
 
@@ -175,6 +179,7 @@ export default function ({ $axios, $config, store, redirect }, inject) {
         resetPassword: 'reset-password',
         updatePassword: 'user/password',
         updateProfileInformation: 'user/profile-information',
+        emailVerificationNotification: 'email/verification-notification',
         csrf: 'sanctum/csrf-cookie',
     }
 

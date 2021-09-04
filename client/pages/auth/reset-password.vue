@@ -69,6 +69,8 @@
 
 <script>
     export default {
+        middleware: ['guest'],
+
         data: vm => ({
             status: '',
             form: vm.$vform.make({

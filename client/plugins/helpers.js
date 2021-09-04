@@ -71,6 +71,37 @@ if (!Vue.__global_mixin__) {
                 }, {})
             },
 
+            dateDiff (date1, date2, diff, absolute = true) {
+                const diffCalc = {
+                    seconds: 1000,
+                    minutes: 1000 * 60,
+                    hours: 1000 * 60 * 60,
+                    days: 1000 * 60 * 60 * 24,
+                    weeks: 24 * 3600 * 1000 * 7,
+                    months: (a, b) => (a.getMonth() + 12 * a.getFullYear()) - (b.getMonth() + 12 * b.getFullYear()),
+                    years: (a, b) => a.getFullYear() - b.getFullYear(),
+                }
+
+                const toUtc = date => Date.UTC(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    date.getHours(),
+                    date.getMinutes(),
+                    date.getSeconds(),
+                    date.getMilliseconds()
+                )
+
+                const dt1 = date1 instanceof Date ? date1 : new Date(date1)
+                const dt2 = date2 instanceof Date ? date2 : new Date(date2)
+
+                const result = ['months', 'years'].includes(diff)
+                    ? diffCalc[diff](dt1, dt2)
+                    : Math.round((toUtc(dt1) - toUtc(dt2)) / diffCalc[diff])
+
+                return absolute ? Math.abs(result) : result
+            },
+
             /**
              * @param  string  role
              * @return bool
