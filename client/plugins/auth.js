@@ -36,13 +36,6 @@ export default function ({ $axios, $config, store, redirect }, inject) {
 
         store.commit('auth/CLEAR')
 
-        localStorage.loggedOut = true
-
-        if (!isStateful) {
-            Cookies.remove('token')
-            delete $axios.defaults.headers.common.Authorization
-        }
-
         await redirect({ name: 'login' })
 
         store.commit('TOGGLE_OVERLAY')

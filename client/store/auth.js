@@ -27,6 +27,11 @@ export const mutations = {
         if (process.browser) {
             localStorage.loggedOut = true
         }
+
+        if (!this.$config.isStateful) {
+            Cookies.remove('token')
+            delete this.$axios.defaults.headers.common.Authorization
+        }
     },
 
     UPDATE_USER (state, user) {
@@ -42,7 +47,6 @@ export const actions = {
             commit('SET_USER', user)
         } catch (e) {
             commit('CLEAR')
-            Cookies.remove('token')
         }
     },
 }
