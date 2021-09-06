@@ -1,10 +1,10 @@
 <template>
-    <v-form autocomplete="off" @submit.prevent="$auth.login(form)">
+    <v-form autocomplete="off" :disabled="form.busy" @submit.prevent="$auth.login(form)">
         <v-card
             elevation="12"
             max-width="450"
             class="mx-auto my-12">
-            <v-card-title class="my-0">
+            <v-card-title class="pb-2">
                 <v-sheet
                     rounded
                     width="100%"
@@ -23,6 +23,7 @@
                         </div>
                     </v-theme-provider>
                 </v-sheet>
+
                 <v-card-text>
                     <v-alert v-if="form.errors.any()" type="error" dense dismissible>
                         {{ form.errors.first() }}
@@ -41,12 +42,25 @@
                         label="Password"
                         prepend-icon="mdi-lock" />
 
-                    <v-checkbox
-                        v-model="form.remember"
-                        class="pa-0 ma-0"
-                        :true-value="true"
-                        :false-value="null"
-                        label="Remember Me" />
+                    <div class="d-flex justify-space-between">
+                        <v-checkbox
+                            v-model="form.remember"
+                            class="pa-0 ma-0"
+                            :true-value="true"
+                            :false-value="null"
+                            label="Remember Me" />
+
+                        <v-btn
+                            text
+                            rounded
+                            x-small
+                            class="pt-1"
+                            color="primary"
+                            :disabled="form.busy"
+                            @click="dialogReset = true">
+                            Forgot Password?
+                        </v-btn>
+                    </div>
                 </v-card-text>
             </v-card-title>
 
@@ -64,17 +78,10 @@
                     </v-btn>
 
                     <br>
-                    <v-btn
-                        text
-                        rounded
-                        x-small
-                        color="primary"
-                        :disabled="form.busy"
-                        @click="dialogReset = true">
-                        Forgot Password?
-                    </v-btn>
+                    <span>
+                        Don't have an account?
+                    </span>
 
-                    <v-divider vertical color="primary" />
                     <v-btn
                         text
                         rounded
@@ -82,7 +89,7 @@
                         color="primary"
                         :disabled="form.busy"
                         :to="{ name: 'register' }">
-                        Register Now
+                        Create Account
                     </v-btn>
                 </v-col>
             </v-card-actions>
