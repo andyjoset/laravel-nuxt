@@ -11,9 +11,12 @@ class RegisterResponse implements RegisterResponseContract
     {
         if ($request->expectsJson()) {
             if ($request->routeIs('api.register')) {
-                $token = $request->user()->createToken('API Token')->plainTextToken;
+                $token = $request->user()->createToken('API Token');
 
-                return response()->json(['token' => $token], 201);
+                return response()->json([
+                    'token' => $token->plainTextToken,
+                    'expires' => $token->accessToken->expiresIn,
+                ], 201);
             }
 
             return response()->json(new Auth($request->user()), 201);

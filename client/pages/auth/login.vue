@@ -42,7 +42,6 @@
                         prepend-icon="mdi-lock" />
 
                     <v-checkbox
-                        v-if="$config.isStateful"
                         v-model="form.remember"
                         class="pa-0 ma-0"
                         :true-value="true"

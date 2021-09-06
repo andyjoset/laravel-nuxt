@@ -70,7 +70,10 @@ export default function ({ $axios, $config, store, redirect }, inject) {
         } else if (data.token) {
             store.commit('auth/SET_TOKEN', data.token)
 
-            Cookies.set('token', data.token)
+            const expires = new Date()
+            expires.setSeconds(expires.getSeconds() + data.expires)
+
+            Cookies.set('token', data.token, { expires })
 
             await store.dispatch('auth/fetchUser')
         } else {

@@ -38,9 +38,12 @@ class ApiController extends Controller
             $token->delete();
         }
 
-        $token = $user->createToken($tokenName)->plainTextToken;
+        $token = $user->createToken($tokenName);
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'token' => $token->plainTextToken,
+            'expires' => $token->accessToken->expiresIn,
+        ]);
     }
 
     public function logout(Request $request)

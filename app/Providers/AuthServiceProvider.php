@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use Laravel\Sanctum\Sanctum;
+use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -51,6 +54,19 @@ class AuthServiceProvider extends ServiceProvider
             );
 
             return $appUrl . '/a/email/verify?verify_url=' . urlencode($verifyUrl);
+        });
+
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        Sanctum::authenticateAccessTokensUsing(function ($accessToken, $isValid) {
+            if ($accessToken->isLongLived) {
+                $isValid = now()->lt($accessToken->expirationDate);
+            }
+
+            if (!$isValid) {
+                $accessToken->delete();
+            }
+
+            return $isValid;
         });
     }
 }

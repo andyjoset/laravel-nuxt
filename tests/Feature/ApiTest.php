@@ -6,6 +6,8 @@ use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Laravel\Fortify\Features;
+use App\Models\PersonalAccessToken;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiTest extends TestCase
@@ -34,7 +36,7 @@ class ApiTest extends TestCase
             'password_confirmation' => 'password',
         ])
         ->assertCreated()
-        ->assertJsonStructure(['token']);
+        ->assertJsonStructure(['token', 'expires']);
     }
 
     /** @test */
@@ -45,7 +47,30 @@ class ApiTest extends TestCase
             'password' => 'password'
         ])
         ->assertStatus(200)
-        ->assertJsonStructure(['token']);
+        ->assertJsonStructure(['token', 'expires']);
+
+        $token = PersonalAccessToken::findToken($response->json()['token']);
+        $this->assertFalse($token->isLongLived);
+    }
+
+    public function can_login_from_api_using_remember_me()
+    {
+        $response = $this->postJson('/api/login/token', [
+            'email' => 'test@test.test',
+            'password' => 'password',
+            'remember' => true,
+        ])
+        ->assertStatus(200)
+        ->assertJsonStructure(['token', 'expires']);
+
+        $token = PersonalAccessToken::findToken($response->json()['token']);
+        $cacheKey = "tokens.long-lived.{$token->getKey()}";
+
+        $this->assertTrue(Cache::has($cacheKey));
+
+        $cachedToken = Cache::get($cacheKey);
+        $this->assertEquals($cachedToken->getKey(), $token->getKey());
+        $this->assertEquals($cachedToken->name, $token->name);
     }
 
     /** @test */
