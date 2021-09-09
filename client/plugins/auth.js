@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-export default function ({ $axios, $config, store, redirect }, inject) {
+export default function ({ app, $axios, $config, store, redirect }, inject) {
     const auth = {}
     const { isStateful, appUrl, apiUrl } = $config
 
@@ -82,7 +82,8 @@ export default function ({ $axios, $config, store, redirect }, inject) {
 
         localStorage.loggedOut = false
 
-        await redirect({ name: 'dashboard' })
+        await app.router.replace(app.router.currentRoute.query.redirect || { name: 'dashboard' })
+
         store.commit('TOGGLE_OVERLAY')
     }
 

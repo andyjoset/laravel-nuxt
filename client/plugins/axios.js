@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2'
 
-export default function ({ $axios, $config, store, redirect }) {
+export default function ({ app, $axios, $config, store, redirect }) {
     $axios.setBaseURL($config.apiUrl)
 
     if ($config.isStateful) {
@@ -20,7 +20,7 @@ export default function ({ $axios, $config, store, redirect }) {
         if (status === 401) {
             store.commit('auth/CLEAR')
 
-            return redirect({ name: 'login' })
+            return redirect({ name: 'login', query: { redirect: app.router.currentRoute.fullPath } })
         }
 
         if (status === 403) {
