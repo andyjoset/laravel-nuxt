@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Swal from 'sweetalert2'
 
 /**
  * @see https://nuxtjs.org/docs/2.x/directory-structure/plugins#global-mixins
@@ -134,69 +133,6 @@ if (!Vue.__global_mixin__) {
              */
             $canAny (permissions, checkIfIsAdmin = true) {
                 return this.$auth.hasAnyPermission(permissions, checkIfIsAdmin)
-            },
-
-            async $swalConfirm ({
-                url,
-                form,
-                text,
-                title = 'Do you want to continue?',
-                success = 'Done!',
-                method = 'post',
-                config = {}
-            }) {
-                try {
-                    const colors = this.$vuetify.theme.currentTheme
-                    const result = await Swal.fire({
-                        text,
-                        title,
-                        confirmButtonText: 'Ok',
-                        cancelButtonText: 'Cancel',
-                        showCancelButton: Boolean(url),
-                        showLoaderOnConfirm: true,
-                        confirmButtonColor: colors.primary,
-                        cancelButtonColor: colors.error,
-                        denyButtonColor: colors.error,
-                        backdrop: () => !Swal.isLoading(),
-                        allowOutsideClick: () => !Swal.isLoading(),
-                        preConfirm: url
-                            ? async () => {
-                                try {
-                                    return form instanceof this.$vform
-                                        ? await form[method](url)
-                                        : await this.$axios[method](url, form ?? {})
-                                } catch (e) {
-                                    Swal.showValidationMessage(
-                                        form instanceof this.$vform
-                                            ? form.errors.first()
-                                            : e?.response?.data?.message || e
-                                    )
-                                }
-                            }
-                            : undefined,
-                        ...config,
-                    })
-
-                    if (result.isConfirmed) {
-                        if (success) {
-                            Swal.fire({ title: success })
-                        }
-
-                        return result.value
-                    }
-
-                    return result
-                } catch (e) {
-                }
-            },
-
-            $swalDelete (config = {}) {
-                return this.$swalConfirm({
-                    title: 'Are you sure?',
-                    text: 'You won\'t be able to undo this!',
-                    method: 'delete',
-                    ...config
-                })
             },
 
             acronym (str) {

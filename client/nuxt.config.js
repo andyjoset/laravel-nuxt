@@ -42,6 +42,7 @@ export default {
         '~/plugins/vform',
         '~/plugins/auth',
         '~/plugins/helpers',
+        '~/plugins/sweetalert',
         { src: '~/plugins/nuxtClientInit.js', mode: 'client' },
     ],
 

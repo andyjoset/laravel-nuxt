@@ -159,7 +159,7 @@
             },
             async deleteItem (item) {
                 const index = this.items.findIndex(role => role.id === item.id)
-                const { dismiss } = await this.$swalDelete({ url: `/admin/roles/${item.id}` })
+                const { dismiss } = await this.$swal.delete({ url: `/admin/roles/${item.id}` })
 
                 if (!dismiss) {
                     this.$notify('Deleted Successfully!')

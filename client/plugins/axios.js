@@ -1,5 +1,3 @@
-import Swal from 'sweetalert2'
-
 export default function ({ app, $axios, $config, store, redirect }) {
     $axios.setBaseURL($config.apiUrl)
 
@@ -16,6 +14,7 @@ export default function ({ app, $axios, $config, store, redirect }) {
 
     $axios.onError((error) => {
         const status = error.response.status
+        const auth = store.getters['auth/check']
 
         if (status === 401) {
             store.commit('auth/CLEAR')
@@ -24,15 +23,11 @@ export default function ({ app, $axios, $config, store, redirect }) {
         }
 
         if (status === 403) {
-            Swal.fire({
-                icon: 'warning',
+            app.$swal.warning({
                 title: 'Unauthorized!',
                 text: error.response.data.message,
-                reverseButtons: true,
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancelar'
             }).then(() => {
-                redirect({ name: 'dashboard' })
+                redirect(auth ? { name: 'dashboard' } : '/')
             })
         }
 

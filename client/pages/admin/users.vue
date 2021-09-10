@@ -182,7 +182,7 @@
             },
             async deleteItem (item) {
                 const index = this.items.findIndex(user => user.id === item.id)
-                const { dismiss } = await this.$swalDelete({ url: `/admin/users/${item.id}` })
+                const { dismiss } = await this.$swal.delete({ url: `/admin/users/${item.id}` })
 
                 if (!dismiss) {
                     this.$notify('Deleted Successfully!')
@@ -194,7 +194,7 @@
                     ? 'The user won\'t be able to log into the application until the account is activated again.'
                     : 'The user will be able to log into the application before this.'
 
-                const res = await this.$swalConfirm({
+                const res = await this.$swal.confirm({
                     text,
                     method: 'patch',
                     url: `/admin/users/${item.id}/toggle`,
