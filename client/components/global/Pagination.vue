@@ -1,22 +1,31 @@
 <template>
-    <div>
-        <v-pagination
-            v-bind="$attrs"
-            :length="config.last_page"
-            prev-icon="mdi-menu-left"
-            next-icon="mdi-menu-right"
-            :total-visible="7"
-            color="primary"
-            class="pt-2"
-            @input="paginate"
-            v-on="$listeners" />
+    <v-row class="pb-2 mt-0 mb-2 mx-auto">
+        <template v-if="!isXs()">
+            <v-col cols="6" class="my-auto">
+                <span v-if="config.from" class="text-caption text-no-wrap text--secondary">
+                    Showing {{ config.from }} - {{ config.to }} of {{ config.total }} results
+                </span>
+            </v-col>
+        </template>
 
-        <v-row v-if="config.from" justify="center" class="pb-2 mt-1 mb-2">
-            <small class="text-caption">
-                {{ config.from }} - {{ config.to }} of {{ config.total }}
-            </small>
-        </v-row>
-    </div>
+        <v-col xs="12" sm="6">
+            <v-pagination
+                v-bind="$attrs"
+                :length="config.last_page"
+                next-icon="mdi-menu-right"
+                prev-icon="mdi-menu-left"
+                :total-visible="7"
+                color="primary"
+                @input="paginate"
+                v-on="$listeners" />
+
+            <v-row v-if="isXs() && config.from" justify="center" class="mt-1 mb-1">
+                <small class="text-caption text--secondary">
+                    Showing {{ config.from }} - {{ config.to }} of {{ config.total }} results
+                </small>
+            </v-row>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
