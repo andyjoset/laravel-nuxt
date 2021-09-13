@@ -38,6 +38,7 @@ export default {
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
+        '~/plugins/i18n',
         '~/plugins/axios',
         '~/plugins/vform',
         '~/plugins/auth',
@@ -65,6 +66,9 @@ export default {
 
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
+        // https://i18n.nuxtjs.org
+        '@nuxtjs/i18n',
+
         // https://go.nuxtjs.dev/axios
         '@nuxtjs/axios',
 
@@ -116,7 +120,18 @@ export default {
                     primary: '#009E72',
                 },
             }
-        }
+        },
+    },
+
+    i18n: {
+        locales: [
+            { code: 'en', iso: 'en-US', file: 'en.js' },
+            { code: 'es', iso: 'es-ES', file: 'es.js' },
+        ],
+        lazy: true,
+        langDir: '~/lang',
+        strategy: 'no_prefix',
+        defaultLocale: process.env.DEFAULT_LOCALE || 'en',
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
