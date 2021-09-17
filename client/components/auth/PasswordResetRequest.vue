@@ -50,7 +50,7 @@
                     color="primary"
                     :loading="form.busy"
                     @click="submit">
-                    <v-icon class="mr-1">mdi-check-circle</v-icon> {{ $t('btns.save') }}
+                    <v-icon class="mr-1">mdi-check-circle</v-icon> {{ $t('btns.submit') }}
                 </v-btn>
             </v-col>
         </v-card-actions>
