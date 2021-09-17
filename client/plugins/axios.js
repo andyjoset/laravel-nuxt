@@ -10,6 +10,11 @@ export default function ({ app, $axios, $config, store, redirect }) {
         if (token) {
             $axios.setToken(token, 'Bearer')
         }
+
+        const locale = app.i18n.getLocaleCookie()
+        if (locale) {
+            $axios.setHeader('Accept-Language', locale)
+        }
     })
 
     $axios.onError((error) => {
