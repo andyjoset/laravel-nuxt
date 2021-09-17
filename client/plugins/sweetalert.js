@@ -1,11 +1,11 @@
 import SweetAlert from 'sweetalert2'
 
-export default function ({ app, $axios, $vform }, inject) {
+export default function ({ app, $i18n, $axios, $vform }, inject) {
     const swal = {}
 
     const Swal = SweetAlert.mixin({
-        confirmButtonText: 'Ok',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: app.i18n.t('btns.ok'),
+        cancelButtonText: app.i18n.t('btns.cancel'),
         willOpen: (container) => {
             const { currentTheme: colors, isDark } = app.vuetify.framework.theme
             const options = {
@@ -52,8 +52,8 @@ export default function ({ app, $axios, $vform }, inject) {
         url,
         form,
         text,
-        title = 'Do you want to continue?',
-        success = 'Done!',
+        title = app.i18n.t('alerts.question'),
+        success = app.i18n.t('alerts.done'),
         method = 'post',
         options = {}
     }) {
@@ -100,8 +100,8 @@ export default function ({ app, $axios, $vform }, inject) {
 
     swal.delete = function (options = {}) {
         return this.confirm({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to undo this later!',
+            title: app.i18n.t('alerts.sure'),
+            text: app.i18n.t('alerts.will_delete'),
             method: 'delete',
             ...options
         })

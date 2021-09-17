@@ -13,7 +13,7 @@
                     <v-list-item-content>
                         <v-list-item-title>
                             <v-progress-circular indeterminate size="16" width="2" class="mx-1" />
-                            Loading...
+                            {{ $t('loading') }}...
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -55,7 +55,7 @@
 
                 const items = this.$attrs.multiple !== undefined
                     ? []
-                    : [{ [`${itemText}`]: '-- Select --', [`${itemValue}`]: null }]
+                    : [{ [`${itemText}`]: `-- ${this.$t('labels.select')} --`, [`${itemValue}`]: null }]
 
                 return items.concat(this.serverItems.map(item =>
                     ({ [`${itemText}`]: item[itemText], [`${itemValue}`]: item[itemValue] })

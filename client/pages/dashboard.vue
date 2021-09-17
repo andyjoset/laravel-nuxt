@@ -5,9 +5,10 @@
                 src="/v.png"
                 alt="Vuetify.js"
                 class="mb-2">
-            <blockquote v-if="user" class="blockquote">
-                Welcome {{ user.name }} you're logged in!
-            </blockquote>
+            <blockquote
+                v-if="user"
+                v-t="{ path: 'dashboard.welcome', args: [user.name] }"
+                class="blockquote" />
         </v-col>
     </v-row>
 </template>
@@ -16,8 +17,8 @@
     export default {
         middleware: ['auth'],
 
-        head: () => ({
-            title: 'Dashboard'
+        head: vm => ({
+            title: vm.$t('dashboard.title'),
         }),
 
         computed: {

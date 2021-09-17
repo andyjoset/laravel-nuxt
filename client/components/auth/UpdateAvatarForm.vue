@@ -15,7 +15,7 @@
                                 <v-icon>
                                     mdi-account-circle
                                 </v-icon>
-                                Update Avatar
+                                {{ $t('update', [$t('avatar')]) }}
                             </span>
                         </div>
                     </v-theme-provider>
@@ -34,8 +34,8 @@
                             v-model="form.avatar"
                             clearable
                             show-size
-                            label="Avatar"
                             accept="image/*,"
+                            :label="$t('labels.avatar')"
                             :error="form.errors.has('avatar')"
                             :error-messages="form.errors.get('avatar')" />
                     </v-form>
@@ -59,7 +59,7 @@
                         <v-icon size="26">mdi-close-circle</v-icon>
                     </v-btn>
                 </template>
-                <span>Cancel</span>
+                <span v-t="'btns.cancel'" />
             </v-tooltip>
 
             <v-tooltip v-if="showDeleteBtn" top>
@@ -74,7 +74,7 @@
                         <v-icon size="26">mdi-restore</v-icon>
                     </v-btn>
                 </template>
-                <span>Delete Avatar</span>
+                <span v-t="{ path: 'delete', args: [$t('avatar')] }" />
             </v-tooltip>
 
             <v-tooltip v-if="showUploadBtn" top>
@@ -89,7 +89,7 @@
                         <v-icon size="26">mdi-upload</v-icon>
                     </v-btn>
                 </template>
-                <span>Upload Avatar</span>
+                <span v-t="{ path: 'upload', args: [$t('avatar')] }" />
             </v-tooltip>
         </v-card-actions>
     </v-card>
@@ -135,7 +135,7 @@
                     this.$store.commit('auth/UPDATE_USER', data)
 
                     this.$notify(
-                        isUpdate ? 'Avatar updated successfully' : 'Your avatar has been deleted.'
+                        this.$t('alerts.' + (isUpdate ? 'updated' : 'deleted'))
                     )
 
                     this.close()

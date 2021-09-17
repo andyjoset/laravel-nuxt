@@ -8,7 +8,7 @@
                 {{ error.message }}
             </div>
             <v-btn nuxt color="primary" :to="{ name: 'home' }" class="mt-2">
-                <v-icon class="mr-1">mdi-home</v-icon> Home page
+                <v-icon class="mr-1">mdi-home</v-icon> {{ $t('home') }}
             </v-btn>
         </v-col>
     </v-row>
@@ -29,7 +29,7 @@
         }),
 
         head: vm => ({
-            title: vm.error.statusCode === 404 ? '404 Not Found' : 'An error occurred'
+            title: vm.$t(`errors.${vm.error.statusCode}`),
         }),
     }
 </script>

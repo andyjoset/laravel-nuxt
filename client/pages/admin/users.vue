@@ -20,7 +20,9 @@
                             <v-icon class="white--text">mdi-format-list-bulleted</v-icon>
                         </div>
                     </v-sheet>
-                    <div class="text-h5 pl-3" v-text="'Users'" />
+                    <div class="text-h5 pl-3">
+                        {{ $tc('users', 2) }}
+                    </div>
                 </v-card-title>
 
                 <v-toolbar flat>
@@ -35,7 +37,7 @@
                                 <v-icon small>mdi-account-plus</v-icon>
                             </v-btn>
                         </template>
-                        <span>Create New User</span>
+                        <span v-t="{ path: 'create', args: [$tc('users')] }" />
                     </v-tooltip>
 
                     <v-divider class="mx-4" inset vertical />
@@ -44,8 +46,8 @@
                     <v-text-field
                         v-model="search"
                         single-line
-                        label="Search"
                         :disabled="fetching"
+                        :label="$t('search')"
                         append-icon="mdi-magnify"
                         :hide-details="!search"
                         :persistent-hint="Boolean(search)"
@@ -59,7 +61,7 @@
             </template>
 
             <template #[`item.status`]="{ item: user }">
-                <span v-text="user.active ? 'Active' : 'Banned'" />
+                <span v-t="user.active ? 'active' : 'banned'" />
             </template>
 
             <template #[`item.actions`]="{ item: user }">
@@ -73,7 +75,7 @@
                             v-on="on"
                             v-text="'mdi-eye'" />
                     </template>
-                    <span>Show</span>
+                    <span v-t="'btns.show'" />
                 </v-tooltip>
 
                 <v-tooltip v-if="$can('users.update')" top>
@@ -86,7 +88,7 @@
                             v-on="on"
                             v-text="'mdi-pencil'" />
                     </template>
-                    <span>Edit</span>
+                    <span v-t="'btns.edit'" />
                 </v-tooltip>
 
                 <v-tooltip v-if="$can('users.delete')" top>
@@ -99,7 +101,7 @@
                             v-on="on"
                             v-text="'mdi-delete'" />
                     </template>
-                    <span>Delete</span>
+                    <span v-t="'btns.delete'" />
                 </v-tooltip>
 
                 <v-tooltip v-if="$can('users.toggle')" top>
@@ -113,7 +115,7 @@
                             mdi-{{ user.active ? 'cancel' : 'check' }}
                         </v-icon>
                     </template>
-                    <span>{{ user.active ? 'Ban' : 'Activate' }} user account</span>
+                    <span v-t="{ path: 'btns.toggle_user_account', args: { active: user.active } }" />
                 </v-tooltip>
             </template>
 
@@ -159,18 +161,23 @@
             readonly: false,
             fetching: true,
             search: '',
-            headers: [
-                { text: 'ID', value: 'id', sortable: true },
-                { text: 'Name', value: 'name', sortable: true },
-                { text: 'Email', value: 'email', sortable: true },
-                { text: 'Status', value: 'status', sortable: true },
-                { text: 'Actions', value: 'actions', sortable: false },
-            ],
         }),
 
-        head: () => ({
-            title: 'Users',
+        head: vm => ({
+            title: vm.$tc('users', 2),
         }),
+
+        computed: {
+            headers () {
+                return [
+                    { text: this.$t('id'), value: 'id', sortable: true },
+                    { text: this.$tc('name'), value: 'name', sortable: true },
+                    { text: this.$t('email'), value: 'email', sortable: true },
+                    { text: this.$t('status'), value: 'status', sortable: true },
+                    { text: this.$t('actions'), value: 'actions', sortable: false },
+                ]
+            },
+        },
 
         watchQuery: ['page', 's'],
 
@@ -185,14 +192,15 @@
                 const { dismiss } = await this.$swal.delete({ url: `/admin/users/${item.id}` })
 
                 if (!dismiss) {
-                    this.$notify('Deleted Successfully!')
+                    this.$notify(this.$t('alerts.deleted'))
                     this.items.splice(index, 1)
                 }
             },
             async toggleStatus (item) {
-                const text = item.active
-                    ? 'The user won\'t be able to log into the application until the account is activated again.'
-                    : 'The user will be able to log into the application before this.'
+                const text = this.$t(item.active
+                    ? 'alerts.ban_user'
+                    : 'alerts.unban_user'
+                )
 
                 const res = await this.$swal.confirm({
                     text,

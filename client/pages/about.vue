@@ -12,8 +12,8 @@
 
 <script>
     export default {
-        head: () => ({
-            title: 'About Us',
+        head: vm => ({
+            title: vm.$t('about'),
         }),
     }
 </script>

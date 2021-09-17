@@ -18,7 +18,7 @@
                                 <v-icon>
                                     mdi-lock-open
                                 </v-icon>
-                                Reset Password
+                                {{ $t('reset_password') }}
                             </span>
                         </div>
                     </v-theme-provider>
@@ -32,20 +32,20 @@
                         autofocus
                         class="my-4"
                         type="email"
-                        label="Email"
-                        prepend-icon="mdi-email" />
+                        prepend-icon="mdi-email"
+                        :label="$t('labels.email')" />
 
                     <v-text-field
                         v-model="form.password"
                         type="password"
-                        label="Contraseña"
-                        prepend-icon="mdi-lock" />
+                        prepend-icon="mdi-lock"
+                        :label="$t('labels.password')" />
 
                     <v-text-field
                         v-model="form.password_confirmation"
                         type="password"
-                        label="Contraseña"
-                        prepend-icon="mdi-lock" />
+                        prepend-icon="mdi-lock"
+                        :label="$t('labels.password_confirmation')" />
                 </v-card-text>
             </v-card-title>
 
@@ -59,7 +59,7 @@
                         block
                         color="primary"
                         :loading="form.busy">
-                        Reset
+                        {{ $t('reset') }}
                     </v-btn>
                 </v-col>
             </v-card-actions>
@@ -81,8 +81,8 @@
             })
         }),
 
-        head: () => ({
-            title: 'Reset Password'
+        head: vm => ({
+            title: vm.$t('reset_password'),
         }),
 
         created () {

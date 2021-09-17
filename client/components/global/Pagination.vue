@@ -2,9 +2,10 @@
     <v-row class="pb-2 mt-0 mb-2 mx-auto">
         <template v-if="!isXs()">
             <v-col cols="6" class="my-auto">
-                <span v-if="config.from" class="text-caption text-no-wrap text--secondary">
-                    Showing {{ config.from }} - {{ config.to }} of {{ config.total }} results
-                </span>
+                <span
+                    v-if="config.from"
+                    class="text-caption text-no-wrap text--secondary"
+                    v-t="{ path: '$vuetify.dataFooter.pageText', args: [config.from, config.to, config.total] }" />
             </v-col>
         </template>
 
@@ -20,9 +21,9 @@
                 v-on="$listeners" />
 
             <v-row v-if="isXs() && config.from" justify="center" class="mt-1 mb-1">
-                <small class="text-caption text--secondary">
-                    Showing {{ config.from }} - {{ config.to }} of {{ config.total }} results
-                </small>
+                <small
+                    class="text-caption text--secondary"
+                    v-t="{ path: '$vuetify.dataFooter.pageText', args: [config.from, config.to, config.total] }" />
             </v-row>
         </v-col>
     </v-row>

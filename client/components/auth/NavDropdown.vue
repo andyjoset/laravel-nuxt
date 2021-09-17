@@ -26,12 +26,12 @@
 
                     <v-divider class="my-1" />
                     <v-btn depressed rounded text :to="{ name: 'profile' }">
-                        <v-icon small>mdi-account</v-icon> Profile
+                        <v-icon small>mdi-account</v-icon> {{ $t('profile.title') }}
                     </v-btn>
 
                     <v-divider class="mt-2 mb-1" />
                     <v-btn depressed rounded text class="mb-0" @click="$auth.logout()">
-                        <v-icon small>mdi-logout</v-icon> Logout
+                        <v-icon small>mdi-logout</v-icon> {{ $t('logout') }}
                     </v-btn>
                 </div>
             </v-list-item-content>

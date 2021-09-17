@@ -14,7 +14,7 @@
                             <v-icon>
                                 mdi-lock-open
                             </v-icon>
-                            Request Password Reset
+                            {{ $t('request_password_reset') }}
                         </span>
                     </div>
                 </v-theme-provider>
@@ -31,8 +31,8 @@
                     autofocus
                     class="my-4"
                     type="email"
-                    label="Email"
-                    prepend-icon="mdi-email" />
+                    prepend-icon="mdi-email"
+                    :label="$t('labels.email')" />
             </v-form>
         </v-card-text>
 
@@ -41,16 +41,16 @@
         <v-card-actions>
             <v-col cols="12" class="text-right">
                 <v-btn
-                    color="red darken-1"
+                    color="error"
                     :disabled="form.busy"
-                    @click="close">
-                    Close
+                    @click="close()">
+                    <v-icon class="mr-1">mdi-close-circle</v-icon> {{ $t('btns.close') }}
                 </v-btn>
                 <v-btn
                     color="primary"
                     :loading="form.busy"
                     @click="submit">
-                    Submit
+                    <v-icon class="mr-1">mdi-check-circle</v-icon> {{ $t('btns.save') }}
                 </v-btn>
             </v-col>
         </v-card-actions>

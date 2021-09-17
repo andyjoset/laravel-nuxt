@@ -19,8 +19,8 @@
             VuetifyLogo
         },
 
-        head: () => ({
-            title: 'Home',
+        head: vm => ({
+            title: vm.$t('home'),
         }),
     }
 </script>

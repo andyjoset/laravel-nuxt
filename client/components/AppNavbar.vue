@@ -104,43 +104,49 @@
         data: () => ({
             drawer: true,
             miniVariant: false,
-            items: [
-                {
-                    icon: 'mdi-view-dashboard',
-                    title: 'Dashboard',
-                    route: { name: 'dashboard' },
-                },
-                {
-                    icon: 'mdi-account-group',
-                    title: 'Users',
-                    route: { name: 'admin.users' },
-                    permission: ['users.index'],
-                },
-                {
-                    icon: 'mdi-security',
-                    title: 'Roles & Permissions',
-                    route: { name: 'admin.roles' },
-                    permission: ['roles.index'],
-                },
-            ],
-            links: [
-                {
-                    text: 'Login',
-                    icon: 'mdi-fingerprint',
-                    route: { name: 'login' },
-                },
-                {
-                    text: 'Register',
-                    icon: 'mdi-account-multiple-plus',
-                    route: { name: 'register' },
-                },
-            ],
         }),
 
-        computed: mapGetters({
-            auth: 'auth/check',
-            user: 'auth/user',
-        }),
+        computed: {
+            items () {
+                return [
+                    {
+                        icon: 'mdi-view-dashboard',
+                        title: this.$t('dashboard.title'),
+                        route: { name: 'dashboard' },
+                    },
+                    {
+                        icon: 'mdi-account-group',
+                        title: this.$tc('users', 2),
+                        route: { name: 'admin.users' },
+                        permission: ['users.index'],
+                    },
+                    {
+                        icon: 'mdi-security',
+                        title: this.$t('roles_and_permissions'),
+                        route: { name: 'admin.roles' },
+                        permission: ['roles.index'],
+                    },
+                ]
+            },
+            links () {
+                return [
+                    {
+                        text: this.$t('login'),
+                        icon: 'mdi-fingerprint',
+                        route: { name: 'login' },
+                    },
+                    {
+                        text: this.$t('register'),
+                        icon: 'mdi-account-multiple-plus',
+                        route: { name: 'register' },
+                    },
+                ]
+            },
+            ...mapGetters({
+                auth: 'auth/check',
+                user: 'auth/user',
+            }),
+        },
 
         created () {
             if (process.browser) {

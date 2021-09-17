@@ -1,6 +1,6 @@
 <template>
     <v-alert :value="isInvalid" type="error" dismissible>
-        The verification link is invalid.
+        {{ $t('invalid_email_verification_link') }}
     </v-alert>
 </template>
 
@@ -20,8 +20,8 @@
             isInvalid: false,
         }),
 
-        head: () => ({
-            title: 'Verify Email',
+        head: vm => ({
+            title: vm.$t('verify_email'),
         }),
 
         created () {

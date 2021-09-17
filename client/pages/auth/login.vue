@@ -18,7 +18,7 @@
                                 <v-icon>
                                     mdi-fingerprint
                                 </v-icon>
-                                Sign In
+                                {{ $t('sign_in') }}
                             </span>
                         </div>
                     </v-theme-provider>
@@ -32,15 +32,15 @@
                         v-model="form.email"
                         autofocus
                         type="email"
-                        label="Email"
+                        :label="$t('labels.email')"
                         prepend-icon="mdi-email" />
 
                     <v-text-field
                         v-model="form.password"
                         class="mb-4"
                         type="password"
-                        label="Password"
-                        prepend-icon="mdi-lock" />
+                        prepend-icon="mdi-lock"
+                        :label="$t('labels.password')" />
 
                     <div class="d-flex justify-space-between">
                         <v-checkbox
@@ -48,18 +48,17 @@
                             class="pa-0 ma-0"
                             :true-value="true"
                             :false-value="null"
-                            label="Remember Me" />
+                            :label="$t('labels.remember')" />
 
                         <v-btn
+                            v-t="'forgot_password'"
                             text
                             rounded
                             x-small
                             class="pt-1"
                             color="primary"
                             :disabled="form.busy"
-                            @click="dialogReset = true">
-                            Forgot Password?
-                        </v-btn>
+                            @click="dialogReset = true" />
                     </div>
                 </v-card-text>
             </v-card-title>
@@ -74,23 +73,23 @@
                         block
                         color="primary"
                         :loading="form.busy">
-                        Submit
+                        {{ $t('btns.submit') }}
                     </v-btn>
 
                     <br>
-                    <span>
-                        Don't have an account?
-                    </span>
-
-                    <v-btn
-                        text
-                        rounded
-                        x-small
-                        color="primary"
-                        :disabled="form.busy"
-                        :to="{ name: 'register' }">
-                        Create Account
-                    </v-btn>
+                    <i18n path="no_account.text">
+                        <template #action>
+                            <v-btn
+                                text
+                                rounded
+                                x-small
+                                color="primary"
+                                :disabled="form.busy"
+                                :to="{ name: 'register' }">
+                                {{ $t('no_account.action_text') }}
+                            </v-btn>
+                        </template>
+                    </i18n>
                 </v-col>
             </v-card-actions>
         </v-card>
@@ -120,8 +119,8 @@
             dialogReset: null,
         }),
 
-        head: () => ({
-            title: 'Login',
+        head: vm => ({
+            title: vm.$t('login'),
         }),
     }
 </script>

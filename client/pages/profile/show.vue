@@ -26,7 +26,7 @@
                                         <v-icon size="100%">mdi-pencil</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>Change avatar</span>
+                                <span v-t="{ path: 'change', args: [$t('avatar')] }" />
                             </v-tooltip>
                         </v-list-item-avatar>
 
@@ -59,7 +59,9 @@
                                 mdi-lock
                             </v-icon>
                         </v-avatar>
-                        Change current password
+
+                        <span v-t="'change_password'" />
+
                         <template #actions>
                             <v-btn
                                 icon
@@ -109,8 +111,8 @@
             updatePasswordDialog: false,
         }),
 
-        head: () => ({
-            title: 'My Profile'
+        head: vm => ({
+            title: vm.$t('profile.me'),
         }),
 
         computed: {
@@ -123,7 +125,7 @@
             if (process.browser && parseInt(this.$route.query.verified) === 1) {
                 this.$router.replace({ name: this.$route.name })
 
-                this.$nextTick(() => this.$notify({ message: 'Your email has been verified!', timeout: 0 }))
+                this.$nextTick(() => this.$notify({ message: this.$t('email_verified'), timeout: 0 }))
             }
         },
     }

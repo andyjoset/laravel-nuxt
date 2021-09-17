@@ -24,7 +24,7 @@ export default function ({ app, $axios, $config, store, redirect }) {
 
         if (status === 403) {
             app.$swal.warning({
-                title: 'Unauthorized!',
+                title: app.i18n.t('alerts.unauthorized'),
                 text: error.response.data.message,
             }).then(() => {
                 redirect(auth ? { name: 'dashboard' } : '/')

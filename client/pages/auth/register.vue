@@ -18,7 +18,7 @@
                                 <v-icon>
                                     mdi-card-account-details
                                 </v-icon>
-                                Register
+                                {{ $t('register') }}
                             </span>
                         </div>
                     </v-theme-provider>
@@ -31,27 +31,27 @@
                         v-model="form.name"
                         autofocus
                         class="my-4"
-                        label="Name"
-                        prepend-icon="mdi-face" />
+                        prepend-icon="mdi-face"
+                        :label="$tc('labels.name')" />
 
                     <v-text-field
                         v-model="form.email"
                         class="my-4"
                         type="email"
-                        label="Email"
-                        prepend-icon="mdi-email" />
+                        prepend-icon="mdi-email"
+                        :label="$t('labels.email')" />
 
                     <v-text-field
                         v-model="form.password"
                         type="password"
-                        label="Password"
-                        prepend-icon="mdi-lock" />
+                        prepend-icon="mdi-lock"
+                        :label="$t('labels.password')" />
 
                     <v-text-field
                         v-model="form.password_confirmation"
                         type="password"
-                        label="Password Confirmation"
-                        prepend-icon="mdi-lock" />
+                        prepend-icon="mdi-lock"
+                        :label="$t('labels.password_confirmation')" />
                 </v-card-text>
             </v-card-title>
 
@@ -65,7 +65,7 @@
                         block
                         color="primary"
                         :loading="form.busy">
-                        Submit
+                        {{ $t('btns.submit') }}
                     </v-btn>
                     <br>
                     <v-btn
@@ -75,7 +75,7 @@
                         color="primary"
                         :disabled="form.busy"
                         :to="{ name: 'login' }">
-                        Login
+                        {{ $t('login') }}
                     </v-btn>
                 </v-col>
             </v-card-actions>
@@ -98,8 +98,8 @@
             })
         }),
 
-        head: () => ({
-            title: 'Register',
+        head: vm => ({
+            title: vm.$t('register'),
         }),
     }
 </script>

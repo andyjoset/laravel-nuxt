@@ -20,7 +20,9 @@
                             <v-icon class="white--text">mdi-format-list-bulleted</v-icon>
                         </div>
                     </v-sheet>
-                    <div class="text-h5 pl-3" v-text="'Roles'" />
+                    <div class="text-h5 pl-3">
+                        {{ $tc('roles', 2) }}
+                    </div>
                 </v-card-title>
 
                 <v-toolbar flat>
@@ -30,7 +32,8 @@
                                 <v-icon small>mdi-plus-box-multiple</v-icon>
                             </v-btn>
                         </template>
-                        <span>Create New Role</span>
+
+                        <span v-t="{ path: 'create', args: [$tc('roles')] }" />
                     </v-tooltip>
 
                     <v-divider class="mx-4" inset vertical />
@@ -39,8 +42,8 @@
                     <v-text-field
                         v-model="search"
                         single-line
-                        label="Search"
                         :disabled="fetching"
+                        :label="$t('search')"
                         append-icon="mdi-magnify"
                         :hide-details="!search"
                         :persistent-hint="Boolean(search)"
@@ -67,7 +70,7 @@
                             v-on="on"
                             v-text="'mdi-eye'" />
                     </template>
-                    <span>Show</span>
+                    <span v-t="'btns.show'" />
                 </v-tooltip>
 
                 <v-tooltip v-if="role.name !== 'Super Admin' && $can('roles.update')" top>
@@ -79,7 +82,7 @@
                             v-on="on"
                             v-text="'mdi-pencil'" />
                     </template>
-                    <span>Edit</span>
+                    <span v-t="'btns.edit'" />
                 </v-tooltip>
 
                 <v-tooltip v-if="role.name !== 'Super Admin' && $can('roles.delete')" top>
@@ -91,7 +94,7 @@
                             v-on="on"
                             v-text="'mdi-delete'" />
                     </template>
-                    <span>Delete</span>
+                    <span v-t="'btns.delete'" />
                 </v-tooltip>
             </template>
 
@@ -137,17 +140,22 @@
             readonly: false,
             fetching: true,
             search: '',
-            headers: [
-                { text: 'ID', value: 'id', sortable: true },
-                { text: 'Name', value: 'name', sortable: true },
-                { text: 'Permissions', value: 'permissions', sortable: true },
-                { text: 'Actions', value: 'actions', sortable: false },
-            ],
         }),
 
-        head: () => ({
-            title: 'Roles',
+        head: vm => ({
+            title: vm.$tc('roles', 2),
         }),
+
+        computed: {
+            headers () {
+                return [
+                    { text: this.$t('id'), value: 'id', sortable: true },
+                    { text: this.$tc('name'), value: 'name', sortable: true },
+                    { text: this.$tc('permissions', 2), value: 'permissions', sortable: true },
+                    { text: this.$t('actions'), value: 'actions', sortable: false },
+                ]
+            },
+        },
 
         watchQuery: ['page', 's'],
 
@@ -162,7 +170,7 @@
                 const { dismiss } = await this.$swal.delete({ url: `/admin/roles/${item.id}` })
 
                 if (!dismiss) {
-                    this.$notify('Deleted Successfully!')
+                    this.$notify(this.$t('alerts.deleted'))
                     this.items.splice(index, 1)
                 }
             },

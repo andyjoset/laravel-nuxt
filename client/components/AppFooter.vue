@@ -33,11 +33,13 @@
             DarkMode,
         },
 
-        data: () => ({
-            links: [
-                { text: 'Contact', icon: 'mdi-phone', route: 'contact' },
-                { text: 'About Us', icon: 'mdi-information-outline', route: 'about' },
-            ],
-        }),
+        computed: {
+            links () {
+                return [
+                    { text: this.$t('contact'), icon: 'mdi-phone', route: 'contact' },
+                    { text: this.$t('about'), icon: 'mdi-information-outline', route: 'about' },
+                ]
+            },
+        },
     }
 </script>

@@ -12,8 +12,8 @@
 
 <script>
     export default {
-        head: () => ({
-            title: 'Contact',
+        head: vm => ({
+            title: vm.$t('contact'),
         }),
     }
 </script>

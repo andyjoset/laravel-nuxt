@@ -25,8 +25,8 @@
                     dense
                     autofocus
                     class="my-4"
-                    label="Name"
                     prepend-icon="mdi-face"
+                    :label="$tc('labels.name')"
                     :error="form.errors.has('name')"
                     :error-messages="form.errors.get('name')" />
 
@@ -35,8 +35,8 @@
                     dense
                     class="mb-4"
                     type="email"
-                    label="Email"
                     prepend-icon="mdi-email"
+                    :label="$t('labels.email')"
                     :error="form.errors.has('email')"
                     :error-messages="form.errors.get('email')" />
 
@@ -44,11 +44,11 @@
                     v-if="$can('users.assign-role')"
                     v-model="form.role_id"
                     dense
-                    label="Role"
                     item-text="name"
                     item-value="id"
                     server-action="/roles"
                     prepend-icon="mdi-shield"
+                    :label="$t('labels.role')"
                     :error="form.errors.has('role_id')"
                     :error-messages="form.errors.get('role_id')" />
             </v-card-text>
@@ -59,14 +59,14 @@
                     color="error"
                     :disabled="form.busy"
                     @click="close()">
-                    <v-icon class="mr-1">mdi-close-circle</v-icon> Cancel
+                    <v-icon class="mr-1">mdi-close-circle</v-icon> {{ $t('btns.cancel') }}
                 </v-btn>
                 <v-btn
                     v-if="!readonly"
                     type="submit"
                     color="primary"
                     :loading="form.busy">
-                    <v-icon class="mr-1">mdi-check-circle</v-icon> Save
+                    <v-icon class="mr-1">mdi-check-circle</v-icon> {{ $t('btns.save') }}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -99,7 +99,11 @@
 
         computed: {
             title () {
-                return this.user ? 'Edit User Info' : 'Create New User'
+                if (this.readonly) {
+                    return this.$t('user_info')
+                }
+
+                return this.$t(this.user ? 'edit' : 'create', [this.$tc('users')])
             },
             url () {
                 return this.user ? `/admin/users/${this.user.id}` : '/admin/users'
@@ -128,7 +132,7 @@
                     const { data } = await this.form[this.method](this.url)
 
                     this.$notify(
-                        this.user ? 'User created successfully!' : 'User updated successfully!'
+                        this.$t('alerts.' + (this.user ? 'updated' : 'created'))
                     )
 
                     this.close(data)

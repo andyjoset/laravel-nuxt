@@ -5,9 +5,9 @@
             dense
             autofocus
             class="my-4"
-            label="Name"
             :disabled="form.busy"
             prepend-icon="mdi-face"
+            :label="$tc('labels.name')"
             :error="form.errors.has('name')"
             :error-messages="form.errors.get('name')" />
 
@@ -16,9 +16,9 @@
             v-model="form.email"
             dense
             type="email"
-            label="Email"
             prepend-icon="mdi-email"
             :disabled="form.busy"
+            :label="$t('labels.email')"
             :error="form.errors.has('email')"
             :error-messages="form.errors.get('email')" />
 
@@ -73,7 +73,7 @@
                 try {
                     await this.$auth.updateProfileInformation(this.form)
 
-                    this.$notify('Updated successfully!')
+                    this.$notify(this.$t('alerts.updated'))
 
                     this.close()
                 } catch (e) {

@@ -25,14 +25,16 @@
                     dense
                     autofocus
                     class="my-4"
-                    label="Name"
                     prepend-icon="mdi-face"
+                    :label="$tc('labels.name')"
                     :error="form.errors.has('name')"
                     :error-messages="form.errors.get('name')" />
 
                 <v-row v-if="showPermissions">
                     <v-col cols="12" class="pb-0 mb-0">
-                        <strong :class="form.errors.has('permissions') ? 'red--text' : ''" v-text="'Permissions:'" />
+                        <strong :class="form.errors.has('permissions') ? 'red--text' : ''">
+                            {{ $tc('permissions', 2) }}:
+                        </strong>
                         <p class="red--text" v-text="form.errors.get('permissions')" />
                     </v-col>
 
@@ -61,14 +63,14 @@
                     color="error"
                     :disabled="form.busy"
                     @click="close()">
-                    <v-icon class="mr-1">mdi-close-circle</v-icon> Cancel
+                    <v-icon class="mr-1">mdi-close-circle</v-icon> {{ $t('btns.cancel') }}
                 </v-btn>
                 <v-btn
                     v-if="!readonly"
                     type="submit"
                     color="primary"
                     :loading="form.busy">
-                    <v-icon class="mr-1">mdi-check-circle</v-icon> Save
+                    <v-icon class="mr-1">mdi-check-circle</v-icon> {{ $t('btns.save') }}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -105,7 +107,11 @@
 
         computed: {
             title () {
-                return this.role ? 'Edit Role' : 'Create New Role'
+                if (this.readonly) {
+                    return this.$t('role_info')
+                }
+
+                return this.$t(this.role ? 'edit' : 'create', [this.$tc('roles')])
             },
             url () {
                 return this.role ? `/admin/roles/${this.role.id}` : '/admin/roles'
@@ -162,7 +168,7 @@
                     const { data } = await this.form[this.method](this.url)
 
                     this.$notify(
-                        this.role ? 'Role created successfully!' : 'Role updated successfully!'
+                        this.$t('alerts.' + (this.role ? 'updated' : 'created'))
                     )
 
                     this.close(data)

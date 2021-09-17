@@ -1,10 +1,12 @@
 <template>
     <v-alert v-if="isValid" v-bind="$attrs" type="info">
-        Email verification required, if you didn't receive an email yet, click
-        <v-btn text @click="requestEmailVerificationNotification">
-            here
-        </v-btn>
-        to request one.
+        <i18n path="email_verification_required.text">
+            <template #action>
+                <v-btn text @click="requestEmailVerificationNotification">
+                    {{ $t('email_verification_required.action_text') }}
+                </v-btn>
+            </template>
+        </i18n>
 
         <v-overlay absolute :value="pending">
             <v-progress-circular indeterminate size="32" color="primary" />
@@ -47,9 +49,10 @@
                 if (!this.isValid) {
                     return this.$notify({
                         color: 'error',
-                        message: this.user.email_verified_at
-                            ? 'Your email is already verified!'
-                            : 'We just sent you a verification link, please use it or try requesting another later!',
+                        message: this.$t(this.user.email_verified_at
+                            ? 'email_already_verified'
+                            : 'verification_link_recently_sent'
+                        ),
                     })
                 }
 
@@ -60,7 +63,7 @@
 
                     this.lastRequest = localStorage.last_email_veritificaion_notification = new Date()
 
-                    this.$notify('We have e-mailed your verification link!')
+                    this.$notify(this.$t('verification_link_sent'))
                 } catch (e) {}
 
                 this.pending = false
