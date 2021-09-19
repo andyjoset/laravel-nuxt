@@ -10,25 +10,25 @@
     "lint:fix": "eslint --fix --ext .js,.vue client/"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.13.1",
+    "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/i18n": "^7.0.3",
     "@nuxtjs/pwa": "^3.3.5",
-    "core-js": "^3.9.1",
-    "js-cookie": "^2.2.1",
-    "nuxt": "^2.15.7",
-    "sweetalert2": "^11.0.18",
-    "vform": "^2.1.0"
+    "core-js": "^3.17.3",
+    "js-cookie": "^3.0.1",
+    "nuxt": "^2.15.8",
+    "sweetalert2": "^11.1.5",
+    "vform": "^2.1.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.14.5",
-    "@mdi/font": "^5.9.55",
-    "@mdi/js": "^5.9.55",
-    "@nuxtjs/eslint-config": "^6.0.0",
+    "@babel/eslint-parser": "^7.15.4",
+    "@mdi/font": "^6.1.95",
+    "@mdi/js": "^6.1.95",
+    "@nuxtjs/eslint-config": "^6.0.1",
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/router": "^1.6.1",
     "@nuxtjs/vuetify": "^1.12.1",
-    "eslint": "^7.29.0",
+    "eslint": "^7.32.0",
     "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-vue": "^7.11.1"
+    "eslint-plugin-vue": "^7.17.0"
   }
 }
