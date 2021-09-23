@@ -1,4 +1,4 @@
-import en from 'vuetify/lib/locale/en'
+import vuetify from 'vuetify/es5/locale/en'
 
 export default {
     home: 'Home',
@@ -115,7 +115,7 @@ export default {
 
     // Vuetify overrides
     $vuetify: {
-        ...en,
+        ...vuetify,
         dataFooter: {
             pageText: 'Showing {0}-{1} of {2} results',
         },

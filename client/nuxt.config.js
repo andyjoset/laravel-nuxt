@@ -9,17 +9,28 @@ export default {
     srcDir: __dirname,
 
     // Global page headers: https://go.nuxtjs.dev/config-head
-    head: {
-        titleTemplate: '%s - ' + process.env.APP_NAME,
-        title: process.env.APP_NAME,
-        meta: [
-            { charset: 'utf-8' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { hid: 'description', name: 'description', content: '' }
-        ],
-        link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-        ]
+    head () {
+        const config = this.$config ?? this.publicRuntimeConfig
+        const attrs = {
+            title: config.appName,
+            titleTemplate: '%s - ' + config.appName,
+            meta: [
+                { charset: 'utf-8' },
+                { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+                { hid: 'description', name: 'description', content: '' },
+            ],
+            link: [
+                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+            ],
+        }
+
+        /** @see https://i18n.nuxtjs.org/seo */
+        if (this.$nuxtI18nHead) {
+            const merge = require('deepmerge')
+            return merge(attrs, this.$nuxtI18nHead({ addSeoAttributes: true }))
+        }
+
+        return attrs
     },
 
     publicRuntimeConfig: {
@@ -38,6 +49,7 @@ export default {
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
+        { src: '~/plugins/req-cookies', mode: 'server' },
         '~/plugins/i18n',
         '~/plugins/axios',
         '~/plugins/vform',

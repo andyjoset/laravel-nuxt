@@ -31,10 +31,13 @@ export const mutations = {
 }
 
 export const actions = {
-    nuxtServerInit ({ commit }, { req }) {
+    nuxtServerInit ({ commit }, { $reqCookies }) {
+        if ($reqCookies.has('token')) {
+            commit('auth/SET_TOKEN', $reqCookies.get('token'))
+        }
     },
 
-    nuxtClientInit ({ commit }, { $config }) {
+    nuxtClientInit ({ commit, getters }, { $config }) {
         if (!$config.isStateful) {
             const token = Cookies.get('token')
 

@@ -62,16 +62,22 @@
             <template v-if="auth">
                 <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
                 <v-btn
-                    v-if="drawer"
+                    v-if="drawer && !isXs()"
                     icon
                     @click.stop="miniVariant = !miniVariant">
                     <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
                 </v-btn>
             </template>
 
-            <v-app-bar-title>
-                <v-btn plain :to="{ name: 'home' }" v-text="isXs() ? acronym($config.appName) : $config.appName" />
-            </v-app-bar-title>
+            <client-only>
+                <v-app-bar-title class="pl-0">
+                    <v-btn
+                        plain
+                        :to="{ name: 'home' }"
+                        class="pa-0 justify-start"
+                        v-text="isXs() ? acronym($config.appName) : $config.appName" />
+                </v-app-bar-title>
+            </client-only>
             <v-spacer />
 
             <template v-if="!auth">
@@ -148,13 +154,13 @@
             }),
         },
 
-        created () {
-            if (process.browser) {
+        mounted () {
+            this.$nextTick(() => {
                 const navState = this.getNavStateFromLocalStorate()
 
                 this.drawer = Boolean(navState.drawer)
                 this.miniVariant = Boolean(navState.miniVariant)
-            }
+            })
         },
 
         methods: {

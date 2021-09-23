@@ -15,6 +15,10 @@ export default function ({ app, $axios, $config, store, redirect }) {
         if (locale) {
             $axios.setHeader('Accept-Language', locale)
         }
+
+        if (process.server && $config.isStateful && !config.headers.common.referer) {
+            $axios.setHeader('Referer', process.env.SPA_URL)
+        }
     })
 
     $axios.onError((error) => {
