@@ -18,8 +18,15 @@ class RoleController extends Controller
     {
         $this->authorize('index', Role::class);
 
+        $search = $request->input('s');
+
         return RoleResource::collection(
-            Role::with('permissions:id,module,description')->orderBy('name')->paginate(10)
+            Role::with('permissions:id,module,description')
+                ->when(!empty($search), function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                })
+                ->orderBy('name')
+                ->paginate(10)
         );
     }
 
