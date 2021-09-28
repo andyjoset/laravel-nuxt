@@ -21,8 +21,22 @@ class UserController extends Controller
     {
         $this->authorize('index', User::class);
 
+        $search = $request->input('s');
+
         return UserResource::collection(
-            User::with('roles:id,name')->orderByDesc('created_at')->paginate(10)
+            User::with('roles:id,name')
+                ->orderByDesc('created_at')
+                ->when(!empty($search), function ($query) use ($search) {
+                    $query->where(
+                        fn ($q) =>
+                        $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                    );
+                })
+                ->when($request->filled('status'), function ($query) use ($request) {
+                    $query->where('active', (bool) json_decode($request->input('status')));
+                })
+                ->paginate(10)
         );
     }
 
