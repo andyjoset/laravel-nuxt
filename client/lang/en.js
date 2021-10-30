@@ -42,6 +42,10 @@ export default {
     roles_and_permissions: 'Roles & Permissions',
 
     search: 'Search',
+    search_hint: 'Press enter for a deeper search',
+
+    add: 'Add {0}',
+    show: 'Show {0}',
     create: 'Create {0}',
     edit: 'Edit {0}',
     update: 'Update {0}',
@@ -57,6 +61,10 @@ export default {
     reset: 'Reset',
     active: 'Active',
     banned: 'Banned',
+    item: 'Item',
+    filters: 'filters',
+    filter_by: 'Filter By:',
+    user_status: 'User Account Status',
 
     dashboard: {
         title: 'Dashboard',
@@ -101,6 +109,7 @@ export default {
     },
 
     labels: {
+        all: 'All',
         name: 'Name | Names',
         email: 'Email',
         role: 'Role',

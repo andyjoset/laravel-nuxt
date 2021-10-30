@@ -165,6 +165,18 @@ if (!Vue.__global_mixin__) {
                     .replace(/--+/g, separator)
             },
 
+            async $goTo (route, eventName = 'navigating', eventData = {}) {
+                this.$emit(eventName, { ...eventData, status: 'start' })
+
+                try {
+                    await this.$router.push(route)
+
+                    this.$emit(eventName, { ...eventData, status: 'success' })
+                } catch (e) {
+                    this.$emit(eventName, { ...eventData, error: e, status: 'failed' })
+                }
+            },
+
             routeIs (route) {
                 return this.$route.name === (typeof route === 'object' ? route.name : route)
             },

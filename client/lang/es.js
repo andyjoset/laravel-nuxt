@@ -42,6 +42,10 @@ export default {
     roles_and_permissions: 'Roles & Permisos',
 
     search: 'Buscar',
+    search_hint: 'Presiona enter para realizar una busqueda más completa',
+
+    add: 'Añadir {0}',
+    show: 'Mostrar {0}',
     create: 'Crear {0}',
     edit: 'Editar {0}',
     update: 'Actualizar {0}',
@@ -57,6 +61,10 @@ export default {
     reset: 'Resetear',
     active: 'Activo',
     banned: 'Bloqueado',
+    item: 'Item',
+    filters: 'filtros',
+    filter_by: 'Filrar Por:',
+    user_status: 'Estado',
 
     dashboard: {
         title: 'Dashboard',
@@ -101,6 +109,7 @@ export default {
     },
 
     labels: {
+        all: 'Todos',
         name: 'Nombre | Nombres',
         email: 'Email',
         role: 'Rol',

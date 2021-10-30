@@ -1,7 +1,7 @@
 <template>
     <v-row class="pb-2 mt-0 mb-2 mx-auto">
         <template v-if="!isXs()">
-            <v-col cols="6" class="my-auto">
+            <v-col cols="6" class="my-auto text-left">
                 <span
                     v-if="config.from"
                     v-t="{ path: '$vuetify.dataFooter.pageText', args: [config.from, config.to, config.total] }"
@@ -40,25 +40,27 @@
                 type: Object,
                 default: () => ({}),
             },
+            useRouter: {
+                type: Boolean,
+                default: true,
+            },
         },
 
         methods: {
             async paginate (page) {
-                this.$emit('paginating', { status: 'start' })
+                page = isNaN(page) ? 1 : page
 
-                const query = { ...this.$route.query, page: isNaN(page) ? undefined : page }
+                if (!this.useRouter) {
+                    return
+                }
+
+                const query = { ...this.$route.query, page }
 
                 for (const key in this.appendQuery) {
                     query[key] = this.appendQuery[key] || undefined
                 }
 
-                try {
-                    await this.$router.push({ name: this.$route.name, query })
-
-                    this.$emit('paginating', { status: 'success' })
-                } catch (e) {
-                    this.$emit('paginating', { status: 'failed' })
-                }
+                await this.$goTo({ name: this.$route.name, query }, 'paginating')
             },
         },
     }
