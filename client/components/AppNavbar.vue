@@ -4,9 +4,7 @@
             v-if="auth"
             v-model="drawer"
             :mini-variant="miniVariant"
-            height="100%"
             clipped
-            fixed
             app
             @transitionend="updateLocalStorate">
             <v-list dense nav>
