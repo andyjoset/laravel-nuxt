@@ -1,5 +1,5 @@
 <template>
-    <v-footer app absolute padless>
+    <v-footer app padless>
         <v-toolbar dense color="primary" width="100%">
             <dark-mode />
             <v-btn
