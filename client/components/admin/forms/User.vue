@@ -140,6 +140,9 @@
             },
             close (data = null) {
                 this.$emit('close', data)
+
+                this.form.clear()
+                this.form.reset()
             },
             fillForm () {
                 this.form.clear()
