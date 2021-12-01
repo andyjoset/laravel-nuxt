@@ -116,7 +116,9 @@
                         <component
                             :is="dialogForm"
                             v-bind="{ ...formProps, [itemName]: selectedItem, readonly }"
-                            @close="closeDialog" />
+                            @success="closeDialog"
+                            @cancel="closeDialog(null)"
+                            @close="closeDialog(null)" />
                     </slot>
                 </v-dialog>
             </v-toolbar>

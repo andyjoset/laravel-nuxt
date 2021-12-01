@@ -31,7 +31,10 @@
                         </v-list-item-avatar>
 
                         <v-list-item-content v-if="edit">
-                            <update-profile-information-form v-if="edit" @close="edit = false" />
+                            <update-profile-information-form
+                                v-if="edit"
+                                @success="edit = false"
+                                @cancel="edit = false" />
                         </v-list-item-content>
 
                         <v-list-item-content v-else>
@@ -82,11 +85,15 @@
         </v-card-text>
 
         <v-dialog v-model="updatePasswordDialog" persistent max-width="450">
-            <update-password-form @close="updatePasswordDialog = false" />
+            <update-password-form
+                @cancel="updatePasswordDialog = false"
+                @success="updatePasswordDialog = false" />
         </v-dialog>
 
         <v-dialog v-model="updateAvatarDialog" persistent max-width="450">
-            <update-avatar-form @close="updateAvatarDialog = false" />
+            <update-avatar-form
+                @cancel="updateAvatarDialog = false"
+                @success="updateAvatarDialog = false" />
         </v-dialog>
     </v-card>
 </template>

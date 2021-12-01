@@ -5,25 +5,23 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
     const { isStateful, appUrl, apiUrl } = $config
 
     auth.login = async function (form) {
-        try {
-            await this.csrf(form)
+        await this.csrf(form)
 
-            const { data } = await form.post(`${this.baseUrl}/${this.api.login}`)
+        const { data } = await form.post(`${this.baseUrl}/${this.api.login}`)
 
-            await this.loggedIn(data)
-        } catch (e) {
-        }
+        await this.loggedIn(data)
+
+        return data
     }
 
     auth.register = async function (form) {
-        try {
-            await this.csrf(form)
+        await this.csrf(form)
 
-            const { data } = await form.post(`${this.baseUrl}/${this.api.register}`)
+        const { data } = await form.post(`${this.baseUrl}/${this.api.register}`)
 
-            await this.loggedIn(data)
-        } catch (e) {
-        }
+        await this.loggedIn(data)
+
+        return data
     }
 
     auth.logout = async function () {

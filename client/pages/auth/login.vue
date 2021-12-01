@@ -1,70 +1,50 @@
 <template>
-    <v-form autocomplete="off" :disabled="form.busy" @submit.prevent="$auth.login(form)">
-        <v-card
-            elevation="12"
-            max-width="450"
-            class="mx-auto my-12">
-            <v-card-title class="pb-2">
-                <v-sheet
-                    rounded
-                    width="100%"
-                    elevation="6"
-                    max-width="420"
-                    color="primary"
-                    class="overflow-hidden text-center mt-n10">
-                    <v-theme-provider>
-                        <div class="pa-7">
-                            <span class="text-h5">
-                                <v-icon>
-                                    mdi-fingerprint
-                                </v-icon>
-                                {{ $t('sign_in') }}
-                            </span>
-                        </div>
-                    </v-theme-provider>
-                </v-sheet>
+    <app-form
+        :form="form"
+        :action="action"
+        :disabled="form.busy"
+        :title="$t('sign_in')"
+        icon="mdi-fingerprint"
+        :heading-options="formHeadingOptions"
+        :container-options="formContainerOptions">
+        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
+            {{ form.errors.first() }}
+        </v-alert>
 
-                <v-card-text>
-                    <v-alert v-if="form.errors.any()" type="error" dense dismissible>
-                        {{ form.errors.first() }}
-                    </v-alert>
-                    <v-text-field
-                        v-model="form.email"
-                        autofocus
-                        type="email"
-                        :label="$t('labels.email')"
-                        prepend-icon="mdi-email" />
+        <v-text-field
+            v-model="form.email"
+            autofocus
+            type="email"
+            prepend-icon="mdi-email"
+            :label="$t('labels.email')" />
 
-                    <v-text-field
-                        v-model="form.password"
-                        class="mb-4"
-                        type="password"
-                        prepend-icon="mdi-lock"
-                        :label="$t('labels.password')" />
+        <v-text-field
+            v-model="form.password"
+            class="mb-4"
+            type="password"
+            prepend-icon="mdi-lock"
+            :label="$t('labels.password')" />
 
-                    <div class="d-flex justify-space-between">
-                        <v-checkbox
-                            v-model="form.remember"
-                            class="pa-0 ma-0"
-                            :true-value="true"
-                            :false-value="null"
-                            :label="$t('labels.remember')" />
+        <div class="d-flex justify-space-between">
+            <v-checkbox
+                v-model="form.remember"
+                class="pa-0 ma-0"
+                :true-value="true"
+                :false-value="null"
+                :label="$t('labels.remember')" />
 
-                        <v-btn
-                            v-t="'forgot_password'"
-                            text
-                            rounded
-                            x-small
-                            class="pt-1"
-                            color="primary"
-                            :disabled="form.busy"
-                            @click="dialogReset = true" />
-                    </div>
-                </v-card-text>
-            </v-card-title>
+            <v-btn
+                v-t="'forgot_password'"
+                text
+                rounded
+                x-small
+                class="pt-1"
+                color="primary"
+                :disabled="form.busy"
+                @click="dialogReset = true" />
+        </div>
 
-            <v-divider class="mx-4 my-0 pa-0" />
-
+        <template #actions>
             <v-card-actions class="text-caption">
                 <v-col cols="12" class="text-center">
                     <v-btn
@@ -92,15 +72,18 @@
                     </i18n>
                 </v-col>
             </v-card-actions>
-        </v-card>
+        </template>
 
         <v-dialog v-model="dialogReset" max-width="500" persistent>
-            <password-reset-request @close="dialogReset = false" />
+            <password-reset-request
+                @cancel="dialogReset = false"
+                @success="dialogReset = false" />
         </v-dialog>
-    </v-form>
+    </app-form>
 </template>
 
 <script>
+    import HasForm from '~/components/mixins/HasForm'
     import PasswordResetRequest from '~/components/auth/PasswordResetRequest'
 
     export default {
@@ -108,15 +91,26 @@
             PasswordResetRequest,
         },
 
+        mixins: [HasForm],
+
         middleware: ['guest'],
 
         data: vm => ({
+            dialogReset: null,
+            action: form => vm.$auth.login(form),
+            formHeadingOptions: {
+                class: 'mt-n10'
+            },
+            formContainerOptions: {
+                elevation: 12,
+                maxWidth: 450,
+                class: 'mx-auto my-12',
+            },
             form: vm.$vform.make({
                 email: '',
                 password: '',
                 remember: null,
             }),
-            dialogReset: null,
         }),
 
         head: vm => ({

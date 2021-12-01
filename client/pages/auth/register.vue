@@ -1,62 +1,43 @@
 <template>
-    <v-form autocomplete="off" @submit.prevent="$auth.register(form)">
-        <v-card
-            elevation="12"
-            max-width="430"
-            class="mx-auto my-12">
-            <v-card-title class="my-0">
-                <v-sheet
-                    rounded
-                    width="100%"
-                    elevation="6"
-                    max-width="400"
-                    color="primary"
-                    class="overflow-hidden text-center mt-n10">
-                    <v-theme-provider>
-                        <div class="pa-7">
-                            <span class="text-h5">
-                                <v-icon>
-                                    mdi-card-account-details
-                                </v-icon>
-                                {{ $t('register') }}
-                            </span>
-                        </div>
-                    </v-theme-provider>
-                </v-sheet>
-                <v-card-text>
-                    <v-alert v-if="form.errors.any()" type="error" dense dismissible>
-                        {{ form.errors.first() }}
-                    </v-alert>
-                    <v-text-field
-                        v-model="form.name"
-                        autofocus
-                        class="my-4"
-                        prepend-icon="mdi-face"
-                        :label="$tc('labels.name')" />
+    <app-form
+        :form="form"
+        :action="action"
+        :disabled="form.busy"
+        :title="$t('register')"
+        icon="mdi-card-account-details"
+        :heading-options="formHeadingOptions"
+        :container-options="formContainerOptions">
+        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
+            {{ form.errors.first() }}
+        </v-alert>
 
-                    <v-text-field
-                        v-model="form.email"
-                        class="my-4"
-                        type="email"
-                        prepend-icon="mdi-email"
-                        :label="$t('labels.email')" />
+        <v-text-field
+            v-model="form.name"
+            autofocus
+            class="my-4"
+            prepend-icon="mdi-face"
+            :label="$tc('labels.name')" />
 
-                    <v-text-field
-                        v-model="form.password"
-                        type="password"
-                        prepend-icon="mdi-lock"
-                        :label="$t('labels.password')" />
+        <v-text-field
+            v-model="form.email"
+            class="my-4"
+            type="email"
+            prepend-icon="mdi-email"
+            :label="$t('labels.email')" />
 
-                    <v-text-field
-                        v-model="form.password_confirmation"
-                        type="password"
-                        prepend-icon="mdi-lock"
-                        :label="$t('labels.password_confirmation')" />
-                </v-card-text>
-            </v-card-title>
+        <v-text-field
+            v-model="form.password"
+            type="password"
+            prepend-icon="mdi-lock"
+            :label="$t('labels.password')" />
 
-            <v-divider class="mx-4 my-0 pa-0" />
+        <v-text-field
+            v-model="form.password_confirmation"
+            type="password"
+            prepend-icon="mdi-lock"
+            :label="$t('labels.password_confirmation')" />
 
+        <template #actions>
             <v-card-actions class="text-caption">
                 <v-col cols="12" class="text-center">
                     <v-btn
@@ -79,18 +60,29 @@
                     </v-btn>
                 </v-col>
             </v-card-actions>
-        </v-card>
-    </v-form>
+        </template>
+    </app-form>
 </template>
 
 <script>
-    import Form from 'vform'
+    import HasForm from '~/components/mixins/HasForm'
 
     export default {
+        mixins: [HasForm],
+
         middleware: 'guest',
 
-        data: () => ({
-            form: new Form({
+        data: vm => ({
+            action: form => vm.$auth.register(form),
+            formHeadingOptions: {
+                class: 'mt-n10'
+            },
+            formContainerOptions: {
+                elevation: 12,
+                maxWidth: 450,
+                class: 'mx-auto my-12',
+            },
+            form: vm.$vform.make({
                 name: '',
                 email: '',
                 password: '',

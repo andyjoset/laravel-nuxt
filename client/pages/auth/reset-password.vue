@@ -1,56 +1,38 @@
 <template>
-    <v-form autocomplete="off" @submit.prevent="reset">
-        <v-card
-            elevation="12"
-            max-width="430"
-            class="mx-auto my-12">
-            <v-card-title class="my-0">
-                <v-sheet
-                    rounded
-                    width="100%"
-                    elevation="6"
-                    max-width="400"
-                    color="primary"
-                    class="overflow-hidden text-center mt-n10">
-                    <v-theme-provider>
-                        <div class="pa-7">
-                            <span class="text-h5">
-                                <v-icon>
-                                    mdi-lock-open
-                                </v-icon>
-                                {{ $t('reset_password') }}
-                            </span>
-                        </div>
-                    </v-theme-provider>
-                </v-sheet>
-                <v-card-text>
-                    <v-alert v-if="form.errors.any()" type="error" dense dismissible>
-                        {{ form.errors.first() }}
-                    </v-alert>
-                    <v-text-field
-                        v-model="form.email"
-                        autofocus
-                        class="my-4"
-                        type="email"
-                        prepend-icon="mdi-email"
-                        :label="$t('labels.email')" />
+    <app-form
+        :form="form"
+        :action="action"
+        :disabled="form.busy"
+        icon="mdi-lock-open"
+        :title="$t('reset_password')"
+        :heading-options="formHeadingOptions"
+        :container-options="formContainerOptions"
+        @success="onFormSuccess">
+        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
+            {{ form.errors.first() }}
+        </v-alert>
 
-                    <v-text-field
-                        v-model="form.password"
-                        type="password"
-                        prepend-icon="mdi-lock"
-                        :label="$t('labels.password')" />
+        <v-text-field
+            v-model="form.email"
+            autofocus
+            class="my-4"
+            type="email"
+            prepend-icon="mdi-email"
+            :label="$t('labels.email')" />
 
-                    <v-text-field
-                        v-model="form.password_confirmation"
-                        type="password"
-                        prepend-icon="mdi-lock"
-                        :label="$t('labels.password_confirmation')" />
-                </v-card-text>
-            </v-card-title>
+        <v-text-field
+            v-model="form.password"
+            type="password"
+            prepend-icon="mdi-lock"
+            :label="$t('labels.password')" />
 
-            <v-divider class="mx-4 my-0 pa-0" />
+        <v-text-field
+            v-model="form.password_confirmation"
+            type="password"
+            prepend-icon="mdi-lock"
+            :label="$t('labels.password_confirmation')" />
 
+        <template #actions>
             <v-card-actions class="text-caption">
                 <v-col cols="12" class="text-center">
                     <v-btn
@@ -63,16 +45,29 @@
                     </v-btn>
                 </v-col>
             </v-card-actions>
-        </v-card>
-    </v-form>
+        </template>
+    </app-form>
 </template>
 
 <script>
+    import HasForm from '~/components/mixins/HasForm'
+
     export default {
+        mixins: [HasForm],
+
         middleware: ['guest'],
 
         data: vm => ({
             status: '',
+            action: form => vm.$auth.forgotPassword(form, 'reset'),
+            formHeadingOptions: {
+                class: 'mt-n10'
+            },
+            formContainerOptions: {
+                elevation: 12,
+                maxWidth: 450,
+                class: 'mx-auto my-12',
+            },
             form: vm.$vform.make({
                 token: '',
                 email: '',
@@ -93,18 +88,13 @@
         },
 
         methods: {
-            async reset () {
-                try {
-                    const { data: status } = await this.$auth.forgotPassword(this.form, 'reset')
+            onFormSuccess (data) {
+                this.clearForm()
 
-                    this.form.clear()
+                this.$notify(data.message)
 
-                    this.$notify(status.message)
-
-                    this.$router.replace({ name: 'login' })
-                } catch (e) {
-                }
-            }
+                this.$router.replace({ name: 'login' })
+            },
         }
     }
 </script>
