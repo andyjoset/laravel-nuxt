@@ -1,6 +1,7 @@
 <template>
     <v-footer app padless>
         <v-toolbar dense color="primary" width="100%">
+            <lang-switcher v-if="$config.isMultiLang" />
             <dark-mode />
             <v-btn
                 v-for="(link, i) in links"
@@ -27,10 +28,12 @@
 
 <script>
     import DarkMode from '~/components/DarkMode'
+    import LangSwitcher from '~/components/LangSwitcher'
 
     export default {
         components: {
             DarkMode,
+            LangSwitcher,
         },
 
         computed: {

@@ -37,6 +37,7 @@ export default {
         appUrl: process.env.APP_URL,
         apiUrl: process.env.APP_URL + '/api',
         appName: process.env.APP_NAME || 'Laravel Nuxt',
+        isMultiLang: process.env.MULTI_LANG,
         isStateful: process.env.SESSION_DOMAIN.includes(
             new URL(process.env.SPA_URL).hostname
         ),
