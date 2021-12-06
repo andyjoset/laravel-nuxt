@@ -1,5 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
+import { join } from 'path'
+import { copySync, moveSync, removeSync } from 'fs-extra'
+
 require('dotenv').config()
 
 export default {
@@ -155,5 +158,25 @@ export default {
                 '@babel/plugin-proposal-optional-chaining',
             ],
         },
+    },
+
+    hooks: {
+        generate: {
+            done (generator) {
+                const options = generator.nuxt.options
+                const distDir = options.generate.dir
+
+                // Copy dist files to public/_nuxt
+                if (options.dev === false && options.mode === 'spa') {
+                    const publicPath = join(options.rootDir, 'public', options.build.publicPath)
+
+                    moveSync(join(distDir, options.build.publicPath), publicPath, { overwrite: true })
+                    copySync(join(distDir, '200.html'), join(publicPath, 'index.html'))
+
+                    // Delete 'dist' folder from Laravel root
+                    removeSync(distDir)
+                }
+            }
+        }
     },
 }
