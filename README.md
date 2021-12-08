@@ -1,62 +1,122 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Laravel-Nuxt
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> A Laravel + Nuxt starter template.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Laravel 8](https://laravel.com/docs/8.x)
+- Laravel [Fortify] + [Sanctum]
+- Laravel Permission from [Spatie](https://spatie.be/docs/laravel-permission)
+- [Nuxt 2](https://nuxtjs.org/)
+- SPA (default) or SSR
+- [Nuxt modules:](https://modules.nuxtjs.org/)
+    - Vuetify
+    - Router
+    - Axios
+    - I18n
+    - ESlint
+- [VForm] + [Sweetalert 2] + [Material Design Icons]
+- Authentication:
+    - Register
+    - Login
+    - Email verification (disabled by default)
+    - Password Reset
+    - Password Confirmation
+- UI Management:
+	- Profile
+    - Users
+    - Roles
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Clone this project
+- Copy `.env.example` to `.env` and set your variables
+- Run `composer install` and `npm install`
+- Run `php artisan key:generate && php artisan migrate`
 
-## Learning Laravel
+## Usage
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Email Verification
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+To enable email verification make sure that your `App\Models\User` model implements the `Illuminate\Contracts\Auth\MustVerifyEmail` contract and the `Features::emailVerification()` in `config/fortify.php` is uncommented.
 
-## Laravel Sponsors
+Visit the [Fortify Docs](https://laravel.com/docs/8.x/fortify#fortify-features) for more info.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Lang Switcher
 
-### Premium Partners
+Lang switcher is not rendered by default, to enable it set `MULTI_LANG=true` in `.env`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+You can set the default lang by setting `DEFAULT_LOCALE=es`
 
-## Contributing
+### CSRF Protection
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+To use cookie based sessions make sure that your client and backend are on the same domain in `.env`:
+- Set `SESSION_DOMAIN=.domain.com`
+- Set `SANCTUM_STATEFUL_DOMAINS=domain.com`
 
-## Code of Conduct
+For more details read the [Sanctum Docs][Sanctum].
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Development
 
-## Security Vulnerabilities
+```bash
+# start Laravel
+php artisan serve
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# start Nuxt
+npm run dev
+```
 
-## License
+Open your browser and navigate to `http://localhost:3000`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Deployment
+
+### SPA
+
+```bash
+npm run build
+```
+
+### Enable SSR
+
+- Edit `client/nuxt.config.js`:
+    - Set `ssr: true` 
+    - Comment `nuxtClientInit` plugin
+- Edit `.env` variables:
+    - Set `APP_URL=http://api.domain.com`
+    - Set `SPA_URL=http://domain.com`
+- Build client with `npm run build` and `npm run start`
+
+### Server Configuration
+
+To serve your app with Nginx as a reverse proxy and process manager see the [nginx] and [pm2] nuxt examples.
+
+See the [Nuxt Docs](https://nuxtjs.org/deployments) for more deployment examples.
+
+## Notes
+
+- If you prefer your client and Laravel backend in its own project folder you can move the `package.json` into `client/` and copy the `.env` into `client/.env`. Also make sure to update the scripts section in `package.json` and remove the path option:
+```
+"scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint --ext .js,.vue",
+    "lint:fix": "eslint --fix --ext .js,.vue"
+}
+```
+- The project comes with auto detection for cookie or token (api) authentication based on the domain of the client and the backend, so if your going to use SSR benefits and your client and backend are under the same domain like `myapp.com` and `api.myapp.com` it is recommended to disable the `routes/auth.api.php` by commenting out the `require __DIR__.'/auth.api.php';` in `routes/api.php` but if your app will support web and mobile apps, this is not necessary.
+- The project simulates the "remember me" functionality when using API tokens by caching the tokens to determine if it is still valid even if the token has expired. You can change this behavior by editing the `Sanctum::authenticateAccessTokensUsing` in `app/Providers/AuthServiceProvider.php` and the `getExpirationDateAttribute` getter in `App\Models\PersonalAccessToken` model.
+
+## Changelog
+
+For a summary of the most recent changes, please see [CHANGELOG](CHANGELOG.md).
+
+[Fortify]: https://laravel.com/docs/8.x/fortify
+[Sanctum]: https://laravel.com/docs/8.x/sanctum
+[VForm]: https://vform.vercel.app/
+[Sweetalert 2]: https://sweetalert2.github.io/
+[Material Design Icons]: https://materialdesignicons.com/
+[nginx]: https://nuxtjs.org/deployments/nginx
+[pm2]: https://nuxtjs.org/deployments/pm2
