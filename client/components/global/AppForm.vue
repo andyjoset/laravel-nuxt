@@ -10,7 +10,7 @@
                         <v-theme-provider>
                             <div class="pa-7">
                                 <span class="text-h5">
-                                    <v-icon v-text="icon" /> {{ title }}
+                                    <v-icon v-text="icon" v-bind="iconOptions" /> {{ title }}
                                 </span>
                             </div>
                         </v-theme-provider>
@@ -102,6 +102,10 @@
             icon: {
                 type: String,
                 default: 'mdi-clipboard-text',
+            },
+            iconOptions: {
+                type: Object,
+                default: () => ({}),
             },
             headingOptions: {
                 type: Object,

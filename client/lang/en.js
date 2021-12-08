@@ -18,6 +18,8 @@ export default {
     change_password: 'Change current password',
     request_password_reset: 'Request Password Reset',
     password_updated: 'Your password has been updated!',
+    confirm_password: 'Confirm password',
+    protected_area: 'This area is protected, please confirm your password to continue.',
 
     avatar_updated: 'Avatar updated successfully',
     avatar_deleted: 'Your avatar has been deleted.',
@@ -98,6 +100,7 @@ export default {
         show: 'Show',
         edit: 'Edit',
         delete: 'Delete',
+        confirm: 'Confirm',
         toggle_user_account: ({ named }) => `${named('active') ? 'Ban' : 'Activate'} user account`,
     },
 
@@ -118,6 +121,7 @@ export default {
         password: 'Password',
         remember: 'Remember me',
         new_password: 'New password',
+        enter_password: 'Enter Password',
         current_password: 'Current password',
         password_confirmation: 'Confirm password',
     },

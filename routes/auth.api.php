@@ -7,7 +7,9 @@ use App\Http\Controllers\Auth\ApiController;
 use Laravel\Fortify\Http\Controllers\PasswordController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\Auth\ConfirmedPasswordStatusController;
 use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
@@ -67,3 +69,11 @@ if (Features::enabled(Features::resetPasswords())) {
         ->middleware('guest:sanctum')
         ->name('api.password.update');
 }
+
+// Password Confirmation...
+Route::get('/user/confirmed-password-status', [ConfirmedPasswordStatusController::class, 'show'])
+    ->middleware(['auth:sanctum'])
+    ->name('api.password.confirmation');
+
+Route::post('/user/confirm-password', [ConfirmablePasswordController::class, 'store'])
+    ->middleware(['auth:sanctum']);

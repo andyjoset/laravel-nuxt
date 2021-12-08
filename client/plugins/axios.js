@@ -24,11 +24,12 @@ export default function ({ app, $axios, $config, store, redirect }) {
     $axios.onError((error) => {
         const status = error.response.status
         const auth = store.getters['auth/check']
+        const currentPath = app.router.currentRoute.fullPath
 
         if (status === 401) {
             store.commit('auth/CLEAR')
 
-            return redirect({ name: 'login', query: { redirect: app.router.currentRoute.fullPath } })
+            return redirect({ name: 'login', query: { redirect: currentPath } })
         }
 
         if (status === 403) {
@@ -38,6 +39,10 @@ export default function ({ app, $axios, $config, store, redirect }) {
             }).then(() => {
                 redirect(auth ? { name: 'dashboard' } : '/')
             })
+        }
+
+        if (status === 423) {
+            return redirect({ name: 'password.confirm', query: { redirect: currentPath } })
         }
 
         Promise.reject(error)

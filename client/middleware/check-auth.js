@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 export default async ({ $auth, $axios, $config, $reqCookies, store }) => {
     let loggedIn = false
     if (process.server) {
-        loggedIn = $reqCookies.has('XSRF-TOKEN')
+        loggedIn = $reqCookies.has('XSRF-TOKEN') || (!$config.isStateful && store.getters['auth/token'])
     } else {
         const loggedOut = JSON.parse(localStorage.loggedOut ?? false)
         loggedIn = $config.isStateful

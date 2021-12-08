@@ -26,6 +26,11 @@ export function createRouter () {
                         component: page('auth/register')
                     },
                     {
+                        path: 'confirm-password',
+                        name: 'password.confirm',
+                        component: page('auth/confirm-password')
+                    },
+                    {
                         path: 'reset-password/:token',
                         name: 'password.reset',
                         component: page('auth/reset-password')

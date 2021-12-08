@@ -26,5 +26,6 @@
     "Reset Password": "Restablecer contraseña",
     "This password reset link will expire in :count minutes.": "Este link expirará en :count minutos.",
     "If you did not request a password reset, no further action is required.": "Si no has solicitado un restablecimiento de contraseña puedes ignorar este correo.",
-    "All rights reserved.":  "Todos los derechos reservados."
+    "All rights reserved.":  "Todos los derechos reservados.",
+    "The provided password was incorrect.": "La contraseña es incorrecta."
 }

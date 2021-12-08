@@ -59,6 +59,14 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
         return form.post(`${this.baseUrl}/${this.api[type + 'Password']}`)
     }
 
+    auth.confirmPassword = function (form) {
+        return form.post(`${this.baseUrl}/${this.api.confirmPassword}`)
+    }
+
+    auth.confirmedPasswordStatus = function () {
+        return $axios.$get(`${this.baseUrl}/${this.api.confirmedPasswordStatus}`)
+    }
+
     auth.loggedIn = async function (data) {
         store.commit('TOGGLE_OVERLAY')
 
@@ -173,6 +181,8 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
         forgotPassword: 'forgot-password',
         resetPassword: 'reset-password',
         updatePassword: 'user/password',
+        confirmPassword: 'user/confirm-password',
+        confirmedPasswordStatus: 'user/confirmed-password-status',
         updateProfileInformation: 'user/profile-information',
         emailVerificationNotification: 'email/verification-notification',
         csrf: 'sanctum/csrf-cookie',

@@ -18,6 +18,8 @@ export default {
     change_password: 'Actualizar contraseña',
     request_password_reset: 'Solicitar reseteo de contraseña',
     password_updated: '¡Tu contraseña ha sido actualizada!',
+    confirm_password: 'Confirmar contraseña',
+    protected_area: 'Área protegida, por favor verifica tu contraseña antes de continuar.',
 
     avatar_updated: '¡Avatar actualizado correctamente!',
     avatar_deleted: 'Tu avatar fue eliminado.',
@@ -98,6 +100,7 @@ export default {
         show: 'Ver',
         edit: 'Editar',
         delete: 'Eliminar',
+        confirm: 'Confirmar',
         toggle_user_account: ({ named }) => `${named('active') ? 'Bloquear' : 'Activar'} cuenta de usuario`,
     },
 
@@ -118,6 +121,7 @@ export default {
         password: 'Contraseña',
         remember: 'Recordarme',
         new_password: 'Nueva contraseña',
+        enter_password: 'Ingresar Contraseña',
         current_password: 'Contraseña Actual',
         password_confirmation: 'Confirmar contraseña',
     },

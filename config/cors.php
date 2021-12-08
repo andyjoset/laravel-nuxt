@@ -25,6 +25,8 @@ return [
         'forgot-password',
         'sanctum/csrf-cookie',
         'user/profile-information',
+        'user/confirmed-password-status',
+        'user/confirm-password',
         'email/verification-notification',
     ],
 
