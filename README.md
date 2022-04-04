@@ -1,6 +1,12 @@
 # Laravel-Nuxt
 
+[![build](https://github.com/andyjoset/laravel-nuxt/actions/workflows/tests.yml/badge.svg)](https://github.com/andyjoset/laravel-nuxt/actions/workflows/tests.yml)
+
 > A Laravel + Nuxt starter template.
+
+<p align="center">
+    <img src="client/static/laravel-nuxt.gif" width="800" height="300">
+</p>
 
 ## Features
 
