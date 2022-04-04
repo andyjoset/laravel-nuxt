@@ -37,9 +37,7 @@
         },
 
         mounted () {
-            if (process.browser) {
-                this.lastRequest = localStorage.last_email_veritificaion_notification
-            }
+            this.lastRequest = localStorage.last_email_veritificaion_notification
         },
 
         methods: {

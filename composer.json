@@ -10,19 +10,19 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/fortify": "^1.7",
-        "laravel/framework": "^8.40",
+        "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "spatie/laravel-permission": "^4.2"
+        "spatie/laravel-permission": "^5.5"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.7",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^5.10",
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "psr-4": {

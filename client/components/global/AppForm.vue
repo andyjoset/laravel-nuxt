@@ -10,7 +10,7 @@
                         <v-theme-provider>
                             <div class="pa-7">
                                 <span class="text-h5">
-                                    <v-icon v-text="icon" v-bind="iconOptions" /> {{ title }}
+                                    <v-icon v-bind="iconOptions" v-text="icon" /> {{ title }}
                                 </span>
                             </div>
                         </v-theme-provider>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-    import Form from 'vform'
+    import { Form } from 'vform'
 
     export default {
         props: {

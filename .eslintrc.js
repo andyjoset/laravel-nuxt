@@ -32,6 +32,7 @@ module.exports = {
         'vue/singleline-html-element-content-newline': ['error', {
             ignores: ['v-icon'],
         }],
+        'vue/multi-word-component-names': 'off',
     },
     overrides: [
         {

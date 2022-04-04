@@ -267,7 +267,7 @@
             selectedItem: null,
             appendQuery: { [vm.searchKey]: '' },
             filtersOptionsSlotBindings: {
-                close: () => vm.filtersMenu = false,
+                close: () => (vm.filtersMenu = false),
                 clearSearch: () => {
                     vm.search = ''
                     vm.appendQuery[vm.searchKey] = ''
@@ -288,15 +288,15 @@
             hasItemActions () {
                 return Boolean(
                     this.$scopedSlots['append-actions'] ||
-                    this.enabledActions.filter(action => action !== 'store').length
+                        this.enabledActions.filter(action => action !== 'store').length
                 )
             },
             hasTopActions () {
                 return Boolean(
                     this.actionCanBeRendered(null, 'store') ||
-                    this.filters.enabled ||
-                    this.$slots.filters ||
-                    this.$slots['append-top-actions']
+                        this.filters.enabled ||
+                        this.$slots.filters ||
+                        this.$slots['append-top-actions']
                 )
             },
             dialogForm () {

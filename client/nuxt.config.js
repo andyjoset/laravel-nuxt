@@ -1,6 +1,5 @@
-import colors from 'vuetify/es5/util/colors'
-
 import { join } from 'path'
+import colors from 'vuetify/es5/util/colors'
 import { copySync, moveSync, removeSync } from 'fs-extra'
 
 require('dotenv').config()

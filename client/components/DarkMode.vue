@@ -55,14 +55,12 @@
         },
 
         mounted () {
-            if (process.browser) {
-                window.matchMedia('(prefers-color-scheme: dark)')
-                    .addEventListener('change', (e) => {
-                        if (this.isUndef()) {
-                            this.$vuetify.theme.dark = e.matches
-                        }
-                    })
-            }
+            window.matchMedia('(prefers-color-scheme: dark)')
+                .addEventListener('change', (e) => {
+                    if (this.isUndef()) {
+                        this.$vuetify.theme.dark = e.matches
+                    }
+                })
         },
 
         methods: {
