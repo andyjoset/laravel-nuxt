@@ -1,10 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## 1.0.1 - 2022-04-06
+## [Unreleased](https://github.com/andyjoset/laravel-nuxt/compare/1.0.1...master)
 
-Update dependencies
+### Changed
+
+- Laravel 9 support
+
+## [1.0.1](https://github.com/andyjoset/laravel-nuxt/compare/1.0.0...1.0.1) - 2022-04-06
+
+### Changed
+
+- Update dependencies
 
 ## 1.0.0 - 2021-12-08
 
-Initial Release
+- Initial Release

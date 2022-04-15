@@ -10,7 +10,7 @@
 
 ## Features
 
-- [Laravel 8](https://laravel.com/docs/8.x)
+- [Laravel 9](https://laravel.com/docs/9.x)
 - Laravel [Fortify] + [Sanctum]
 - Laravel Permission from [Spatie](https://spatie.be/docs/laravel-permission)
 - [Nuxt 2](https://nuxtjs.org/)
@@ -46,7 +46,7 @@
 
 To enable email verification make sure that your `App\Models\User` model implements the `Illuminate\Contracts\Auth\MustVerifyEmail` contract and the `Features::emailVerification()` in `config/fortify.php` is uncommented.
 
-Visit the [Fortify Docs](https://laravel.com/docs/8.x/fortify#fortify-features) for more info.
+Visit the [Fortify Docs](https://laravel.com/docs/9.x/fortify#fortify-features) for more info.
 
 ### Lang Switcher
 
@@ -119,8 +119,8 @@ See the [Nuxt Docs](https://nuxtjs.org/deployments) for more deployment examples
 
 For a summary of the most recent changes, please see [CHANGELOG](CHANGELOG.md).
 
-[Fortify]: https://laravel.com/docs/8.x/fortify
-[Sanctum]: https://laravel.com/docs/8.x/sanctum
+[Fortify]: https://laravel.com/docs/9.x/fortify
+[Sanctum]: https://laravel.com/docs/9.x/sanctum
 [VForm]: https://vform.vercel.app/
 [Sweetalert 2]: https://sweetalert2.github.io/
 [Material Design Icons]: https://materialdesignicons.com/
