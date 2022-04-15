@@ -14,8 +14,16 @@ class User extends Authenticatable // implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
+    /**
+     * @var string
+     */
     public const DEFAULT_AVATAR_PATH = 'default-avatar.png';
 
+    /**
+     * Perform any actions required before the model boots.
+     *
+     * @return void
+     */
     public static function booting()
     {
         static::creating(function ($model) {

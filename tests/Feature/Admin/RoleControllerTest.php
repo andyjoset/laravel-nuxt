@@ -219,7 +219,7 @@ class RoleControllerTest extends TestCase
             'status' => 'OK'
         ]);
 
-        $this->assertDeleted($role);
+        $this->assertModelMissing($role);
     }
 
     /** @test */

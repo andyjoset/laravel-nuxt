@@ -313,7 +313,7 @@ class UserControllerTest extends TestCase
             'status' => 'OK'
         ]);
 
-        $this->assertDeleted($users[1]);
+        $this->assertModelMissing($users[1]);
     }
 
     /** @test */
