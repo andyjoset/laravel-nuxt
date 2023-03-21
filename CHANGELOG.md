@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Laravel 9 support
+- Laravel 10 support
 
 ## [1.0.1](https://github.com/andyjoset/laravel-nuxt/compare/1.0.0...1.0.1) - 2022-04-06
 

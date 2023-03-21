@@ -43,7 +43,6 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\UserStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserStoreRequest $request)
@@ -64,8 +63,6 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UserUpdateRequest  $request
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function update(UserUpdateRequest $request, User $user)
@@ -84,7 +81,6 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
@@ -99,7 +95,6 @@ class UserController extends Controller
     /**
      * Toggle active field of the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function toggle(User $user)

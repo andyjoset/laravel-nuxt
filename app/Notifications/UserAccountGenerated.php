@@ -11,16 +11,13 @@ class UserAccountGenerated extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $password;
-    public $actionUrl;
+    public string $password;
+    public string $actionUrl;
 
     /**
      * Create a new notification instance.
-     *
-     * @param  string  $password
-     * @return void
      */
-    public function __construct($password)
+    public function __construct(string $password)
     {
         $this->password = $password;
         $this->actionUrl = env('SPA_URL') . '/a/login';
@@ -29,21 +26,17 @@ class UserAccountGenerated extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
-     * @return array
+     * @return array<int, string>
      */
-    public function via($notifiable)
+    public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(object $notifiable): MailMessage
     {
         $appName = env('APP_NAME');
 
@@ -59,10 +52,9 @@ class UserAccountGenerated extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
-     * @return array
+     * @return array<string, mixed>
      */
-    public function toArray($notifiable)
+    public function toArray(object $notifiable): array
     {
         return [
             //

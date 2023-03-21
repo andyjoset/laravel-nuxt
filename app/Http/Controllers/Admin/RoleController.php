@@ -33,7 +33,6 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -58,8 +57,6 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Spatie\Permission\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Role $role)
@@ -81,7 +78,6 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Spatie\Permission\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
     public function destroy(Role $role)

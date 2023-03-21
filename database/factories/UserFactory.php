@@ -23,7 +23,7 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker->name(),
@@ -37,10 +37,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the model's email address should be unverified.
-     *
-     * @return static
      */
-    public function unverified()
+    public function unverified(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -51,10 +49,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the model's status is not banned.
-     *
-     * @return static
      */
-    public function active()
+    public function active(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -65,10 +61,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the model's status is banned.
-     *
-     * @return static
      */
-    public function banned()
+    public function banned(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -79,10 +73,8 @@ class UserFactory extends Factory
 
     /**
      * Set the model's status randomly.
-     *
-     * @return static
      */
-    public function randomStatus()
+    public function randomStatus(): static
     {
         return $this->state(function (array $attributes) {
             return [

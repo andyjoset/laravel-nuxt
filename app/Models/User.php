@@ -21,10 +21,8 @@ class User extends Authenticatable // implements MustVerifyEmail
 
     /**
      * Perform any actions required before the model boots.
-     *
-     * @return void
      */
-    public static function booting()
+    public static function booting(): void
     {
         static::creating(function ($model) {
             $model->active = $model->active ?? true;
@@ -65,7 +63,7 @@ class User extends Authenticatable // implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function getPhotoUrlAttribute()
+    public function getPhotoUrlAttribute(): ?string
     {
         return $this->avatar ? Storage::url($this->avatar) : null;
     }

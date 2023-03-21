@@ -12,7 +12,6 @@ class AvatarController extends Controller
     /**
      * Updates the user avatar.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
@@ -33,7 +32,6 @@ class AvatarController extends Controller
     /**
      * Restore the user avatar to default value.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request)
@@ -49,11 +47,8 @@ class AvatarController extends Controller
 
     /**
      * Delete from storage the current user avatar if it isn't the default one.
-     *
-     * @param  \App\Models\User  $user
-     * @return void
      */
-    protected function deleteOldAvatar(User $user)
+    protected function deleteOldAvatar(User $user): void
     {
         if ($user->avatar !== User::DEFAULT_AVATAR_PATH) {
             Storage::delete($user->avatar);
