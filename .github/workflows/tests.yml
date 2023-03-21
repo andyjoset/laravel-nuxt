@@ -1,6 +1,7 @@
 name: Tests
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
     paths:
@@ -42,7 +43,7 @@ jobs:
           key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
 
@@ -63,4 +64,4 @@ jobs:
           DB_USERNAME: user
           DB_PASSWORD: secret
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit
