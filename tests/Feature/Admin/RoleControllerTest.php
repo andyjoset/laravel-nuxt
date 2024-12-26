@@ -22,8 +22,7 @@ class RoleControllerTest extends TestCase
         $this->seed(RolesAndPermissionsSeeder::class);
     }
 
-    /** @test */
-    public function a_user_with_permissions_can_get_roles_list()
+    public function test_a_user_with_permissions_can_get_roles_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -60,8 +59,7 @@ class RoleControllerTest extends TestCase
         $this->assertEquals(10, $response->json()['meta']['per_page']);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_get_the_roles_list()
+    public function test_a_user_with_no_permissions_cannot_get_the_roles_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -69,8 +67,7 @@ class RoleControllerTest extends TestCase
         ->assertForbidden();
     }
 
-    /** @test */
-    public function a_user_with_permissions_can_create_a_role()
+    public function test_a_user_with_permissions_can_create_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -103,8 +100,7 @@ class RoleControllerTest extends TestCase
         $this->assertTrue(Role::find($data['id'])->hasAllPermissions($permissions));
     }
 
-    /** @test */
-    public function role_cannot_be_stored_with_duplicated_name()
+    public function test_role_cannot_be_stored_with_duplicated_name()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -123,8 +119,7 @@ class RoleControllerTest extends TestCase
         $this->assertTrue(Role::where('name', 'Test')->count() === 1);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_create_a_role()
+    public function test_a_user_with_no_permissions_cannot_create_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -139,8 +134,7 @@ class RoleControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function a_user_with_permissions_can_update_a_role()
+    public function test_a_user_with_permissions_can_update_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -178,8 +172,7 @@ class RoleControllerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_update_a_role()
+    public function test_a_user_with_no_permissions_cannot_update_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -204,8 +197,7 @@ class RoleControllerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function a_user_with_permissions_can_delete_a_role()
+    public function test_a_user_with_permissions_can_delete_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -222,8 +214,7 @@ class RoleControllerTest extends TestCase
         $this->assertModelMissing($role);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_delete_a_role()
+    public function test_a_user_with_no_permissions_cannot_delete_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -235,8 +226,7 @@ class RoleControllerTest extends TestCase
         $this->assertDatabaseHas('roles', ['id' => $role->id]);
     }
 
-    /** @test */
-    public function super_admin_role_cannot_be_updated()
+    public function test_super_admin_role_cannot_be_updated()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -255,8 +245,7 @@ class RoleControllerTest extends TestCase
         $this->assertTrue($role->permissions()->count() === 0);
     }
 
-    /** @test */
-    public function super_admin_role_cannot_be_deleted()
+    public function test_super_admin_role_cannot_be_deleted()
     {
         Sanctum::actingAs($user = User::factory()->create());
 

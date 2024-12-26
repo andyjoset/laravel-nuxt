@@ -13,8 +13,7 @@ class ProfileInformationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function profile_information_can_be_updated()
+    public function test_profile_information_can_be_updated()
     {
         $this->actingAs($user = User::factory()->create());
 
@@ -29,8 +28,7 @@ class ProfileInformationTest extends TestCase
         $this->assertEquals('test@example.com', $user->email);
     }
 
-    /** @test */
-    public function profile_information_cannot_be_updated_with_duplicated_email()
+    public function test_profile_information_cannot_be_updated_with_duplicated_email()
     {
         User::factory()->create(['email' => 'test@example.com']);
 

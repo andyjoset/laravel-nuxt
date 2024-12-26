@@ -24,8 +24,7 @@ class UserControllerTest extends TestCase
         $this->seed(RolesAndPermissionsSeeder::class);
     }
 
-    /** @test */
-    public function an_admin_can_fetch_users_list()
+    public function test_an_admin_can_fetch_users_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -63,8 +62,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(10, $response->json()['meta']['per_page']);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_get_the_users_list()
+    public function test_a_user_with_no_permissions_cannot_get_the_users_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -72,8 +70,7 @@ class UserControllerTest extends TestCase
         ->assertForbidden();
     }
 
-    /** @test */
-    public function an_admin_can_create_a_user_account()
+    public function test_an_admin_can_create_a_user_account()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -113,8 +110,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function an_admin_can_create_a_user_account_and_assign_a_role()
+    public function test_an_admin_can_create_a_user_account_and_assign_a_role()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -159,8 +155,7 @@ class UserControllerTest extends TestCase
         $this->assertTrue($createdUser->hasRole($role->name));
     }
 
-    /** @test */
-    public function user_cannot_be_stored_with_duplicated_email()
+    public function test_user_cannot_be_stored_with_duplicated_email()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -181,8 +176,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseMissing('users', $form);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_create_a_user_account()
+    public function test_a_user_with_no_permissions_cannot_create_a_user_account()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -199,8 +193,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseMissing('users', $form);
     }
 
-    /** @test */
-    public function an_admin_can_update_a_user_account()
+    public function test_an_admin_can_update_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -228,8 +221,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function an_admin_can_remove_a_role_from_a_user_account()
+    public function test_an_admin_can_remove_a_role_from_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -264,8 +256,7 @@ class UserControllerTest extends TestCase
         $this->assertTrue($users[1]->fresh()->roles()->count() === 0);
     }
 
-    /** @test */
-    public function user_cannot_be_updated_with_duplicated_email()
+    public function test_user_cannot_be_updated_with_duplicated_email()
     {
         $users = User::factory()->times(2)->create();
 
@@ -282,8 +273,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_update_a_user_account()
+    public function test_a_user_with_no_permissions_cannot_update_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -298,8 +288,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseHas('users', $users[1]->toArray());
     }
 
-    /** @test */
-    public function an_admin_can_deleted_a_user_account()
+    public function test_an_admin_can_deleted_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -316,8 +305,7 @@ class UserControllerTest extends TestCase
         $this->assertModelMissing($users[1]);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_delete_a_user_account()
+    public function test_a_user_with_no_permissions_cannot_delete_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -329,8 +317,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $users[1]->id]);
     }
 
-    /** @test */
-    public function an_admin_can_ban_a_user_account()
+    public function test_an_admin_can_ban_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -350,8 +337,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_ban_a_user_account()
+    public function test_a_user_with_no_permissions_cannot_ban_a_user_account()
     {
         $users = User::factory()->times(2)->create();
 
@@ -366,8 +352,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function an_admin_can_unban_a_user_account()
+    public function test_an_admin_can_unban_a_user_account()
     {
         $users = User::factory()->times(2)->state(new Sequence(
             ['active' => true],
@@ -390,8 +375,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_unban_a_user_account()
+    public function test_a_user_with_no_permissions_cannot_unban_a_user_account()
     {
         $users = User::factory()->times(2)->state(new Sequence(
             ['active' => true],
@@ -409,8 +393,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function super_admin_cannot_be_updated()
+    public function test_super_admin_cannot_be_updated()
     {
         $users = User::factory()->times(2)->create();
 
@@ -438,8 +421,7 @@ class UserControllerTest extends TestCase
         $this->assertTrue($users[1]->hasRole('Super Admin'));
     }
 
-    /** @test */
-    public function super_admin_cannot_be_deleted()
+    public function test_super_admin_cannot_be_deleted()
     {
         $users = User::factory()->times(2)->create();
 
@@ -454,8 +436,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $users[1]->id]);
     }
 
-    /** @test */
-    public function super_admin_cannot_be_banned()
+    public function test_super_admin_cannot_be_banned()
     {
         $users = User::factory()->times(2)->create();
 

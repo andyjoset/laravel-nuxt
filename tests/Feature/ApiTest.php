@@ -26,8 +26,7 @@ class ApiTest extends TestCase
         $this->user = $this->createUser();
     }
 
-    /** @test */
-    public function can_register_from_api()
+    public function test_can_register_from_api()
     {
         $this->postJson('/api/register', [
             'name'     => 'Laravel Nuxt',
@@ -39,8 +38,7 @@ class ApiTest extends TestCase
         ->assertJsonStructure(['token', 'expires']);
     }
 
-    /** @test */
-    public function can_login_from_api()
+    public function test_can_login_from_api()
     {
         $response = $this->postJson('/api/login/token', [
             'email' => 'test@test.test',
@@ -73,8 +71,7 @@ class ApiTest extends TestCase
         $this->assertEquals($cachedToken->name, $token->name);
     }
 
-    /** @test */
-    public function cannot_login_from_api_if_account_is_banned()
+    public function test_cannot_login_from_api_if_account_is_banned()
     {
         $user = User::factory()->create(['active' => false]);
 
@@ -88,8 +85,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_logout_from_api()
+    public function test_can_logout_from_api()
     {
         $token = $this->postJson('/api/login/token', [
             'email' => $this->user->email,
@@ -107,8 +103,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_retrive_current_user_using_token()
+    public function test_can_retrive_current_user_using_token()
     {
         $response = $this->postJson('/api/login/token', [
             'email' => 'test@test.test',

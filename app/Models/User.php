@@ -67,4 +67,22 @@ class User extends Authenticatable // implements MustVerifyEmail
     {
         return $this->avatar ? Storage::url($this->avatar) : null;
     }
+
+    public function generateToken(?string $name = null): array
+    {
+        $tokenName = $name ?? 'API Token';
+
+        if ($token = $this->tokens()->where('name', $tokenName)->first()) {
+            $token->delete();
+        }
+
+        $expires = now();
+        $expirationTime = request()->filled('remember') ? '30 day' : config('sanctum.expiration'). 'minutes';
+        $token = $this->createToken($tokenName, expiresAt: $expires->add($expirationTime));
+
+        return [
+            'token' => $token->plainTextToken,
+            'expires' => $token->accessToken->expiresIn,
+        ];
+    }
 }

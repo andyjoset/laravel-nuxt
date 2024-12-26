@@ -25,8 +25,7 @@ class PasswordResetTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    /** @test */
-    public function reset_password_link_can_be_requested()
+    public function test_reset_password_link_can_be_requested()
     {
         if (! Features::enabled(Features::updatePasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');
@@ -41,8 +40,7 @@ class PasswordResetTest extends TestCase
         Notification::assertSentTo($this->user, ResetPassword::class);
     }
 
-    /** @test */
-    public function password_can_be_reset_with_valid_token()
+    public function test_password_can_be_reset_with_valid_token()
     {
         if (! Features::enabled(Features::updatePasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');
@@ -68,8 +66,7 @@ class PasswordResetTest extends TestCase
         });
     }
 
-    /** @test */
-    public function password_cannot_be_reset_with_invalid_token()
+    public function test_password_cannot_be_reset_with_invalid_token()
     {
         if (! Features::enabled(Features::updatePasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');

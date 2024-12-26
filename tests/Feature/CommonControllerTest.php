@@ -21,8 +21,7 @@ class CommonControllerTest extends TestCase
         $this->seed(RolesAndPermissionsSeeder::class);
     }
 
-    /** @test */
-    public function can_retrive_all_roles_list()
+    public function test_can_retrive_all_roles_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -50,8 +49,7 @@ class CommonControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_retrive_all_roles_list()
+    public function test_a_user_with_no_permissions_cannot_retrive_all_roles_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -59,8 +57,7 @@ class CommonControllerTest extends TestCase
         ->assertForbidden();
     }
 
-    /** @test */
-    public function can_retrive_all_permissions_list()
+    public function test_can_retrive_all_permissions_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -77,8 +74,7 @@ class CommonControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function a_user_with_no_permissions_cannot_retrive_all_permissions_list()
+    public function test_a_user_with_no_permissions_cannot_retrive_all_permissions_list()
     {
         Sanctum::actingAs($user = User::factory()->create());
 

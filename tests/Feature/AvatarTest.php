@@ -14,8 +14,7 @@ class AvatarTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function user_avatar_can_be_updated()
+    public function test_user_avatar_can_be_updated()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -36,8 +35,7 @@ class AvatarTest extends TestCase
         $this->assertEquals($response->json()['photo_url'], $user->fresh()->photo_url);
     }
 
-    /** @test */
-    public function user_avatar_cannot_be_updated_if_file_is_not_an_image()
+    public function test_user_avatar_cannot_be_updated_if_file_is_not_an_image()
     {
         Sanctum::actingAs($user = User::factory()->create());
 
@@ -51,8 +49,7 @@ class AvatarTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function user_avatar_can_be_restored_to_defaults()
+    public function test_user_avatar_can_be_restored_to_defaults()
     {
         Sanctum::actingAs($user = User::factory()->create([
             'avatar' => $avatar = UploadedFile::fake()->image('avatar.jpg')->store('avatars')

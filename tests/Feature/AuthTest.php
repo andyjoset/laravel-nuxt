@@ -17,8 +17,7 @@ class AuthTest extends TestCase
      */
     protected $user;
 
-    /** @test */
-    public function can_register()
+    public function test_can_register()
     {
         $attrs = ['id', 'name', 'email', 'photo_url'];
 
@@ -36,8 +35,7 @@ class AuthTest extends TestCase
         ->assertJsonStructure($attrs);
     }
 
-    /** @test */
-    public function can_login()
+    public function test_can_login()
     {
         $attrs = ['id', 'name', 'email', 'photo_url'];
 
@@ -57,8 +55,7 @@ class AuthTest extends TestCase
         $this->assertAuthenticated('sanctum');
     }
 
-    /** @test */
-    public function cannot_login_if_account_is_banned()
+    public function test_cannot_login_if_account_is_banned()
     {
         $user = User::factory()->banned()->create();
 
@@ -74,8 +71,7 @@ class AuthTest extends TestCase
         $this->assertGuest('sanctum');
     }
 
-    /** @test */
-    public function can_logout()
+    public function test_can_logout()
     {
         $this->actingAs($user = User::factory()->create());
 
@@ -83,8 +79,7 @@ class AuthTest extends TestCase
         $this->assertGuest('sanctum');
     }
 
-    /** @test */
-    public function can_retrive_current_user()
+    public function test_can_retrive_current_user()
     {
         Sanctum::actingAs($user = User::factory()->create());
 

@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class SetLocaleTest extends TestCase
 {
-    /** @test */
-    public function set_locale_from_header()
+    public function test_set_locale_from_header()
     {
         $response = $this->withHeaders(['Accept-Language' => 'es'])
             ->postJson('/login', [
@@ -24,8 +23,7 @@ class SetLocaleTest extends TestCase
         );
     }
 
-    /** @test */
-    public function set_fallback_locale_if_locale_is_invalid()
+    public function test_set_fallback_locale_if_locale_is_invalid()
     {
         $response = $this->withHeaders(['Accept-Language' => 'wrong-locale'])
             ->postJson('/login', [

@@ -16,8 +16,7 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function email_can_be_verified()
+    public function test_email_can_be_verified()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');
@@ -41,8 +40,7 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(204);
     }
 
-    /** @test */
-    public function email_can_not_verified_with_invalid_hash()
+    public function test_email_can_not_verified_with_invalid_hash()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');
@@ -66,8 +64,7 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function email_verification_notification_can_be_sent()
+    public function test_email_verification_notification_can_be_sent()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');
@@ -84,8 +81,7 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(202);
     }
 
-    /** @test */
-    public function email_verification_notification_can_not_be_sent_if_email_is_already_verified()
+    public function test_email_verification_notification_can_not_be_sent_if_email_is_already_verified()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');

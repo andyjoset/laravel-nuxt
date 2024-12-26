@@ -9,17 +9,17 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function index(User $user)
+    public function index(User $user): ?bool
     {
         return $user->hasPermissionTo('users.index') ? true : null;
     }
 
-    public function store(User $user)
+    public function store(User $user): ?bool
     {
         return $user->hasPermissionTo('users.store') ? true : null;
     }
 
-    public function update(User $user, User $model)
+    public function update(User $user, User $model): ?bool
     {
         if ($model->hasRole('Super Admin')) {
             return false;
@@ -28,7 +28,7 @@ class UserPolicy
         return $user->hasPermissionTo('users.update') ? true : null;
     }
 
-    public function delete(User $user, User $model)
+    public function delete(User $user, User $model): ?bool
     {
         if ($model->hasRole('Super Admin')) {
             return false;
@@ -37,7 +37,7 @@ class UserPolicy
         return $user->hasPermissionTo('users.delete') ? true : null;
     }
 
-    public function toggle(User $user, User $model)
+    public function toggle(User $user, User $model): ?bool
     {
         if ($model->hasRole('Super Admin')) {
             return false;
@@ -46,7 +46,7 @@ class UserPolicy
         return $user->hasPermissionTo('users.toggle') ? true : null;
     }
 
-    public function assignRoles(User $user)
+    public function assignRoles(User $user): ?bool
     {
         return $user->hasPermissionTo('users.assign-role') ? true : null;
     }
