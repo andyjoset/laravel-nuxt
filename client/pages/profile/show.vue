@@ -4,136 +4,120 @@
         class="mx-auto mt-6 pa-8">
         <v-card-text>
             <v-row align="center">
-                <v-col md="6" sm="12" class="mb-4">
-                    <v-list-item three-line>
-                        <v-list-item-avatar size="86">
-                            <v-avatar size="100%">
-                                <img :src="user.photo_url" :alt="user.name">
+                <v-col md="6" sm="12" xs="12" class="mb-4">
+                    <v-list-item lines="three">
+                        <template #prepend>
+                            <v-avatar size="86">
+                                <v-img :src="user.photo_url" :alt="user.name" cover />
                             </v-avatar>
-                            <v-tooltip v-if="!edit" top>
-                                <template #activator="{ on }">
+                            <v-tooltip v-if="!edit" location="top">
+                                <template #activator="{ props }">
                                     <v-btn
-                                        fab
-                                        x-small
-                                        absolute
-                                        size="6"
                                         color="error"
+                                        size="x-small"
                                         max-width="20"
                                         max-height="20"
-                                        class="mt-10 ml-11"
-                                        v-on="on"
-                                        @click="updateAvatarDialog = true">
-                                        <v-icon size="100%">mdi-pencil</v-icon>
-                                    </v-btn>
+                                        icon="mdi-pencil"
+                                        position="absolute"
+                                        class="mt-10 ml-14"
+                                        v-bind="props"
+                                        @click="updateAvatarDialog = true" />
                                 </template>
-                                <span v-t="{ path: 'change', args: [$t('avatar')] }" />
+                                <span v-text="$t('change', [$t('avatar')])" />
                             </v-tooltip>
-                        </v-list-item-avatar>
+                        </template>
 
-                        <v-list-item-content v-if="edit">
+                        <div v-if="edit" class="mt-n3">
                             <update-profile-information-form
                                 v-if="edit"
                                 @success="edit = false"
                                 @cancel="edit = false" />
-                        </v-list-item-content>
+                        </div>
 
-                        <v-list-item-content v-else>
-                            <v-list-item-title class="text-h5 my-0">
-                                <span v-text="user.name" />
-                            </v-list-item-title>
+                        <div v-else>
+                            <v-list-item-title class="text-h5" v-text="user.name" />
                             <v-list-item-subtitle class="my-0">
-                                <v-icon>mdi-email</v-icon> {{ user.email }}
+                                <v-icon icon="mdi-email" /> {{ user.email }}
                                 <v-btn
+                                    size="small"
+                                    variant="text"
                                     color="primary"
-                                    x-small
-                                    icon
-                                    @click="edit = true">
-                                    <v-icon>mdi-pencil</v-icon>
-                                </v-btn>
+                                    icon="mdi-pencil"
+                                    class="mx-0 px-0"
+                                    @click="edit = true" />
                             </v-list-item-subtitle>
-                        </v-list-item-content>
+                        </div>
                     </v-list-item>
                 </v-col>
 
-                <v-col md="6" sm="12" class="mb-4">
-                    <v-banner :single-line="!isLg()">
-                        <v-avatar slot="icon" color="primary accent-4" size="40">
-                            <v-icon icon="mdi-lock" color="white">
-                                mdi-lock
-                            </v-icon>
-                        </v-avatar>
-
-                        <span v-t="'change_password'" />
+                <v-col md="6" sm="12" xs="12" class="mb-4">
+                    <v-banner :lines="isLg ? 'one' : 'three'">
+                        <v-banner-text>
+                            <v-avatar icon="mdi-lock" color="primary accent-4" size="40" class="mr-2" />
+                            <span v-text="$t('change_password')" />
+                        </v-banner-text>
 
                         <template #actions>
                             <v-btn
-                                icon
-                                class="text-left"
                                 color="primary"
                                 :disabled="edit"
-                                @click="updatePasswordDialog = true">
-                                <v-icon>mdi-pencil</v-icon>
-                            </v-btn>
+                                icon="mdi-pencil"
+                                @click="updatePasswordDialog = true" />
                         </template>
                     </v-banner>
                 </v-col>
 
-                <v-col v-if="user.email_verified_at !== undefined" cols="12" class="mb-4">
-                    <email-verification-notification-request />
-                </v-col>
+                <ClientOnly>
+                    <v-col v-if="user.email_verified_at !== undefined" cols="12" class="mb-4">
+                        <email-verification-notification-request />
+                    </v-col>
+                </ClientOnly>
             </v-row>
         </v-card-text>
+        <ClientOnly>
+            <v-dialog v-model="updatePasswordDialog" persistent max-width="450">
+                <update-password-form
+                    @cancel="updatePasswordDialog = false"
+                    @success="updatePasswordDialog = false" />
+            </v-dialog>
 
-        <v-dialog v-model="updatePasswordDialog" persistent max-width="450">
-            <update-password-form
-                @cancel="updatePasswordDialog = false"
-                @success="updatePasswordDialog = false" />
-        </v-dialog>
-
-        <v-dialog v-model="updateAvatarDialog" persistent max-width="450">
-            <update-avatar-form
-                @cancel="updateAvatarDialog = false"
-                @success="updateAvatarDialog = false" />
-        </v-dialog>
+            <v-dialog v-model="updateAvatarDialog" persistent max-width="450">
+                <update-avatar-form
+                    @cancel="updateAvatarDialog = false"
+                    @success="updateAvatarDialog = false" />
+            </v-dialog>
+        </ClientOnly>
     </v-card>
 </template>
 
-<script>
+<script setup>
+    import { useAuthStore } from '~/store/auth'
+    import useHelpers from '~/composables/helpers'
     import UpdateAvatarForm from '~/components/auth/UpdateAvatarForm'
     import UpdatePasswordForm from '~/components/auth/UpdatePasswordForm'
     import UpdateProfileInformationForm from '~/components/auth/UpdateProfileInformationForm'
     import EmailVerificationNotificationRequest from '~/components/auth/EmailVerificationNotificationRequest'
 
-    export default {
-        components: {
-            UpdateAvatarForm,
-            UpdatePasswordForm,
-            UpdateProfileInformationForm,
-            EmailVerificationNotificationRequest,
-        },
+    const { t } = useI18n()
+    const route = useRoute()
+    const router = useRouter()
+    const authStore = useAuthStore()
+    const { $notify, isLg } = useHelpers()
 
-        data: vm => ({
-            edit: false,
-            updateAvatarDialog: false,
-            updatePasswordDialog: false,
-        }),
+    useHead({
+        title: t('profile.me'),
+    })
 
-        head: vm => ({
-            title: vm.$t('profile.me'),
-        }),
+    const edit = ref(false)
+    const updateAvatarDialog = ref(false)
+    const updatePasswordDialog = ref(false)
 
-        computed: {
-            user () {
-                return this.$store.getters['auth/user']
-            }
-        },
+    const user = computed(() => authStore.user)
 
-        created () {
-            if (process.browser && parseInt(this.$route.query.verified) === 1) {
-                this.$router.replace({ name: this.$route.name })
-
-                this.$nextTick(() => this.$notify({ message: this.$t('email_verified'), timeout: 0 }))
-            }
-        },
-    }
+    onMounted(() => {
+        if (parseInt(route.query.verified) === 1) {
+            router.replace({ name: route.name })
+            nextTick(() => $notify({ message: t('email_verified'), timeout: -1 }))
+        }
+    })
 </script>

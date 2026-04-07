@@ -7,33 +7,44 @@
         icon="mdi-card-account-details"
         :heading-options="formHeadingOptions"
         :container-options="formContainerOptions">
-        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
-            {{ form.errors.first() }}
-        </v-alert>
+        <v-alert
+            v-if="form.errors.any()"
+            closable
+            type="error"
+            class="my-3"
+            icon="mdi-alert"
+            density="compact"
+            :text="form.errors.first()" />
 
         <v-text-field
             v-model="form.name"
             autofocus
-            class="my-4"
-            prepend-icon="mdi-face"
-            :label="$tc('labels.name')" />
+            class="my-1"
+            variant="underlined"
+            prepend-icon="mdi-account"
+            :label="$t('labels.name')" />
 
         <v-text-field
             v-model="form.email"
-            class="my-4"
+            class="my-1"
             type="email"
+            variant="underlined"
             prepend-icon="mdi-email"
             :label="$t('labels.email')" />
 
         <v-text-field
             v-model="form.password"
+            class="my-1"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.password')" />
 
         <v-text-field
             v-model="form.password_confirmation"
+            class="mt-1"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.password_confirmation')" />
 
@@ -45,14 +56,15 @@
                         dark
                         block
                         color="primary"
+                        variant="elevated"
                         :loading="form.busy">
                         {{ $t('btns.submit') }}
                     </v-btn>
                     <br>
                     <v-btn
-                        text
                         rounded
-                        x-small
+                        size="x-small"
+                        variant="text"
                         color="primary"
                         :disabled="form.busy"
                         :to="{ name: 'login' }">
@@ -64,34 +76,34 @@
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
 
-    export default {
-        mixins: [HasForm],
+    definePageMeta({
+        middleware: ['guest'],
+    })
 
-        middleware: 'guest',
+    const { t } = useI18n()
+    const { $auth } = useNuxtApp()
+    const { form } = useForm({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+    })
 
-        data: vm => ({
-            action: form => vm.$auth.register(form),
-            formHeadingOptions: {
-                class: 'mt-n10'
-            },
-            formContainerOptions: {
-                elevation: 12,
-                maxWidth: 450,
-                class: 'mx-auto my-12',
-            },
-            form: vm.$vform.make({
-                name: '',
-                email: '',
-                password: '',
-                password_confirmation: '',
-            })
-        }),
+    useHead({
+        title: t('register'),
+    })
 
-        head: vm => ({
-            title: vm.$t('register'),
-        }),
+    const action = form => $auth.register(form)
+    const formHeadingOptions = {
+        class: 'mt-n10'
+    }
+
+    const formContainerOptions = {
+        elevation: 12,
+        maxWidth: 450,
+        class: 'mx-auto my-12',
     }
 </script>

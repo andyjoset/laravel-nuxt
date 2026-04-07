@@ -5,17 +5,23 @@
         icon="mdi-lock-open"
         :disabled="form.busy"
         :title="$t('request_password_reset')"
-        v-on="$listeners"
+        :floating-heading="false"
+        v-on="$attrs"
         @success="onFormSuccess">
-        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
-            {{ form.errors.first() }}
-        </v-alert>
+        <v-alert
+            v-if="form.errors.any()"
+            closable
+            type="error"
+            icon="mdi-alert"
+            density="compact"
+            :text="form.errors.first()" />
 
         <v-text-field
             v-model="form.email"
             autofocus
             class="my-4"
             type="email"
+            variant="underlined"
             prepend-icon="mdi-email"
             :label="$t('labels.email')" />
 
@@ -24,30 +30,26 @@
                 type="submit"
                 color="primary"
                 :loading="form.busy">
-                <v-icon class="mr-1">mdi-check-circle</v-icon> {{ $t('btns.submit') }}
+                <v-icon class="mr-1" icon="mdi-check-circle" /> {{ $t('btns.submit') }}
             </v-btn>
         </template>
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
+    import useHelpers from '~/composables/helpers'
 
-    export default {
-        mixins: [HasForm],
+    const { $notify } = useHelpers()
+    const { $auth } = useNuxtApp()
+    const { clearForm, form } = useForm({
+        email: '',
+    })
 
-        data: vm => ({
-            action: form => vm.$auth.forgotPassword(form, 'forgot'),
-            form: vm.$vform.make({
-                email: '',
-            })
-        }),
+    const action = form => $auth.forgotPassword(form, 'forgot')
 
-        methods: {
-            onFormSuccess (data) {
-                this.clearForm()
-                this.$notify(data.message)
-            },
-        }
+    function onFormSuccess (data) {
+        clearForm()
+        $notify(data.message)
     }
 </script>

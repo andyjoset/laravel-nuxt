@@ -6,84 +6,72 @@
         :action="action"
         :disabled="form.busy"
         :container-options="formContainerOptions"
-        v-on="$listeners"
+        v-on="$attrs"
         @success="onFormSuccess">
         <v-text-field
             v-model="form.name"
-            dense
             autofocus
-            class="my-4"
-            prepend-icon="mdi-face"
-            :label="$tc('labels.name')"
+            hide-details
+            class="my-2"
+            variant="underlined"
+            density="comfortable"
+            prepend-icon="mdi-account"
+            :label="$t('labels.name')"
             :error="form.errors.has('name')"
             :error-messages="form.errors.get('name')" />
 
-        <v-spacer />
         <v-text-field
             v-model="form.email"
-            dense
             type="email"
+            hide-details
+            variant="underlined"
+            density="comfortable"
             prepend-icon="mdi-email"
             :label="$t('labels.email')"
             :error="form.errors.has('email')"
             :error-messages="form.errors.get('email')" />
 
-        <template #actions="{ handleCancelClick, submit }">
-            <v-spacer />
-            <v-btn
-                fab
-                right
-                bottom
-                x-small
-                absolute
-                class="mr-10"
-                color="error"
-                :disabled="form.busy"
-                @click="handleCancelClick">
-                <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-btn
-                fab
-                right
-                bottom
-                x-small
-                absolute
-                type="submit"
-                color="primary"
-                :loading="form.busy"
-                @click="submit">
-                <v-icon>mdi-check</v-icon>
-            </v-btn>
+        <template #actions="{ handleCancelClick }">
+            <div class="d-flex mr-2">
+                <v-spacer />
+                <v-btn
+                    class="mr-2"
+                    color="error"
+                    size="x-small"
+                    icon="mdi-close"
+                    :disabled="form.busy"
+                    @click="handleCancelClick" />
+                <v-btn
+                    class="mr-2"
+                    type="submit"
+                    size="x-small"
+                    color="primary"
+                    icon="mdi-check"
+                    :loading="form.busy" />
+            </div>
         </template>
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
+    import useHelpers from '~/composables/helpers'
+    import { useAuthStore } from '~/store/auth'
 
-    export default {
-        mixins: [HasForm],
+    const authStore = useAuthStore()
+    const { t } = useI18n()
+    const { $auth } = useNuxtApp()
+    const { $notify } = useHelpers()
+    const { form, clearForm } = useForm({
+        name: '',
+        email: '',
+    }, authStore.user)
 
-        data: vm => ({
-            formInitialValuesProp: 'user',
-            action: form => vm.$auth.updateProfileInformation(form),
-            formContainerOptions: { class: 'mb-2', elevation: 0 },
-            form: vm.$vform.make({
-                name: '',
-                email: '',
-            }),
-        }),
+    const action = form => $auth.updateProfileInformation(form)
+    const formContainerOptions = { class: 'mb-2', elevation: 0 }
 
-        computed: {
-            user () {
-                return this.$store.getters['auth/user']
-            }
-        },
-
-        methods: {
-            onFormSuccess () {
-                this.$notify(this.$t('alerts.updated'))
-            },
-        },
+    function onFormSuccess () {
+        clearForm()
+        $notify(t('alerts.updated'))
     }
 </script>

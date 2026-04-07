@@ -1,7 +1,8 @@
-export default async ({ $auth, redirect, route }) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
+    const { $auth } = useNuxtApp()
     const { confirmed } = await $auth.confirmedPasswordStatus()
 
     if (!confirmed) {
-        return redirect({ name: 'password.confirm', query: { redirect: route.fullPath } })
+        return navigateTo({ name: 'password.confirm', query: { redirect: to.fullPath } })
     }
-}
+})

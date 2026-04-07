@@ -1,11 +1,11 @@
-export default function ({ app, $vuetify }) {
-    $vuetify.lang.t = (key, ...params) => app.i18n.t(key, params)
+export default defineNuxtPlugin((nuxtApp) => {
+    // called right before setting a new locale
+    nuxtApp.hook('i18n:beforeLocaleSwitch', ({ oldLocale, newLocale, initialSetup, context }) => {
+        // nuxtApp.$vuetify.locale.current.value = newLocale
+    })
 
-    app.i18n.onBeforeLanguageSwitch = (oldLocale, newLocale, isInitialSetup, context) => {
-        $vuetify.lang.current = newLocale
-    }
-
-    app.i18n.onLanguageSwitched = (oldLocale, newLocale) => {
+    // called right after a new locale has been set
+    nuxtApp.hook('i18n:localeSwitched', ({ oldLocale, newLocale }) => {
         //
-    }
-}
+    })
+})

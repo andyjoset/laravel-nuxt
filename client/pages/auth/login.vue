@@ -4,24 +4,33 @@
         :action="action"
         :disabled="form.busy"
         :title="$t('sign_in')"
+        autocomplete="off"
         icon="mdi-fingerprint"
         :heading-options="formHeadingOptions"
         :container-options="formContainerOptions">
-        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
-            {{ form.errors.first() }}
-        </v-alert>
+        <v-alert
+            v-if="form.errors.any()"
+            closable
+            type="error"
+            class="my-3"
+            icon="mdi-alert"
+            density="compact"
+            :text="form.errors.first()" />
 
         <v-text-field
             v-model="form.email"
             autofocus
+            class="mt-4"
             type="email"
+            variant="underlined"
             prepend-icon="mdi-email"
             :label="$t('labels.email')" />
 
         <v-text-field
             v-model="form.password"
-            class="mb-4"
+            class="mb-2"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.password')" />
 
@@ -34,14 +43,15 @@
                 :label="$t('labels.remember')" />
 
             <v-btn
-                v-t="'forgot_password'"
-                text
                 rounded
-                x-small
-                class="pt-1"
+                class="mt-4"
+                size="x-small"
+                variant="text"
                 color="primary"
                 :disabled="form.busy"
-                @click="dialogReset = true" />
+                @click="dialogReset = true">
+                {{ $t('forgot_password') }}
+            </v-btn>
         </div>
 
         <template #actions>
@@ -52,69 +62,66 @@
                         dark
                         block
                         color="primary"
+                        variant="elevated"
                         :loading="form.busy">
                         {{ $t('btns.submit') }}
                     </v-btn>
 
                     <br>
-                    <i18n path="no_account.text">
-                        <template #action>
-                            <v-btn
-                                text
-                                rounded
-                                x-small
-                                color="primary"
-                                :disabled="form.busy"
-                                :to="{ name: 'register' }">
-                                {{ $t('no_account.action_text') }}
-                            </v-btn>
-                        </template>
-                    </i18n>
+                    <span v-text="$t('no_account.text')" />
+                    <v-btn
+                        rounded
+                        class="mx-0"
+                        size="x-small"
+                        variant="text"
+                        color="primary"
+                        :disabled="form.busy"
+                        :to="{ name: 'register' }">
+                        {{ $t('no_account.action_text') }}
+                    </v-btn>
                 </v-col>
             </v-card-actions>
         </template>
 
-        <v-dialog v-model="dialogReset" max-width="500" persistent>
-            <password-reset-request
-                @cancel="dialogReset = false"
-                @success="dialogReset = false" />
-        </v-dialog>
+        <ClientOnly>
+            <v-dialog v-model="dialogReset" max-width="500" persistent>
+                <password-reset-request
+                    @cancel="dialogReset = false"
+                    @success="dialogReset = false" />
+            </v-dialog>
+        </ClientOnly>
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
     import PasswordResetRequest from '~/components/auth/PasswordResetRequest'
 
-    export default {
-        components: {
-            PasswordResetRequest,
-        },
-
-        mixins: [HasForm],
-
+    definePageMeta({
         middleware: ['guest'],
+    })
 
-        data: vm => ({
-            dialogReset: null,
-            action: form => vm.$auth.login(form),
-            formHeadingOptions: {
-                class: 'mt-n10'
-            },
-            formContainerOptions: {
-                elevation: 12,
-                maxWidth: 450,
-                class: 'mx-auto my-12',
-            },
-            form: vm.$vform.make({
-                email: '',
-                password: '',
-                remember: null,
-            }),
-        }),
+    const { t } = useI18n()
+    const { $auth } = useNuxtApp()
+    const { form } = useForm({
+        email: '',
+        password: '',
+        remember: null,
+    })
 
-        head: vm => ({
-            title: vm.$t('login'),
-        }),
+    useHead({
+        title: t('login'),
+    })
+
+    const dialogReset = ref(null)
+    const action = form => $auth.login(form)
+    const formHeadingOptions = {
+        class: 'mt-n10',
+    }
+
+    const formContainerOptions = {
+        elevation: 12,
+        maxWidth: 450,
+        class: 'mx-auto my-12',
     }
 </script>

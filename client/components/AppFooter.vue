@@ -1,48 +1,38 @@
 <template>
-    <v-footer app padless>
-        <v-toolbar dense color="primary" width="100%">
-            <lang-switcher v-if="$config.isMultiLang" />
+    <v-footer app style="padding: 0 0;">
+        <v-toolbar flat density="compact" color="primary">
+            <lang-switcher v-if="$config.public.isMultiLang" />
             <dark-mode />
             <v-btn
-                v-for="(link, i) in links"
-                :key="i"
-                :to="{ name: link.route }"
+                v-for="link in links"
+                :key="`footer_${link.route}_link`"
+                size="small"
                 class="mx-0 white--text"
-                :plain="routeIs(link.route)"
-                nuxt
-                small
-                text>
-                <v-icon size="18px" class="mr-2 white--text">
-                    {{ link.icon }}
-                </v-icon>
+                :to="{ name: link.route }"
+                :variant="routeIs(link.route) ? 'plain' : 'text'">
+                <v-icon size="18px" class="mr-2 white--text" :icon="link.icon" />
                 {{ link.text }}
             </v-btn>
 
-            <v-spacer />
-            <v-toolbar-title class="mr-2 d-none d-sm-flex white--text">
-                {{ new Date().getFullYear() }} — {{ $config.appName }}
-            </v-toolbar-title>
+            <template #append>
+                <v-toolbar-title class="d-xs-none">
+                    {{ new Date().getFullYear() }} — {{ $config.public.appName }}
+                </v-toolbar-title>
+            </template>
         </v-toolbar>
     </v-footer>
 </template>
 
-<script>
+<script setup>
     import DarkMode from '~/components/DarkMode'
+    import useHelpers from '~/composables/helpers'
     import LangSwitcher from '~/components/LangSwitcher'
 
-    export default {
-        components: {
-            DarkMode,
-            LangSwitcher,
-        },
+    const { t } = useI18n()
+    const { routeIs } = useHelpers()
 
-        computed: {
-            links () {
-                return [
-                    { text: this.$t('contact'), icon: 'mdi-phone', route: 'contact' },
-                    { text: this.$t('about'), icon: 'mdi-information-outline', route: 'about' },
-                ]
-            },
-        },
-    }
+    const links = computed (() => [
+        { text: t('contact'), icon: 'mdi-phone', route: 'contact' },
+        { text: t('about'), icon: 'mdi-information-outline', route: 'about' },
+    ])
 </script>

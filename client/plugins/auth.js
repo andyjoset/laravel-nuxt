@@ -1,8 +1,11 @@
 import Cookies from 'js-cookie'
+import { useAuthStore } from '~/store/auth'
 
-export default function ({ app, $axios, $config, store, redirect }, inject) {
+export default defineNuxtPlugin((nuxtApp) => {
     const auth = {}
-    const { isStateful, appUrl, apiUrl } = $config
+    const authStore = useAuthStore()
+    const { $axios } = useNuxtApp()
+    const { isStateful, appUrl, apiUrl } = useRuntimeConfig().public
 
     auth.login = async function (form) {
         await this.csrf(form)
@@ -25,18 +28,18 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
     }
 
     auth.logout = async function () {
-        store.commit('TOGGLE_OVERLAY')
+        nuxtApp.$store.toggleOverlay()
 
         try {
             await $axios.post(`${this.baseUrl}/${this.api.logout}`)
         } catch (e) {
         }
 
-        store.commit('auth/CLEAR')
+        authStore.clear()
 
-        await redirect({ name: 'login' })
+        await navigateTo({ name: 'login' })
 
-        store.commit('TOGGLE_OVERLAY')
+        nuxtApp.$store.toggleOverlay()
     }
 
     auth.updatePassword = function (form) {
@@ -50,7 +53,7 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
     auth.updateProfileInformation = async function (form) {
         await form.put(`${this.baseUrl}/${this.api.updateProfileInformation}`)
 
-        store.commit('auth/UPDATE_USER', form.data())
+        authStore.updateUser(form.data())
     }
 
     auth.forgotPassword = async function (form, type) {
@@ -68,29 +71,29 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
     }
 
     auth.loggedIn = async function (data) {
-        store.commit('TOGGLE_OVERLAY')
+        nuxtApp.$store.toggleOverlay()
 
         // Already authenticated
         if (data.error) {
-            await store.dispatch('auth/fetchUser')
+            await authStore.fetchUser()
         } else if (data.token) {
-            store.commit('auth/SET_TOKEN', data.token)
+            authStore.setToken(data.token)
 
             const expires = new Date()
             expires.setSeconds(expires.getSeconds() + data.expires)
 
             Cookies.set('token', data.token, { expires })
 
-            await store.dispatch('auth/fetchUser')
+            await authStore.fetchUser()
         } else {
-            store.commit('auth/SET_USER', data)
+            authStore.setUser(data)
         }
 
         localStorage.loggedOut = false
 
-        await app.router.replace(app.router.currentRoute.query.redirect || { name: 'dashboard' })
+        await nuxtApp.$router.replace(nuxtApp.$router.currentRoute.value.query.redirect || { name: 'dashboard' })
 
-        store.commit('TOGGLE_OVERLAY')
+        nuxtApp.$store.toggleOverlay()
     }
 
     auth.csrf = function (form) {
@@ -115,7 +118,7 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
      */
     auth.hasRole = function (role) {
         try {
-            return store.getters['auth/user'].roles.includes(role)
+            return authStore.user.roles.includes(role)
         } catch (e) {
             return false
         }
@@ -150,7 +153,7 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
         }
 
         try {
-            return store.getters['auth/user'].permissions.includes(permission)
+            return authStore.user.permissions.includes(permission)
         } catch (e) {
             return false
         }
@@ -188,5 +191,5 @@ export default function ({ app, $axios, $config, store, redirect }, inject) {
         csrf: 'sanctum/csrf-cookie',
     }
 
-    inject('auth', auth)
-}
+    nuxtApp.provide('auth', auth)
+})

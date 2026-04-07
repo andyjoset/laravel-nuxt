@@ -1,26 +1,23 @@
 <template>
     <v-row justify="center" align="center">
         <v-col cols="12" sm="8" md="6">
-            <div class="mt-12 text-center">
-                <logo />
-                <vuetify-logo />
-            </div>
+            <ClientOnly>
+                <div class="mt-12 text-center">
+                    <logo />
+                    <vuetify-logo />
+                </div>
+            </ClientOnly>
         </v-col>
     </v-row>
 </template>
 
-<script>
+<script setup>
     import Logo from '~/components/Logo'
     import VuetifyLogo from '~/components/VuetifyLogo'
 
-    export default {
-        components: {
-            Logo,
-            VuetifyLogo
-        },
+    const { t } = useI18n()
 
-        head: vm => ({
-            title: vm.$t('home'),
-        }),
-    }
+    useHead({
+        title: t('home'),
+    })
 </script>

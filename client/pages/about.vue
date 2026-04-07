@@ -10,10 +10,10 @@
     </v-row>
 </template>
 
-<script>
-    export default {
-        head: vm => ({
-            title: vm.$t('about'),
-        }),
-    }
+<script setup>
+    const { t } = useI18n()
+
+    useHead({
+        title: t('about'),
+    })
 </script>

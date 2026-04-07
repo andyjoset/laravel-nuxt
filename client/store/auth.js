@@ -1,52 +1,48 @@
 import Cookies from 'js-cookie'
+import { defineStore } from 'pinia'
 
-export const state = () => ({
-    user: null,
-    token: null,
+export const useAuthStore = defineStore('auth', {
+    state: () => ({
+        user: null,
+        token: null,
+    }),
+
+    getters: {
+        check: state => Boolean(state.user),
+    },
+
+    actions: {
+        setUser (user) {
+            this.user = user
+        },
+        setToken (token) {
+            this.token = token
+        },
+        clear () {
+            this.$reset()
+            const { $axios, $config } = useNuxtApp()
+
+            if (import.meta.client) {
+                localStorage.loggedOut = true
+            }
+
+            if (!$config.public.isStateful) {
+                Cookies.remove('token')
+                delete $axios.defaults.headers.common.Authorization
+            }
+        },
+        updateUser (user) {
+            Object.assign(this.user, user)
+        },
+        async fetchUser () {
+            try {
+                const { $axios } = useNuxtApp()
+                const user = await $axios.$get('/user')
+
+                this.setUser(user)
+            } catch (e) {
+                this.clear()
+            }
+        },
+    },
 })
-
-export const getters = {
-    user: state => state.user,
-    token: state => state.token,
-    check: state => Boolean(state.user),
-}
-
-export const mutations = {
-    SET_USER (state, user) {
-        state.user = user
-    },
-
-    SET_TOKEN (state, token) {
-        state.token = token
-    },
-
-    CLEAR (state) {
-        state.user = null
-        state.token = null
-
-        if (process.browser) {
-            localStorage.loggedOut = true
-        }
-
-        if (!this.$config.isStateful) {
-            Cookies.remove('token')
-            delete this.$axios.defaults.headers.common.Authorization
-        }
-    },
-
-    UPDATE_USER (state, user) {
-        Object.assign(state.user, user)
-    },
-}
-
-export const actions = {
-    async fetchUser ({ commit }) {
-        try {
-            const user = await this.$axios.$get('/user')
-
-            commit('SET_USER', user)
-        } catch (e) {
-            commit('CLEAR')
-        }
-    },
-}

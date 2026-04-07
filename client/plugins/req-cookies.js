@@ -1,11 +1,6 @@
-export default ({ req }, inject) => {
+export default defineNuxtPlugin((nuxtApp) => {
     const helpers = {}
-    const cookies = req.headers.cookie
-        ? req.headers.cookie.split('; ').reduce((items, item) => {
-            const [name, value] = item.split('=')
-            return Object.assign(items, { [`${name}`]: value })
-        }, {})
-        : {}
+    const { cookie: cookies } = useRequestHeaders(['cookie'])
 
     helpers.has = function (key) {
         return Boolean(cookies[key])
@@ -19,5 +14,5 @@ export default ({ req }, inject) => {
         return cookies
     }
 
-    inject('reqCookies', helpers)
-}
+    nuxtApp.provide('reqCookies', helpers)
+})

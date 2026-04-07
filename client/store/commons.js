@@ -1,40 +1,40 @@
+import { defineStore } from 'pinia'
 
-export const state = () => ({
-    roles: [],
-    permissions: [],
+const { $axios } = useNuxtApp()
+
+export const useCommonStore = defineStore('commons', {
+    state: () => ({
+        roles: [],
+        permissions: [],
+        fetchingPermissions: false,
+    }),
+
+    actions: {
+        setRoles (roles) {
+            this.roles = roles
+        },
+        setPermissions (permissions) {
+            this.permissions = permissions
+        },
+        async fetchRoles () {
+            try {
+                const roles = await $axios.$get('/roles')
+
+                this.setRoles(roles)
+            } catch (e) {
+            }
+        },
+        async fetchPermissions () {
+            this.fetchingPermissions = true
+
+            try {
+                const roles = await $axios.$get('/permissions')
+
+                this.setPermissions(roles)
+            } catch (e) {
+            }
+
+            this.fetchingPermissions = false
+        },
+    },
 })
-
-export const getters = {
-    roles: state => state.roles,
-    permissions: state => state.permissions,
-}
-
-export const mutations = {
-    SET_ROLES (state, roles) {
-        state.roles = roles
-    },
-
-    SET_PERMISSIONS (state, permissions) {
-        state.permissions = permissions
-    },
-}
-
-export const actions = {
-    async fetchRoles ({ commit }) {
-        try {
-            const roles = await this.$axios.$get('/roles')
-
-            commit('SET_ROLES', roles)
-        } catch (e) {
-        }
-    },
-
-    async fetchPermissions ({ commit }) {
-        try {
-            const roles = await this.$axios.$get('/permissions')
-
-            commit('SET_PERMISSIONS', roles)
-        } catch (e) {
-        }
-    },
-}

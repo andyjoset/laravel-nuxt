@@ -1,5 +1,8 @@
-export default ({ store, redirect }) => {
-    if (store.getters['auth/check']?.email_verified_at === null) {
-        return redirect({ name: 'dashboard' })
+import { useAuthStore } from '~/store/auth'
+
+export default defineNuxtRouteMiddleware((to, from) => {
+    const authStore = useAuthStore()
+    if (authStore.user?.email_verified_at === null) {
+        return navigateTo({ name: 'dashboard' })
     }
-}
+})

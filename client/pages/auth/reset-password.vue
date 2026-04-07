@@ -8,7 +8,7 @@
         :heading-options="formHeadingOptions"
         :container-options="formContainerOptions"
         @success="onFormSuccess">
-        <v-alert v-if="form.errors.any()" type="error" dense dismissible>
+        <v-alert v-if="form.errors.any()" type="error" icon="mdi-alert" density="compact" closable class="my-3">
             {{ form.errors.first() }}
         </v-alert>
 
@@ -17,18 +17,21 @@
             autofocus
             class="my-4"
             type="email"
+            variant="underlined"
             prepend-icon="mdi-email"
             :label="$t('labels.email')" />
 
         <v-text-field
             v-model="form.password"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.password')" />
 
         <v-text-field
             v-model="form.password_confirmation"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.password_confirmation')" />
 
@@ -40,6 +43,7 @@
                         dark
                         block
                         color="primary"
+                        variant="elevated"
                         :loading="form.busy">
                         {{ $t('reset') }}
                     </v-btn>
@@ -49,52 +53,49 @@
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
+    import useHelpers from '~/composables/helpers'
 
-    export default {
-        mixins: [HasForm],
+    const { t } = useI18n()
+    const { $auth } = useNuxtApp()
+    const { $notify } = useHelpers()
+    const route = useRoute()
+    const router = useRouter()
+    const { form, clearForm } = useForm({
+        token: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+    })
 
-        middleware: ['guest'],
+    const action = form => $auth.forgotPassword(form, 'reset')
+    const formHeadingOptions = {
+        class: 'mt-n10'
+    }
 
-        data: vm => ({
-            status: '',
-            action: form => vm.$auth.forgotPassword(form, 'reset'),
-            formHeadingOptions: {
-                class: 'mt-n10'
-            },
-            formContainerOptions: {
-                elevation: 12,
-                maxWidth: 450,
-                class: 'mx-auto my-12',
-            },
-            form: vm.$vform.make({
-                token: '',
-                email: '',
-                password: '',
-                password_confirmation: '',
-            })
-        }),
+    const formContainerOptions = {
+        elevation: 12,
+        maxWidth: 450,
+        class: 'mx-auto my-12',
+    }
 
-        head: vm => ({
-            title: vm.$t('reset_password'),
-        }),
+    useHead({
+        title: t('reset_password'),
+    })
 
-        created () {
-            this.form.update({
-                email: this.$route.query.email,
-                token: this.$route.params.token,
-            })
-        },
+    onMounted (() => {
+        form.update({
+            email: route.query.email,
+            token: route.params.token,
+        })
+    })
 
-        methods: {
-            onFormSuccess (data) {
-                this.clearForm()
+    function onFormSuccess (data) {
+        clearForm()
 
-                this.$notify(data.message)
+        $notify(data.message)
 
-                this.$router.replace({ name: 'login' })
-            },
-        }
+        router.replace({ name: 'login' })
     }
 </script>

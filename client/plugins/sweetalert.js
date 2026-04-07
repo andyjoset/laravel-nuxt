@@ -1,20 +1,22 @@
 import SweetAlert from 'sweetalert2'
 
-export default function ({ app, $i18n, $axios, $vform }, inject) {
+export default defineNuxtPlugin((nuxtApp) => {
     const swal = {}
 
     const Swal = SweetAlert.mixin({
-        confirmButtonText: app.i18n.t('btns.ok'),
-        cancelButtonText: app.i18n.t('btns.cancel'),
+        confirmButtonText: nuxtApp.$i18n.t('btns.ok'),
+
+        cancelButtonText: nuxtApp.$i18n.t('btns.cancel'),
+
         willOpen: (container) => {
-            const { currentTheme: colors, isDark } = app.vuetify.framework.theme
+            const { colors, dark } = nuxtApp.$vuetify.theme.current.value
             const options = {
                 confirmButtonColor: colors.primary,
                 cancelButtonColor: colors.error,
                 denyButtonColor: colors.error,
             }
 
-            if (isDark) {
+            if (dark) {
                 options.background = '#1E1E1E'
                 container.getElementsByClassName('swal2-title')[0].style.color = '#E0E0E0'
                 container.getElementsByClassName('swal2-html-container')[0].style.color = '#E0E0E0'
@@ -52,8 +54,8 @@ export default function ({ app, $i18n, $axios, $vform }, inject) {
         url,
         form,
         text,
-        title = app.i18n.t('alerts.question'),
-        success = app.i18n.t('alerts.done'),
+        title = nuxtApp.$i18n.t('alerts.question'),
+        success = nuxtApp.$i18n.t('alerts.done'),
         method = 'post',
         options = {}
     }) {
@@ -70,12 +72,12 @@ export default function ({ app, $i18n, $axios, $vform }, inject) {
                 preConfirm: url
                     ? async () => {
                         try {
-                            return form instanceof $vform
+                            return form instanceof nuxtApp.$vform
                                 ? await form[method](url)
-                                : await $axios[method](url, form ?? {})
+                                : await nuxtApp.$axios[method](url, form ?? {})
                         } catch (e) {
                             Swal.showValidationMessage(
-                                form instanceof $vform
+                                form instanceof nuxtApp.$vform
                                     ? form.errors.first()
                                     : e?.response?.data?.message || e
                             )
@@ -100,12 +102,12 @@ export default function ({ app, $i18n, $axios, $vform }, inject) {
 
     swal.delete = function (options = {}) {
         return this.confirm({
-            title: app.i18n.t('alerts.sure'),
-            text: app.i18n.t('alerts.will_delete'),
+            title: nuxtApp.$i18n.t('alerts.sure'),
+            text: nuxtApp.$i18n.t('alerts.will_delete'),
             method: 'delete',
             ...options
         })
     }
 
-    inject('swal', swal)
-}
+    nuxtApp.provide('swal', swal)
+})

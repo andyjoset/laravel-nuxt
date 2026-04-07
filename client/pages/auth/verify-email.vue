@@ -1,52 +1,40 @@
 <template>
-    <v-alert :value="isInvalid" type="error" dismissible>
+    <v-alert :model-value="isInvalid" type="error" icon="mdi-alert" density="compact" closable>
         {{ $t('invalid_email_verification_link') }}
     </v-alert>
 </template>
 
-<script>
-    export default {
-        middleware: [
-            'auth',
-            ({ store, redirect }) => {
-                const user = store.getters['auth/user']
-                if (user.email_verified_at === undefined || user.email_verified_at) {
-                    return redirect({ name: 'profile.show' })
-                }
-            },
-        ],
+<script setup>
+    const { t } = useI18n()
+    const route = useRoute()
+    const router = useRouter()
+    const { $store, $axios, $config } = useNuxtApp()
 
-        data: () => ({
-            isInvalid: false,
-        }),
+    const isInvalid = ref(false)
 
-        head: vm => ({
-            title: vm.$t('verify_email'),
-        }),
+    useHead({
+        title: t('verify_email'),
+    })
 
-        created () {
-            this.$store.commit('TOGGLE_OVERLAY')
+    async function verifyEmail () {
+        try {
+            const url = new URL(route.query.verify_url)
 
-            this.verifyEmail()
-        },
+            $axios.defaults.baseURL = $config.public.appUrl
 
-        methods: {
-            async verifyEmail () {
-                try {
-                    const url = new URL(this.$route.query.verify_url)
+            await $axios.get(url.href.replace(url.origin, ''))
 
-                    this.$axios.setBaseURL(this.$config.appUrl)
+            router.replace({ name: 'profile.show', query: { verified: 1 } })
+        } catch (e) {
+            isInvalid.value = e?.response?.status === 403
+        }
 
-                    await this.$axios.get(url.href.replace(url.origin, ''))
-
-                    this.$router.replace({ name: 'profile.show', query: { verified: 1 } })
-                } catch (e) {
-                    this.isInvalid = e?.response?.status === 403
-                }
-
-                this.$axios.setBaseURL(this.$config.apiUrl)
-                this.$store.commit('TOGGLE_OVERLAY')
-            },
-        },
+        $axios.defaults.baseURL = $config.public.apiUrl
+        $store.toggleOverlay()
     }
+
+    onMounted (() => {
+        $store.toggleOverlay()
+        verifyEmail()
+    })
 </script>

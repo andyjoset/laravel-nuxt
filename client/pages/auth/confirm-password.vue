@@ -2,44 +2,32 @@
     <confirm-password-form @success="onFormSuccess" />
 </template>
 
-<script>
+<script setup>
     import ConfirmPasswordForm from '~/components/auth/ConfirmPasswordForm'
 
-    export default {
-        components: {
-            ConfirmPasswordForm,
-        },
+    const { t } = useI18n()
+    const route = useRoute()
+    const router = useRouter()
+    const { $store } = useNuxtApp()
 
-        middleware: [
-            'auth',
-            ({ $auth, query, redirect }) => {
-                if (!query.redirect) {
-                    return redirect('/')
-                }
-            },
-        ],
+    useHead({
+        title: t('confirm_password'),
+    })
 
-        head: vm => ({
-            title: vm.$t('confirm_password'),
-        }),
+    async function onFormSuccess (data) {
+        $store.toggleOverlay()
 
-        created () {
-            if (this.$store.state.overlay.show) {
-                this.$store.commit('TOGGLE_OVERLAY')
-            }
-        },
+        try {
+            await router.replace(route.query.redirect)
+        } catch (e) {
+        }
 
-        methods: {
-            async onFormSuccess (data) {
-                this.$store.commit('TOGGLE_OVERLAY')
-
-                try {
-                    await this.$router.replace(this.$route.query.redirect)
-                } catch (e) {
-                }
-
-                this.$store.commit('TOGGLE_OVERLAY')
-            },
-        },
+        $store.toggleOverlay()
     }
+
+    onMounted (() => {
+        if ($store.overlay.show) {
+            $store.toggleOverlay()
+        }
+    })
 </script>

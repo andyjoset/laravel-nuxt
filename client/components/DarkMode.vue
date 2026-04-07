@@ -1,85 +1,47 @@
 <template>
-    <div v-show="visible" class="d-inline-block">
-        <v-switch
-            v-if="isSwitch"
-            class="mb-0 mt-6"
-            :input-value="isActive"
-            color="secundary"
-            flat
-            @change="toggle" />
-
-        <v-btn
-            v-else
-            icon
-            small
-            :class="isActive ? 'mt-0' : 'mt-1'"
-            @click="toggle">
-            <v-icon size="20" :class="isActive ? 'black--text' : 'white--text'">
-                mdi-{{ isActive ? 'weather-night' : 'white-balance-sunny' }}
-            </v-icon>
-        </v-btn>
-    </div>
+    <v-btn
+        icon
+        size="small"
+        @click="toggle">
+        <v-icon
+            size="20"
+            :color="isActive ? '#000000' : '#FFFFFF'"
+            :icon="`mdi-${isActive ? 'weather-night' : 'white-balance-sunny'}`" />
+    </v-btn>
 </template>
 
-<script>
-    export default {
-        props: {
-            type: {
-                type: String,
-                default: 'button',
-                validator: value => ['button', 'switch'].includes(value),
-            }
-        },
+<script setup>
+    import { useTheme } from 'vuetify'
 
-        data: () => ({
-            visible: false
-        }),
+    const theme = useTheme()
+    const darkThemeCookie = useCookie('dark-theme', {
+        default: () => false,
+    })
 
-        computed: {
-            isActive () {
-                return this.$vuetify.theme.dark
-            },
-            isSwitch () {
-                return this.type === 'switch'
-            },
-        },
+    const isActive = computed (() => theme.current.value?.dark)
+    const isUndef = computed (() => darkThemeCookie.value === undefined)
 
-        created () {
-            if (process.browser) {
-                this.$vuetify.theme.dark = this.isUndef()
-                    ? this.getValueFromSystem()
-                    : this.getValueFromStorage()
-
-                this.visible = true
-            }
-        },
-
-        mounted () {
-            window.matchMedia('(prefers-color-scheme: dark)')
-                .addEventListener('change', (e) => {
-                    if (this.isUndef()) {
-                        this.$vuetify.theme.dark = e.matches
-                    }
-                })
-        },
-
-        methods: {
-            getValueFromStorage () {
-                return JSON.parse(localStorage['dark-mode'] || false)
-            },
-            getValueFromSystem () {
-                return window.matchMedia('(prefers-color-scheme: dark)').matches
-            },
-            toggle () {
-                if (process.browser) {
-                    const result = this.isUndef() ? !this.getValueFromSystem() : !this.getValueFromStorage()
-
-                    this.$vuetify.theme.dark = localStorage['dark-mode'] = result
-                }
-            },
-            isUndef () {
-                return localStorage['dark-mode'] === undefined
-            },
-        },
+    function toggle () {
+        setTheme(isUndef.value ? !getValueFromSystem() : !darkThemeCookie.value)
     }
+
+    function setTheme (dark) {
+        darkThemeCookie.value = dark
+        theme.change((dark ? 'dark' : 'light') + 'Theme')
+    }
+
+    function getValueFromSystem () {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    onMounted (() => {
+        setTheme(isUndef.value ? getValueFromSystem() : darkThemeCookie.value)
+
+        window.matchMedia('(prefers-color-scheme: dark)')
+            .addEventListener('change', (e) => {
+                if (darkThemeCookie.value) {
+                    setTheme(e.matches)
+                }
+            })
+    })
 </script>

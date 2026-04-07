@@ -1,4 +1,4 @@
-import vuetify from 'vuetify/es5/locale/es'
+import { es } from 'vuetify/locale'
 
 export default {
     home: 'Home',
@@ -38,6 +38,7 @@ export default {
     avatar: 'Avatar',
     users: 'Usuario | Usuarios',
     user_info: 'Información del Usuario',
+    role: 'Rol',
     roles: 'Rol | Roles',
     role_info: 'Información del Rol',
     permissions: 'Permiso | Permisos',
@@ -128,7 +129,7 @@ export default {
 
     // Vuetify overrides
     $vuetify: {
-        ...vuetify,
+        ...es,
         dataFooter: {
             pageText: 'Mostrando {0}-{1} de {2} resultados',
         },

@@ -2,13 +2,13 @@
     <app-data-table
         name="users"
         class="mt-12"
-        :items="items"
+        :items="data.data"
         item-name="user"
         :headers="headers"
-        :loading="fetching"
-        :heading="$tc('users', 2)"
+        :loading="pending"
+        :heading="$t('users', 2)"
         :filters="{ enabled: true }"
-        :pagination="pagination"
+        :pagination="data.meta"
         :server-action="serverAction"
         :action-create="actionCreate"
         :actions-validations="actionsValidations"
@@ -18,125 +18,128 @@
         @item-updated="onItemUpdated"
         @item-deleted="onItemDeleted">
         <template #[`filters.items`]>
-            <v-list-item>
-                <v-list-item-content class="pb-0">
-                    <v-select
-                        v-model="status"
-                        dense
-                        outlined
-                        :items="statuses"
-                        :disabled="fetching"
-                        :label="$t('user_status')"
-                        :clearable="Boolean(status)"
-                        @change="updateQueryString('status')" />
-                </v-list-item-content>
+            <v-list-item class="pb-0">
+                <v-select
+                    v-model="status"
+                    item-value="key"
+                    density="compact"
+                    :items="statuses"
+                    variant="underlined"
+                    :disabled="pending"
+                    :label="$t('user_status')"
+                    :clearable="Boolean(status)"
+                    @update:model-value="updateQueryString('status')" />
             </v-list-item>
         </template>
 
+        <template #[`item.role`]="{ item: user }">
+            <span v-text="pluck(user.roles, 'name', true) || 'N/A'" />
+        </template>
+
         <template #[`item.active`]="{ item: user }">
-            <span v-t="user.active ? 'active' : 'banned'" />
+            <span v-text="$t(user.active ? 'active' : 'banned')" />
         </template>
 
         <template #append-actions="{ item: user }">
-            <v-tooltip v-if="!userIsAdmin(user) && $can('users.toggle')" top>
-                <template #activator="{ on }">
+            <v-tooltip v-if="!userIsAdmin(user) && $can('users.toggle')" location="top">
+                <template #activator="{ props }">
                     <v-icon
-                        small
-                        :disabled="fetching"
+                        size="small"
+                        :disabled="pending"
                         :color="user.active ? 'error' : 'success'"
-                        @click="toggleStatus(user)"
-                        v-on="on">
-                        mdi-{{ user.active ? 'cancel' : 'check' }}
-                    </v-icon>
+                        :icon="`mdi-${user.active ? 'cancel' : 'check'}`"
+                        v-bind="props"
+                        @click="toggleStatus(user)" />
                 </template>
-                <span v-t="{ path: 'btns.toggle_user_account', args: { active: user.active } }" />
+                <span v-text="$t('btns.toggle_user_account', { active: user.active })" />
             </v-tooltip>
         </template>
     </app-data-table>
 </template>
 
-<script>
-    import InteractsWithDataTable from '~/components/mixins/InteractsWithDataTable'
+<script setup>
+    import useHelpers from '~/composables/helpers'
+    import useDataTable from '~/composables/data-table'
 
-    export default {
-        mixins: [InteractsWithDataTable],
+    const { t } = useI18n()
+    const { $can, pluck } = useHelpers()
+    const { $swal, $axios } = useNuxtApp()
+    const route = useRoute()
 
-        async asyncData ({ $axios, query }) {
-            try {
-                const { data: items, meta: pagination } = await $axios.$get('/admin/users', { params: query })
+    useHead({
+        title: t('users', 2),
+    })
 
-                return {
-                    items,
-                    pagination,
-                    fetching: false,
-                    status: query.status ?? null,
-                }
-            } catch (e) {
-            }
+    const serverAction = ref('/admin/users')
+    const {
+        setData,
+        onPaginate,
+        updateQueryString,
+        onItemCreated,
+        onItemUpdated,
+        onItemDeleted,
+    } = useDataTable(serverAction)
 
-            return { fetching: false }
+    const { data, pending } = await useAsyncData('users', () => $axios.$get(serverAction.value, { params: {
+        s: route.query.s,
+        page: route.query.page,
+        status: route.query.status,
+    }}), { watch: [
+        () => route.query.s,
+        () => route.query.page,
+        () => route.query.status,
+    ]})
+
+    const status = ref(route.query.status ?? null)
+    const actionsValidations = ref({
+        update: {
+            callback: user => !userIsAdmin(user),
         },
-
-        data: vm => ({
-            status: null,
-            serverAction: '/admin/users',
-            actionsValidations: {
-                update: {
-                    callback: user => !vm.userIsAdmin(user),
-                },
-                delete: {
-                    callback: user => !vm.userIsAdmin(user),
-                },
-            },
-        }),
-
-        head: vm => ({
-            title: vm.$tc('users', 2),
-        }),
-
-        computed: {
-            headers () {
-                return [
-                    { text: this.$t('id'), value: 'id', sortable: true },
-                    { text: this.$tc('name'), value: 'name', sortable: true },
-                    { text: this.$t('email'), value: 'email', sortable: true },
-                    { text: this.$t('status'), value: 'active', sortable: true },
-                ]
-            },
-            actionCreate () {
-                return { icon: 'mdi-account-plus', text: this.$t('create', [this.$tc('users')]) }
-            },
-            statuses () {
-                return [
-                    { text: `-- ${this.$t('labels.all')} --`, value: null },
-                    { text: this.$t('active'), value: '1' },
-                    { text: this.$t('banned'), value: '0' },
-                ]
-            },
+        delete: {
+            callback: user => !userIsAdmin(user),
         },
+    })
 
-        watchQuery: [...InteractsWithDataTable.watchQuery, 'status'],
+    const headers = computed(() => [
+        { title: t('id'), key: 'id', sortable: true },
+        { title: t('name'), key: 'name', sortable: true },
+        { title: t('role'), key: 'role', sortable: true },
+        { title: t('email'), key: 'email', sortable: true },
+        { title: t('status'), key: 'active', sortable: true },
+    ])
 
-        methods: {
-            async toggleStatus (item) {
-                const text = this.$t(item.active
-                    ? 'alerts.ban_user'
-                    : 'alerts.unban_user'
-                )
+    const actionCreate = computed(() => ({
+        icon: 'mdi-account-plus', text: t('create', [t('users')]),
+    }))
 
-                const res = await this.$swal.confirm({
-                    text,
-                    method: 'patch',
-                    url: `/admin/users/${item.id}/toggle`,
-                })
+    const statuses = computed(() => [
+        { title: `-- ${t('labels.all')} --`, key: null },
+        { title: t('active'), key: '1' },
+        { title: t('banned'), key: '0' },
+    ])
 
-                if (!res.dismiss) {
-                    this.onItemUpdated({ item, data: res.data })
-                }
-            },
-            userIsAdmin (user) {
-                return user.roles.some(role => role.name === 'Super Admin')
-            },
-        },
+    async function toggleStatus (item) {
+        const text = t(item.active
+            ? 'alerts.ban_user'
+            : 'alerts.unban_user'
+        )
+
+        const res = await $swal.confirm({
+            text,
+            method: 'patch',
+            url: `/admin/users/${item.id}/toggle`,
+        })
+
+        if (!res.dismiss) {
+            onItemUpdated({ item, data: res.data })
+        }
     }
+
+    function userIsAdmin (user) {
+        return user.roles.some(role => role.name === 'Super Admin')
+    }
+
+    watch(data, (value) => {
+        setData(value)
+    }, { immediate: true })
 </script>

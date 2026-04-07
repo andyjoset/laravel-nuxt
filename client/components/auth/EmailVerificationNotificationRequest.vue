@@ -1,71 +1,75 @@
 <template>
     <v-alert v-if="isValid" v-bind="$attrs" type="info">
-        <i18n path="email_verification_required.text">
+        <i18n-t keypath="email_verification_required.text" scope="global">
             <template #action>
-                <v-btn text @click="requestEmailVerificationNotification">
+                <v-btn variant="text" @click="requestEmailVerificationNotification">
                     {{ $t('email_verification_required.action_text') }}
                 </v-btn>
             </template>
-        </i18n>
+        </i18n-t>
 
-        <v-overlay absolute :value="pending">
+
+        <v-overlay
+            contained
+            persistent
+            :model-value="pending"
+            class="align-center justify-center">
             <v-progress-circular indeterminate size="32" color="primary" />
         </v-overlay>
     </v-alert>
 </template>
 
-<script>
-    export default {
-        data: () => ({
-            pending: false,
-            lastRequest: null,
-        }),
+<script setup>
+    import { useAuthStore } from '~/store/auth'
+    import useHelpers from '~/composables/helpers'
 
-        computed: {
-            user () {
-                return this.$store.getters['auth/user']
-            },
-            isValid () {
-                if (this.user.email_verified_at === undefined) {
-                    return false
-                }
+    const { t } = useI18n()
+    const { $auth } = useNuxtApp()
+    const authStore = useAuthStore()
+    const { $notify, dateDiff } = useHelpers()
 
-                const canRequest = this.lastRequest ? this.dateDiff(new Date(), this.lastRequest, 'hours') > 1 : true
+    const pending = ref(false)
+    const lastRequest = ref(null)
 
-                return !this.user.email_verified_at && canRequest
-            },
-        },
+    const user = computed(() => authStore.user)
 
-        mounted () {
-            this.lastRequest = localStorage.last_email_veritificaion_notification
-        },
+    const isValid = computed(() => {
+        if (user.value.email_verified_at === undefined) {
+            return false
+        }
 
-        methods: {
-            async requestEmailVerificationNotification () {
-                this.lastRequest = localStorage.last_email_veritificaion_notification
+        const canRequest = lastRequest.value ? dateDiff(new Date(), lastRequest.value, 'hours') > 1 : true
 
-                if (!this.isValid) {
-                    return this.$notify({
-                        color: 'error',
-                        message: this.$t(this.user.email_verified_at
-                            ? 'email_already_verified'
-                            : 'verification_link_recently_sent'
-                        ),
-                    })
-                }
+        return !user.value.email_verified_at && canRequest
+    })
 
-                this.pending = true
+    async function requestEmailVerificationNotification () {
+        lastRequest.value = localStorage.last_email_veritificaion_notification
 
-                try {
-                    await this.$auth.requestEmailVerificationNotification()
+        if (!isValid.value) {
+            return $notify({
+                color: 'error',
+                message: t(user.value.email_verified_at
+                    ? 'email_already_verified'
+                    : 'verification_link_recently_sent'
+                ),
+            })
+        }
 
-                    this.lastRequest = localStorage.last_email_veritificaion_notification = new Date()
+        pending.value = true
 
-                    this.$notify(this.$t('verification_link_sent'))
-                } catch (e) {}
+        try {
+            await $auth.requestEmailVerificationNotification()
 
-                this.pending = false
-            },
-        },
+            lastRequest.value = localStorage.last_email_veritificaion_notification = new Date()
+
+            $notify(t('verification_link_sent'))
+        } catch (e) {}
+
+        pending.value = false
     }
+
+    onMounted (() => {
+        lastRequest.value = localStorage.last_email_veritificaion_notification
+    })
 </script>

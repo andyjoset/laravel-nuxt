@@ -1,49 +1,43 @@
 import Cookies from 'js-cookie'
+import { defineStore } from 'pinia'
+import { useAuthStore } from '~/store/auth'
 
-export const state = () => ({
-    snackbar: {
-        message: '',
-        color: '',
-        outlined: false,
-        timeout: 5000,
-    },
-    overlay: {
-        show: false,
+export const useMainStore = defineStore('main', {
+    state: () => ({
+        snackbar: {
+            message: '',
+            color: '',
+            timeout: 5000,
+            variant: 'elevated',
+        },
+        overlay: {
+            show: false,
+        },
+    }),
+
+    actions: {
+        showSnackbarMessage (config = {}) {
+            Object.assign(this.snackbar, config)
+        },
+
+        toggleOverlay (options = {}) {
+            Object.assign(this.overlay, {
+                ...options,
+                show: !this.overlay.show,
+            })
+        },
+
+        nuxtClientInit ({ $config }) {
+            const authStore = useAuthStore()
+            if (!$config.public.isStateful) {
+                const token = Cookies.get('token')
+
+                if (token) {
+                    authStore.setToken(token)
+                }
+            }
+        }
     },
 })
 
-export const getters = {
-    snackbar: (state, getters, rootState) => rootState.snackbar,
-    overlay: (state, getters, rootState) => rootState.overlay,
-}
-
-export const mutations = {
-    SHOW_SNACKBAR_MESSAGE (state, config = {}) {
-        Object.assign(state.snackbar, config)
-    },
-
-    TOGGLE_OVERLAY (state, options = {}) {
-        Object.assign(state.overlay, {
-            ...options,
-            show: !state.overlay.show,
-        })
-    },
-}
-
-export const actions = {
-    nuxtServerInit ({ commit }, { $reqCookies }) {
-        if ($reqCookies.has('token')) {
-            commit('auth/SET_TOKEN', $reqCookies.get('token'))
-        }
-    },
-
-    nuxtClientInit ({ commit, getters }, { $config }) {
-        if (!$config.isStateful) {
-            const token = Cookies.get('token')
-
-            if (token) {
-                commit('auth/SET_TOKEN', token)
-            }
-        }
-    }
-}
+export default useMainStore

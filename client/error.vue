@@ -14,22 +14,17 @@
     </v-row>
 </template>
 
-<script>
-    export default {
-        layout: 'empty',
-
-        props: {
-            error: {
-                type: Object,
-                default: null,
-            }
+<script setup>
+    const props = defineProps({
+        error: {
+            type: Object,
+            default: null,
         },
+    })
 
-        data: () => ({
-        }),
+    const { t } = useI18n()
 
-        head: vm => ({
-            title: vm.$t(`errors.${vm.error.statusCode}`),
-        }),
-    }
+    useHead({
+        title: t(`errors.${props.error.statusCode}`),
+    })
 </script>

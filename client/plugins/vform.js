@@ -1,11 +1,11 @@
 import { Form, Errors } from 'vform'
 
-export default function ({ $axios, redirect }, inject) {
+export default defineNuxtPlugin((nuxtApp) => {
     Errors.prototype.first = function () {
         return this.flatten()[0]
     }
 
-    Form.axios = $axios
+    Form.axios = nuxtApp.$axios
 
-    inject('vform', Form)
-}
+    nuxtApp.provide('vform', Form)
+})

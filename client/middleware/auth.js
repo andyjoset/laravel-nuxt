@@ -1,5 +1,8 @@
-export default ({ store, redirect, route }) => {
-    if (!store.getters['auth/check']) {
-        return redirect({ name: 'login', query: { redirect: route.fullPath } })
+import { useAuthStore } from '~/store/auth'
+
+export default defineNuxtRouteMiddleware((to, from) => {
+    const authStore = useAuthStore()
+    if (!authStore.check) {
+        return navigateTo({ name: 'login', query: { redirect: to.fullPath } })
     }
-}
+})

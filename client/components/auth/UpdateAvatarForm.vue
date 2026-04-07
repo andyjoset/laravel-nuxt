@@ -6,136 +6,126 @@
         icon="mdi-account-circle"
         :title="$t('update', [$t('avatar')])"
         :container-options="{ class: 'px-2' }"
-        v-on="$listeners"
+        v-on="$attrs"
         @cancel="clearForm"
         @success="onFormSuccess">
         <v-list-item three-line class="mb-2">
-            <v-list-item-avatar size="100">
-                <v-avatar size="100%">
-                    <img :src="preview" :alt="user.name">
+            <template #prepend>
+                <v-avatar :image="preview" size="100">
+                    <v-img :src="preview" />
                 </v-avatar>
-            </v-list-item-avatar>
-            <v-list-item-content class="mt-6">
-                <v-file-input
-                    v-model="form.avatar"
-                    clearable
-                    show-size
-                    accept="image/*,"
-                    :label="$t('labels.avatar')"
-                    :error="form.errors.has('avatar')"
-                    :error-messages="form.errors.get('avatar')" />
-            </v-list-item-content>
+            </template>
+            <v-file-input
+                v-model="selectedAvatar"
+                clearable
+                show-size
+                accept="image/*,"
+                variant="underlined"
+                :label="$t('labels.avatar')"
+                :error="form.errors.has('avatar')"
+                :error-messages="form.errors.get('avatar')" />
         </v-list-item>
 
         <template #actions="{ handleCancelClick, submit }">
             <v-card-actions>
                 <v-spacer />
-                <v-tooltip top>
-                    <template #activator="{ on }">
+                <v-tooltip location="top">
+                    <template #activator="{ props }">
                         <v-btn
-                            small
+                            icon
+                            size="small"
                             color="error"
-                            class="mr-2 v-btn--round v-btn--fab"
+                            variant="elevated"
                             :disabled="form.busy"
-                            @click="handleCancelClick"
-                            v-on="on">
-                            <v-icon size="26">mdi-close-circle</v-icon>
+                            v-bind="props"
+                            @click="handleCancelClick">
+                            <v-icon size="26" icon="mdi-close-circle" />
                         </v-btn>
                     </template>
-                    <span v-t="'btns.cancel'" />
+                    <span v-text="$t('btns.cancel')" />
                 </v-tooltip>
 
-                <v-tooltip v-if="showDeleteBtn" top>
-                    <template #activator="{ on }">
+                <v-tooltip v-if="showDeleteBtn" location="top">
+                    <template #activator="{ props }">
                         <v-btn
-                            small
+                            icon
+                            size="small"
                             color="info"
-                            class="mr-2 v-btn--round v-btn--fab"
+                            variant="elevated"
                             :loading="form.busy"
-                            @click="restoreAvatar(submit)"
-                            v-on="on">
-                            <v-icon size="26">mdi-restore</v-icon>
+                            v-bind="props"
+                            @click="restoreAvatar(submit)">
+                            <v-icon size="26" icon="mdi-restore" />
                         </v-btn>
                     </template>
-                    <span v-t="{ path: 'delete', args: [$t('avatar')] }" />
+                    <span v-text="$t('delete', [$t('avatar')])" />
                 </v-tooltip>
 
-                <v-tooltip v-if="showUploadBtn" top>
-                    <template #activator="{ on }">
+                <v-tooltip v-if="showUploadBtn" location="top">
+                    <template #activator="{ props }">
                         <v-btn
-                            small
+                            icon
+                            size="small"
                             color="primary"
-                            class="v-btn--round v-btn--fab"
+                            variant="elevated"
                             :loading="form.busy"
-                            @click="updateAvatar(submit)"
-                            v-on="on">
-                            <v-icon size="26">mdi-upload</v-icon>
+                            v-bind="props"
+                            @click="updateAvatar(submit)">
+                            <v-icon size="26" icon="mdi-upload" />
                         </v-btn>
                     </template>
-                    <span v-t="{ path: 'upload', args: [$t('avatar')] }" />
+                    <span v-text="$t('upload', [$t('avatar')])" />
                 </v-tooltip>
             </v-card-actions>
         </template>
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
+    import useHelpers from '~/composables/helpers'
+    import { useAuthStore } from '~/store/auth'
 
-    export default {
-        mixins: [HasForm],
+    const authStore = useAuthStore()
+    const { t } = useI18n()
+    const { $notify, blank } = useHelpers()
+    const { form, clearForm, formHasFiles } = useForm({
+        avatar: null,
+        _method: 'PUT',
+    })
 
-        data: vm => ({
-            formHasFiles: true,
-            form: vm.$vform.make({
-                avatar: null,
-                _method: 'PUT',
-            }),
-        }),
+    formHasFiles.value = true
 
-        computed: {
-            user () {
-                return this.$store.getters['auth/user']
-            },
-            preview () {
-                if (this.form.avatar === null) {
-                    return this.user.photo_url
-                }
-
-                return URL.createObjectURL(this.form.avatar)
-            },
-            showUploadBtn () {
-                return !this.form.busy || !this.form._method || this.isUpdating
-            },
-            showDeleteBtn () {
-                return !this.user.photo_url.includes('default-avatar.png') &&
-                    (!this.form.busy || !this.form._method || this.form._method === 'DELETE')
-            },
-            isUpdating () {
-                return this.form._method && this.form._method === 'PUT'
-            },
-        },
-
-        methods: {
-            restoreAvatar (submit) {
-                this.form._method = 'DELETE'
-
-                submit()
-            },
-            updateAvatar (submit) {
-                this.form._method = 'PUT'
-
-                submit()
-            },
-            onFormSuccess (data) {
-                this.$store.commit('auth/UPDATE_USER', data)
-
-                this.$notify(
-                    this.$t('alerts.' + (this.isUpdating ? 'updated' : 'deleted'))
-                )
-
-                this.clearForm()
-            },
+    const selectedAvatar = ref(null)
+    const user = computed (() => authStore.user)
+    const preview = computed (() => {
+        if (blank(selectedAvatar.value)) {
+            return user.value.photo_url
         }
+
+        return URL.createObjectURL(selectedAvatar.value)
+    })
+
+    const isUpdating = computed (() => form._method && form._method === 'PUT')
+    const showUploadBtn = computed (() => !form.busy || !form._method || isUpdating.value)
+    const showDeleteBtn = computed (() =>
+        !user.value.photo_url.includes('default-avatar.png') &&
+        (!form.busy || !form._method || form._method === 'DELETE'))
+
+    function restoreAvatar (submit) {
+        form._method = 'DELETE'
+        submit()
+    }
+
+    function updateAvatar (submit) {
+        form._method = 'PUT'
+        form.avatar = selectedAvatar.value
+        submit()
+    }
+
+    function onFormSuccess (data) {
+        authStore.updateUser(data)
+        $notify(t('alerts.' + (isUpdating.value ? 'updated' : 'deleted')))
+        clearForm()
     }
 </script>

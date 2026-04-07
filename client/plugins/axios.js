@@ -1,50 +1,67 @@
-export default function ({ app, $axios, $config, store, redirect }) {
-    $axios.setBaseURL($config.apiUrl)
+import axios from 'axios'
+import { useAuthStore } from '~/store/auth'
 
-    if ($config.isStateful) {
-        $axios.defaults.withCredentials = true
+export default defineNuxtPlugin(({ $i18n, $swal, $config, $router, provide }) => {
+    const authStore = useAuthStore()
+    axios.defaults.baseURL = $config.public.apiUrl
+
+    if ($config.public.isStateful) {
+        axios.defaults.withCredentials = true
     }
 
-    $axios.onRequest((config) => {
-        const token = store.getters['auth/token']
+    // Request interceptor
+    axios.interceptors.request.use((request) => {
+        const token = authStore.token
         if (token) {
-            $axios.setToken(token, 'Bearer')
+            request.headers.Authorization = `Bearer ${token}`
         }
 
-        const locale = app.i18n.getLocaleCookie()
+        const locale = $i18n.getLocaleCookie()
         if (locale) {
-            $axios.setHeader('Accept-Language', locale)
+            request.headers['Accept-Language'] = locale
         }
 
-        if (process.server && $config.isStateful && !config.headers.common.referer) {
-            $axios.setHeader('Referer', process.env.SPA_URL)
+        if (import.meta.server && $config.public.isStateful && !$config.headers.referer) {
+            request.headers.Referer = process.env.SPA_URL
         }
+
+        return request
     })
 
-    $axios.onError((error) => {
+    // Response interceptor
+    axios.interceptors.response.use(response => response, (error) => {
+        if (!error.response) {
+            return
+        }
+
         const status = error.response.status
-        const auth = store.getters['auth/check']
-        const currentPath = app.router.currentRoute.fullPath
+        const auth = authStore.check
+        const currentPath = $router.currentRoute.fullPath
 
         if (status === 401) {
-            store.commit('auth/CLEAR')
-
-            return redirect({ name: 'login', query: { redirect: currentPath } })
+            authStore.clear()
+            return navigateTo({ name: 'login', query: { redirect: currentPath } })
         }
 
         if (status === 403) {
-            app.$swal.warning({
-                title: app.i18n.t('alerts.unauthorized'),
+            $swal.warning({
+                title: $i18n.t('alerts.unauthorized'),
                 text: error.response.data.message,
             }).then(() => {
-                redirect(auth ? { name: 'dashboard' } : '/')
+                navigateTo(auth ? { name: 'dashboard' } : '/')
             })
         }
 
         if (status === 423) {
-            return redirect({ name: 'password.confirm', query: { redirect: currentPath } })
+            return navigateTo({ name: 'password.confirm', query: { redirect: currentPath } })
         }
 
-        Promise.reject(error)
+        return Promise.reject(error)
     })
-}
+
+    for (const method of ['request', 'delete', 'get', 'head', 'options', 'post', 'put', 'patch']) {
+        axios['$' + method] = function () { return axios[method].apply(this, arguments).then(res => res && res.data) }
+    }
+
+    provide('axios', axios)
+})

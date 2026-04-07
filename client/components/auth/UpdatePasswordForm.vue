@@ -6,7 +6,7 @@
         icon="mdi-shield-account"
         :title="$t('change_password')"
         :container-options="formContainerOptions"
-        v-on="$listeners"
+        v-on="$attrs"
         @cancel="clearForm"
         @success="onFormSuccess">
         <v-text-field
@@ -14,6 +14,7 @@
             autofocus
             class="my-4"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.current_password')"
             :error="form.errors.has('current_password')"
@@ -23,6 +24,7 @@
             v-model="form.password"
             class="my-4"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.password_confirmation')"
             :error="form.errors.has('password')"
@@ -32,6 +34,7 @@
             v-model="form.password_confirmation"
             class="my-4"
             type="password"
+            variant="underlined"
             prepend-icon="mdi-lock"
             :label="$t('labels.new_password')"
             :error="form.errors.has('password')"
@@ -39,28 +42,24 @@
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
+    import useHelpers from '~/composables/helpers'
 
-    export default {
-        mixins: [HasForm],
+    const { t } = useI18n()
+    const { $auth } = useNuxtApp()
+    const { $notify } = useHelpers()
+    const { form, clearForm } = useForm({
+        password: '',
+        current_password: '',
+        password_confirmation: '',
+    })
 
-        data: vm => ({
-            action: form => vm.$auth.updatePassword(form),
-            formContainerOptions: { class: 'pa-2' },
-            form: vm.$vform.make({
-                password: '',
-                current_password: '',
-                password_confirmation: '',
-            })
-        }),
+    const action = form => $auth.updatePassword(form)
+    const formContainerOptions = { class: 'pa-2' }
 
-        methods: {
-            onFormSuccess () {
-                this.clearForm()
-
-                this.$notify(this.$t('password_updated'))
-            },
-        }
+    function onFormSuccess () {
+        clearForm()
+        $notify(t('password_updated'))
     }
 </script>

@@ -1,3 +1,3 @@
-export default async function (context) {
-    await context.store.dispatch('nuxtClientInit', context)
-}
+export default defineNuxtPlugin(async (nuxtApp) => {
+    await nuxtApp.$store.nuxtClientInit(nuxtApp)
+})

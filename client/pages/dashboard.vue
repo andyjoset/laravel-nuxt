@@ -7,24 +7,20 @@
                 class="mb-2">
             <blockquote
                 v-if="user"
-                v-t="{ path: 'dashboard.welcome', args: [user.name] }"
-                class="blockquote" />
+                class="blockquote"
+                v-text="$t('dashboard.welcome', [user.name])" />
         </v-col>
     </v-row>
 </template>
 
-<script>
-    export default {
-        middleware: ['auth'],
+<script setup>
+    import { useAuthStore } from '~/store/auth'
 
-        head: vm => ({
-            title: vm.$t('dashboard.title'),
-        }),
+    const { t } = useI18n()
+    const authStore = useAuthStore()
+    const user = computed(() => authStore.user)
 
-        computed: {
-            user () {
-                return this.$store.getters['auth/user']
-            },
-        },
-    }
+    useHead({
+        title: t('dashboard.title'),
+    })
 </script>

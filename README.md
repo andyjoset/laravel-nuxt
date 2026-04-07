@@ -5,7 +5,7 @@
 > A Laravel + Nuxt starter template.
 
 <p align="center">
-    <img src="client/static/laravel-nuxt.gif" width="800" height="300">
+    <img src="client/public/laravel-nuxt.gif" width="800" height="300">
 </p>
 
 ## Features
@@ -13,12 +13,12 @@
 - [Laravel 11](https://laravel.com/docs/11.x)
 - Laravel [Fortify] + [Sanctum]
 - Laravel Permission from [Spatie](https://spatie.be/docs/laravel-permission)
-- [Nuxt 2](https://nuxtjs.org/)
+- [Nuxt 3](https://nuxt.com/docs/3.x/)
+- [Vuetify 3](https://v3.vuetifyjs.com/)
 - SPA (default) or SSR
-- [Nuxt modules:](https://modules.nuxtjs.org/)
-    - Vuetify
-    - Router
-    - Axios
+- [Nuxt modules:](https://nuxt.com/modules)
+    - VueUse
+    - Pinia
     - I18n
     - ESlint
 - [VForm] + [Sweetalert 2] + [Material Design Icons]
@@ -84,9 +84,11 @@ npm run build
 
 ### Enable SSR
 
-- Edit `client/nuxt.config.js`:
+- Edit `nuxt.config.js`:
     - Set `ssr: true` 
     - Comment `nuxtClientInit` plugin
+- Edit `client/plugins/vuetify.js`:
+    - Set `ssr: true` 
 - Edit `.env` variables:
     - Set `APP_URL=http://api.domain.com`
     - Set `SPA_URL=http://domain.com`

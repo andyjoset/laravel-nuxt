@@ -6,24 +6,25 @@
         :method="method"
         :readonly="readonly"
         :disabled="form.busy"
-        v-on="$listeners"
         @success="onFormSuccess"
         @cancel="onFormCancelled">
         <v-text-field
             v-model="form.name"
-            dense
             autofocus
             class="my-4"
+            density="compact"
+            variant="underlined"
             prepend-icon="mdi-face"
-            :label="$tc('labels.name')"
+            :label="$t('labels.name')"
             :error="form.errors.has('name')"
             :error-messages="form.errors.get('name')" />
 
         <v-text-field
             v-model="form.email"
-            dense
             class="mb-4"
             type="email"
+            density="compact"
+            variant="underlined"
             prepend-icon="mdi-email"
             :label="$t('labels.email')"
             :error="form.errors.has('email')"
@@ -32,9 +33,10 @@
         <app-select
             v-if="$can('users.assign-role')"
             v-model="form.role_id"
-            dense
-            item-text="name"
             item-value="id"
+            item-title="name"
+            density="compact"
+            variant="underlined"
             server-action="/roles"
             prepend-icon="mdi-shield"
             :label="$t('labels.role')"
@@ -43,55 +45,45 @@
     </app-form>
 </template>
 
-<script>
-    import HasForm from '~/components/mixins/HasForm'
+<script setup>
+    import useForm from '~/composables/form'
+    import useHelpers from '~/composables/helpers'
 
-    export default {
-        mixins: [HasForm],
-
-        props: {
-            user: {
-                type: Object,
-                required: false,
-                default: () => null,
-            },
+    const props = defineProps({
+        user: {
+            type: Object,
+            required: false,
+            default: () => null,
         },
+    })
 
-        data: vm => ({
-            formInitialValuesProp: 'user',
-            form: vm.$vform.make({
-                name: '',
-                email: '',
-                role_id: null,
-            }),
-        }),
+    const { t } = useI18n()
+    const attrs = useAttrs()
+    const { $can } = useHelpers()
 
-        computed: {
-            title () {
-                if (this.readonly) {
-                    return this.$t('user_info')
-                }
+    const { form, method, onFormSuccess, onFormCancelled } = useForm({
+        name: '',
+        email: '',
+        role_id: null,
+    }, props.user, getformvalues)
 
-                return this.$t(this.user ? 'edit' : 'create', [this.$tc('users')])
-            },
-            action () {
-                return this.user ? `/admin/users/${this.user.id}` : '/admin/users'
-            },
-            userIsSuperAdmin () {
-                return this.user?.roles?.includes(role => role.name === 'Super Admin')
-            },
-        },
-
-        methods: {
-            getFormValues () {
-                const values = { ...this.user }
-
-                if (this.user) {
-                    values.role_id = this.user.roles[0]?.id || null
-                }
-
-                return values
-            },
+    const title = computed(() => {
+        if (attrs.readonly) {
+            return t('user_info')
         }
+
+        return t(props.user ? 'edit' : 'create', [t('users')])
+    })
+
+    const action = computed(() => props.user ? `/admin/users/${props.user.id}` : '/admin/users')
+
+    function getformvalues () {
+        const values = { ...props.user }
+
+        if (props.user) {
+            values.role_id = props.user.roles[0]?.id || null
+        }
+
+        return values
     }
 </script>
