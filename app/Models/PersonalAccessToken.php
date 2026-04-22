@@ -50,7 +50,7 @@ class PersonalAccessToken extends Model
      */
     public static function findToken($token)
     {
-        $token = static::cache()->remember($token, config('sanctum.expiration'), function () use ($token) {
+        $token = static::cache()->remember(str($token)->before('|'), config('sanctum.expiration') * 60, function () use ($token) {
             return parent::findToken($token) ?? '_null_';
         });
 

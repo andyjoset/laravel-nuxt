@@ -9,21 +9,20 @@
         "php": "^8.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/fortify": "^1.36",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3",
-        "laravel/tinker": "^2.11",
+        "laravel/tinker": "^3.0",
         "spatie/laravel-permission": "^7.0"
     },
     "require-dev": {
-        "beyondcode/laravel-dump-server": "^2.1",
         "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.24",
+        "laravel/pail": "^1.2.5",
+        "laravel/pint": "^1.27",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "pestphp/pest-plugin-laravel": "^3.2",
-        "phpunit/phpunit": "^11.5.50",
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "phpunit/phpunit": "^12.5.12",
         "spatie/laravel-ignition": "^2.12"
     },
     "autoload": {
@@ -44,7 +43,7 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
-            "npm install",
+            "npm install --ignore-scripts",
             "npm run build"
         ],
         "dev": [

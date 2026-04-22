@@ -8,9 +8,13 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+#[Fillable(['name', 'email', 'active', 'avatar', 'password'])]
+#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable // implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
@@ -31,19 +35,6 @@ class User extends Authenticatable // implements MustVerifyEmail
             $model->avatar = $model->avatar ?? static::DEFAULT_AVATAR_PATH;
         });
     }
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'avatar',
-        'active',
-        'password',
-    ];
 
     /**
      * The attributes that should be hidden for serialization.
