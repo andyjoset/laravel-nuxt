@@ -131,7 +131,7 @@ export default defineNuxtConfig({
             { code: 'es', language: 'es-ES', name: 'Español', file: 'es.js' },
         ],
         baseUrl: process.env.APP_URL,
-        defaultLocale: process.env.DEFAULT_LOCALE || 'en',
+        defaultLocale: process.env.APP_LOCALE || 'en',
     },
 
     hooks: {

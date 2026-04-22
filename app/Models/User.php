@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
+use Database\Factories\UserFactory;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable // implements MustVerifyEmail
 {
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
@@ -33,7 +35,7 @@ class User extends Authenticatable // implements MustVerifyEmail
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -44,9 +46,9 @@ class User extends Authenticatable // implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes that should be hidden for serialization.
      *
-     * @var array
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -54,14 +56,18 @@ class User extends Authenticatable // implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'active' => 'boolean',
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'active' => 'boolean',
+        ];
+    }
 
     public function getPhotoUrlAttribute(): ?string
     {

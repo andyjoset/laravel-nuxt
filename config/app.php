@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('DEFAULT_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'en'),
 
     'locales' => [
         'en' => 'en',
@@ -106,7 +106,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 

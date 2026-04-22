@@ -34,10 +34,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache PHP dependencies
-        uses: actions/cache@v3.0.1
+        uses: actions/cache@v4
         with:
           path: vendor
           key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -64,4 +64,4 @@ jobs:
           DB_USERNAME: user
           DB_PASSWORD: secret
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
-        run: vendor/bin/phpunit
+        run: vendor/bin/pest

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -25,8 +25,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'active' => true,
             'password' => static::$password ??= Hash::make('password'),
@@ -70,7 +70,7 @@ class UserFactory extends Factory
     public function randomStatus(): static
     {
         return $this->state(fn (array $attributes) => [
-            'active' => $this->faker->randomElement([true, false]),
+            'active' => fake()->randomElement([true, false]),
         ]);
     }
 }

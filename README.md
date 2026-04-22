@@ -10,7 +10,7 @@
 
 ## Features
 
-- [Laravel 11](https://laravel.com/docs/11.x)
+- [Laravel 12](https://laravel.com/docs/12.x)
 - Laravel [Fortify] + [Sanctum]
 - Laravel Permission from [Spatie](https://spatie.be/docs/laravel-permission)
 - [Nuxt 3](https://nuxt.com/docs/3.x/)

@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## [v2.1.0](https://github.com/andyjoset/laravel-nuxt/compare/2.0.0...master)
+
+- Laravel 12 support
+
 ## [v2.0.0](https://github.com/andyjoset/laravel-nuxt/compare/1.2.0...master)
 
 - Laravel 11 support
