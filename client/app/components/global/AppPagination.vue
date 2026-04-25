@@ -18,7 +18,7 @@
                 color="primary"
                 @update:model-value="paginate" />
 
-            <v-row v-if="isXs && config.from" justify="center" class="mt-1 mb-1">
+            <v-row v-if="isXs && config.from" class="justify-center mt-1 mb-1">
                 <small class="text-caption text--secondary">
                     {{ $t('$vuetify.dataFooter.pageText', [config.from, config.to, config.total]) }}
                 </small>

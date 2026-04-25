@@ -14,13 +14,11 @@
                 :style="headingContainerStyles">
                 <slot name="heading">
                     <v-sheet class="text-center" v-bind="headingProps">
-                        <v-theme-provider>
-                            <div class="pa-7">
-                                <span class="text-h5">
-                                    <v-icon v-bind="iconOptions" :icon="icon" /> {{ title }}
-                                </span>
-                            </div>
-                        </v-theme-provider>
+                        <div class="pa-7">
+                            <span class="text-h5">
+                                <v-icon v-bind="iconOptions" :icon="icon" /> {{ title }}
+                            </span>
+                        </div>
                     </v-sheet>
                 </slot>
             </v-card-title>

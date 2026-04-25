@@ -1,29 +1,30 @@
 import 'vuetify/styles'
-// import this after install `@mdi/font` package
 import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify } from 'vuetify'
-import colors from 'vuetify/lib/util/colors'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import * as labs from 'vuetify/labs/components'
 import { en, es } from 'vuetify/locale'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const vuetify = createVuetify({
         ssr: false,
-        customVariables: ['~/assets/variables.scss'],
+        defaults: {
+            VBtn: {
+                class: 'text-uppercase',
+            },
+        },
         theme: {
-            defaultTheme: 'lightTheme',
+            defaultTheme: 'darkTheme',
             themes: {
                 darkTheme: {
                     dark: true,
                     colors: {
-                        primary: '#009E72', // colors.blue.darken2,
-                        accent: colors.grey.darken3,
-                        secondary: colors.amber.darken3,
-                        info: colors.teal.lighten1,
-                        warning: colors.amber.base,
-                        error: colors.deepOrange.accent4,
-                        success: colors.green.accent3,
+                        primary: '#009E72',
+                        accent: '#424242',
+                        secondary: '#FFD54F',
+                        info: '#26A69A',
+                        warning: '#FFC107',
+                        error: '#FF3D00',
+                        success: '#00E676',
                     },
                 },
                 lightTheme: {
@@ -40,9 +41,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             sets: {
                 mdi,
             }
-        },
-        components: {
-            ...labs,
         },
         locale: {
             locale: process.env.APP_LOCALE,

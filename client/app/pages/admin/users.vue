@@ -2,13 +2,13 @@
     <app-data-table
         name="users"
         class="mt-12"
-        :items="data.data"
+        :items="users.data"
         item-name="user"
         :headers="headers"
         :loading="pending"
         :heading="$t('users', 2)"
         :filters="{ enabled: true }"
-        :pagination="data.meta"
+        :pagination="users.meta"
         :server-action="serverAction"
         :action-create="actionCreate"
         :actions-validations="actionsValidations"
@@ -80,11 +80,11 @@
         onItemDeleted,
     } = useDataTable(serverAction)
 
-    const { data, pending } = await useAsyncData('users', () => $axios.$get(serverAction.value, { params: {
+    const { data: users, pending } = await useAsyncData('users', () => $axios.$get(serverAction.value, { params: {
         s: route.query.s,
         page: route.query.page,
         status: route.query.status,
-    }}), { watch: [
+    }}), { deep: true, watch: [
         () => route.query.s,
         () => route.query.page,
         () => route.query.status,
@@ -139,7 +139,7 @@
         return user.roles.some(role => role.name === 'Super Admin')
     }
 
-    watch(data, (value) => {
+    watch(users, (value) => {
         setData(value)
     }, { immediate: true })
 </script>

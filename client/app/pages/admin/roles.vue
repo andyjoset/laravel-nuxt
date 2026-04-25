@@ -2,12 +2,12 @@
     <app-data-table
         name="roles"
         class="mt-12"
-        :items="data.data"
+        :items="roles.data"
         item-name="role"
         :headers="headers"
         :loading="pending"
         :heading="$t('roles', 2)"
-        :pagination="data.meta"
+        :pagination="roles.meta"
         :server-action="serverAction"
         :action-create="actionCreate"
         :actions-validations="actionsValidations"
@@ -45,10 +45,10 @@
         onItemDeleted,
     } = useDataTable(serverAction)
 
-    const { data, pending } = await useAsyncData('roles', () => $axios.$get(serverAction.value, { params: {
+    const { data: roles, pending } = await useAsyncData('roles', () => $axios.$get(serverAction.value, { params: {
         s: route.query.s,
         page: route.query.page,
-    }}), { watch: [
+    }}), { deep: true, watch: [
         () => route.query.s,
         () => route.query.page,
     ]})
@@ -72,7 +72,7 @@
         text: t('create', [t('roles')]),
     }))
 
-    watch(data, (value) => {
+    watch(roles, (value) => {
         setData(value)
     }, { immediate: true })
 </script>

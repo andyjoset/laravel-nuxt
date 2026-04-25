@@ -3,7 +3,7 @@
         max-width="95%"
         class="mx-auto mt-6 pa-8">
         <v-card-text>
-            <v-row align="center">
+            <v-row class="align-center">
                 <v-col md="6" sm="12" xs="12" class="mb-4">
                     <v-list-item lines="three">
                         <template #prepend>

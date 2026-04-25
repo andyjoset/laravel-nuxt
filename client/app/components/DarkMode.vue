@@ -14,9 +14,7 @@
     import { useTheme } from 'vuetify'
 
     const theme = useTheme()
-    const darkThemeCookie = useCookie('dark-theme', {
-        default: () => false,
-    })
+    const darkThemeCookie = useCookie('dark-theme')
 
     const isActive = computed (() => theme.current.value?.dark)
     const isUndef = computed (() => darkThemeCookie.value === undefined)
@@ -35,7 +33,9 @@
     }
 
     onMounted (() => {
-        setTheme(isUndef.value ? getValueFromSystem() : darkThemeCookie.value)
+        nextTick(() => {
+            setTheme(isUndef.value ? getValueFromSystem() : darkThemeCookie.value)
+        })
 
         window.matchMedia('(prefers-color-scheme: dark)')
             .addEventListener('change', (e) => {

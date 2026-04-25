@@ -79,6 +79,7 @@ export default {
         {
             name: 'dashboard',
             path: '/dashboard',
+            meta: { middleware: 'auth' },
             component: () => import('~/pages/dashboard.vue'),
         },
 

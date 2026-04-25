@@ -10,7 +10,8 @@ const appName = process.env.APP_NAME || 'Laravel Nuxt'
 export default defineNuxtConfig({
     ssr: false,
     devtools: { enabled: false },
-    srcDir: 'client/',
+    srcDir: 'client/app',
+    serverDir: 'client/server',
     css: ['~/assets/app.scss'],
 
     experimental: {
@@ -62,9 +63,10 @@ export default defineNuxtConfig({
     modules: [
         (_options, nuxt) => {
             nuxt.hooks.hook('vite:extendConfig', (config) => {
-            // @ts-expect-error
-            config.plugins.push(vuetify({ autoImport: true }))
-        })},
+                // @ts-expect-error
+                config.plugins.push(vuetify({ autoImport: true }))
+            })
+        },
         '@nuxtjs/i18n',
         '@pinia/nuxt',
         '@vueuse/nuxt',
@@ -119,7 +121,9 @@ export default defineNuxtConfig({
     },
 
     eslint: {
-        checker: true,
+        checker: {
+            eslintPath: 'eslint',
+        },
     },
 
     i18n: {
@@ -146,5 +150,5 @@ export default defineNuxtConfig({
         },
     },
 
-    compatibilityDate: '2026-04-07',
+    compatibilityDate: '2026-04-24',
 })

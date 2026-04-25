@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col align="center" justify="center">
+        <v-col class="text-center">
             <img
                 src="/v.png"
                 alt="Vuetify.js"

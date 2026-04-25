@@ -5,7 +5,7 @@
 > A Laravel + Nuxt starter template.
 
 <p align="center">
-    <img src="client/public/laravel-nuxt.gif" width="800" height="300">
+    <img src="public/laravel-nuxt.gif" width="800" height="300">
 </p>
 
 ## Features
@@ -13,8 +13,8 @@
 - [Laravel 13](https://laravel.com/docs/13.x)
 - Laravel [Fortify] + [Sanctum]
 - Laravel Permission from [Spatie](https://spatie.be/docs/laravel-permission)
-- [Nuxt 3](https://nuxt.com/docs/3.x/)
-- [Vuetify 3](https://v3.vuetifyjs.com/)
+- [Nuxt 4](https://nuxt.com/docs/4.x/)
+- [Vuetify 4](https://vuetifyjs.com/)
 - SPA (default) or SSR
 - [Nuxt modules:](https://nuxt.com/modules)
     - VueUse
@@ -87,7 +87,7 @@ npm run build
 - Edit `nuxt.config.js`:
     - Set `ssr: true` 
     - Comment `nuxtClientInit` plugin
-- Edit `client/plugins/vuetify.js`:
+- Edit `client/app/plugins/vuetify.js`:
     - Set `ssr: true` 
 - Edit `.env` variables:
     - Set `APP_URL=http://api.domain.com`

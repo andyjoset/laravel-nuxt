@@ -51,7 +51,6 @@
     }
 
     .app-table-heading {
-        margin-bottom: -36px;
         margin-top: -36px;
         overflow: visible;
         position: relative;
